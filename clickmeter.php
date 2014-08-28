@@ -254,7 +254,7 @@ class WPClickmeter {
 
 	static function firstMenu() {		
 		$role = 'administrator';	
-		add_menu_page( 'ClickMeter | Account Info', 'ClickMeter', $role, 'clickmeter/view/clickmeter-account.php','','dashicons-chart-bar');
+		add_menu_page( 'ClickMeter | Account Info', 'ClickMeter', $role, 'clickmeter-link-shortener-and-analytics/view/clickmeter-account.php','','dashicons-chart-bar');
 	}
 
 	static function showOptionsPage() {		
@@ -265,7 +265,7 @@ class WPClickmeter {
 		#$wp_admin_bar->add_menu( $args );
 		global $wp_admin_bar;
 		
-		$link = esc_url(add_query_arg(array('page' => 'clickmeter/view/clickmeter-account.php'), admin_url('admin.php'))); 
+		$link = esc_url(add_query_arg(array('page' => 'clickmeter-link-shortener-and-analytics/view/clickmeter-account.php'), admin_url('admin.php'))); 
 		#$link = get_site_url($GLOBALS['blog_id'], "/wp-admin/admin.php?page=clickmeter-account");
 		$wp_admin_bar->add_menu(array('id' => 'clickmeter-header', 'title' => 'ClickMeter', 'href' => $link));
 		$wp_admin_bar->add_menu(array('id' => 'clickmeter-account', 'href' => $link, 'parent' => 'clickmeter-header', 'title' => "Account & Settings"));
@@ -280,20 +280,20 @@ class WPClickmeter {
 		$group_id_TP = WPClickmeter::get_option('clickmeter_TPcampaign_id');
 		$group_id_TL = WPClickmeter::get_option('clickmeter_TLcampaign_id');
 		
-		add_menu_page( 'ClickMeter | Account Info', 'ClickMeter', $role, 'clickmeter/view/clickmeter-account.php', '','dashicons-chart-bar');
-		add_submenu_page( 'clickmeter/view/clickmeter-account.php', 'ClickMeter | Settings', 'Settings', $role, 'clickmeter/view/clickmeter-account.php'); 
+		add_menu_page( 'ClickMeter | Account Info', 'ClickMeter', $role, 'clickmeter-link-shortener-and-analytics/view/clickmeter-account.php', '','dashicons-chart-bar');
+		add_submenu_page( 'clickmeter-link-shortener-and-analytics/view/clickmeter-account.php', 'ClickMeter | Settings', 'Settings', $role, 'clickmeter-link-shortener-and-analytics/view/clickmeter-account.php'); 
 
-		$submenu['clickmeter/view/clickmeter-account.php'][] = array('<div class="openInNewWindow">Visits Report</div>', $role,'http://mybeta.clickmeter.com/go?val='.$boGoVal.'&returnUrl=%2Fpixels%23campaignId%3D'.$group_id_TP.'%26rows%3D100%26lastMonth');
-		$submenu['clickmeter/view/clickmeter-account.php'][] = array('<div class="openInNewWindow">Visitors Stream</div>', $role,'http://mybeta.clickmeter.com/go?val='.$boGoVal.'&returnUrl=%2FClickStream%23campaign%3D'.$group_id_TP.'%2660sec');
-		$submenu['clickmeter/view/clickmeter-account.php'][] = array('<div class="openInNewWindow">World Stream</div>', $role,'http://mybeta.clickmeter.com/go?val='.$boGoVal.'&returnUrl=%2Fworldstream%23campaign%3D'.$group_id_TP.'%2660sec');
-		//$submenu['clickmeter/view/clickmeter-account.php'][] = array('<div class="openInNewWindow">List of Tracking Links</div>', $role,'http://mybeta.clickmeter.com/go?val='.$boGoVal.'&returnUrl=%2FLinks%23campaignId%3D'.$group_id_TL.'%26rows%3D10%2614days');
-		add_submenu_page( 'clickmeter/view/clickmeter-account.php', 'ClickMeter | List of Tracking Links', 'List of Tracking Links', $role, 'clickmeter/view/clickmeter-list_tracking_links.php');
-		add_submenu_page( 'clickmeter/view/clickmeter-account.php', 'ClickMeter | New Tracking Link', 'New Tracking Link', $role, 'clickmeter/view/clickmeter-new_tracking_link.php'); 
-		//$submenu['clickmeter/view/clickmeter-account.php'][] = array('<div class="openInNewWindow">New Tracking Link</div>', $role,'http://mybeta.clickmeter.com/go?val='.$boGoVal.'&returnUrl=%2Flinks%2Fnew');
-		$submenu['clickmeter/view/clickmeter-account.php'][] = array('<div class="openInNewWindow">Support</div>', $role,'http://support.clickmeter.com/forums/21156669-WordPress-plugin');
+		$submenu['clickmeter-link-shortener-and-analytics/view/clickmeter-account.php'][] = array('<div class="openInNewWindow">Visits Report</div>', $role,'http://mybeta.clickmeter.com/go?val='.$boGoVal.'&returnUrl=%2Fpixels%23campaignId%3D'.$group_id_TP.'%26rows%3D100%26lastMonth');
+		$submenu['clickmeter-link-shortener-and-analytics/view/clickmeter-account.php'][] = array('<div class="openInNewWindow">Visitors Stream</div>', $role,'http://mybeta.clickmeter.com/go?val='.$boGoVal.'&returnUrl=%2FClickStream%23campaign%3D'.$group_id_TP.'%2660sec');
+		$submenu['clickmeter-link-shortener-and-analytics/view/clickmeter-account.php'][] = array('<div class="openInNewWindow">World Stream</div>', $role,'http://mybeta.clickmeter.com/go?val='.$boGoVal.'&returnUrl=%2Fworldstream%23campaign%3D'.$group_id_TP.'%2660sec');
+		//$submenu['clickmeter-link-shortener-and-analytics/view/clickmeter-account.php'][] = array('<div class="openInNewWindow">List of Tracking Links</div>', $role,'http://mybeta.clickmeter.com/go?val='.$boGoVal.'&returnUrl=%2FLinks%23campaignId%3D'.$group_id_TL.'%26rows%3D10%2614days');
+		add_submenu_page( 'clickmeter-link-shortener-and-analytics/view/clickmeter-account.php', 'ClickMeter | List of Tracking Links', 'List of Tracking Links', $role, 'clickmeter-link-shortener-and-analytics/view/clickmeter-list_tracking_links.php');
+		add_submenu_page( 'clickmeter-link-shortener-and-analytics/view/clickmeter-account.php', 'ClickMeter | New Tracking Link', 'New Tracking Link', $role, 'clickmeter-link-shortener-and-analytics/view/clickmeter-new_tracking_link.php'); 
+		//$submenu['clickmeter-link-shortener-and-analytics/view/clickmeter-account.php'][] = array('<div class="openInNewWindow">New Tracking Link</div>', $role,'http://mybeta.clickmeter.com/go?val='.$boGoVal.'&returnUrl=%2Flinks%2Fnew');
+		$submenu['clickmeter-link-shortener-and-analytics/view/clickmeter-account.php'][] = array('<div class="openInNewWindow">Support</div>', $role,'http://support.clickmeter.com/forums/21156669-WordPress-plugin');
 
 		//Page for tests
-		//add_submenu_page( 'clickmeter/view/clickmeter-account.php', 'ClickMeter | TEST', 'Test page', $role, 'clickmeter/view/clickmeter-test.php'); 
+		//add_submenu_page( 'clickmeter-link-shortener-and-analytics/view/clickmeter-account.php', 'ClickMeter | TEST', 'Test page', $role, 'clickmeter-link-shortener-and-analytics/view/clickmeter-test.php'); 
 	}
 
 
