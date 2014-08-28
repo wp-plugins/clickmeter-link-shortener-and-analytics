@@ -15,7 +15,7 @@ class ClickmeterViews {
 	}
 
 	static function missingAPIKeyWarning() {
-		$link = esc_url(add_query_arg(array('page' => 'clickmeter/view/clickmeter-account.php'), admin_url('admin.php'))); 
+		$link = esc_url(add_query_arg(array('page' => 'clickmeter-link-shortener-and-analytics/view/clickmeter-account.php'), admin_url('admin.php'))); 
 		#echo $link;
 		include self::template_path('/view/clickmeter-missing_apikey_warning');
 	}

@@ -144,7 +144,7 @@ function copyToClipboard() {
 	<input type="hidden" id="tracking_link_campaign" name="tracking_link_campaign" value="<?php echo $tracking_link_campaign ?>">
 	<input type="hidden" id="domainId" name="domainId" value="<?php echo $tracking_link_domain ?>">
 	<input type="hidden" id="clickmeter_update_post" name="clickmeter_update_post" value="true">
-	<input type="hidden" id="clickmeter_settings_link" name="clickmeter_settings_link" value="<?php echo esc_url(add_query_arg(array('page' => 'clickmeter/view/clickmeter-account.php'), admin_url('admin.php'))); ?>">
+	<input type="hidden" id="clickmeter_settings_link" name="clickmeter_settings_link" value="<?php echo esc_url(add_query_arg(array('page' => 'clickmeter-link-shortener-and-analytics/view/clickmeter-account.php'), admin_url('admin.php'))); ?>">
 	<form action="" method="post"></form>
 	<form action="" onsubmit="return confirm('Are you sure you want to delete this tracking link?');" method="post">
 		<input type="hidden" value="delete" name="tracking_link_delete">
@@ -173,7 +173,7 @@ function copyToClipboard() {
 	<input type="hidden" id="clickmeter_post_title" value="<?php echo $post_title ?>" name="clickmeter_post_title">
 	<input type="hidden" id="tracking_pixel_id" name="tracking_pixel_id" value="<?php echo $tracking_pixel_id ?>">
 	<input type="hidden" id="clickmeter_update_post" name="clickmeter_update_post" value="true">
-	<input type="hidden" id="clickmeter_settings_link" name="clickmeter_settings_link" value="<?php echo esc_url(add_query_arg(array('page' => 'clickmeter/view/clickmeter-account.php'), admin_url('admin.php'))); ?>">
+	<input type="hidden" id="clickmeter_settings_link" name="clickmeter_settings_link" value="<?php echo esc_url(add_query_arg(array('page' => 'clickmeter-link-shortener-and-analytics/view/clickmeter-account.php'), admin_url('admin.php'))); ?>">
 	<div id="get_tracking_link_button">
 		<input type="button" onclick="callAjax_create_trackinglink()" id="get_tracking_link" class="clickmeter-button-wpstyle" value="Get Tracking Link"/>
 		<div id="creating_tl" style="padding: 5px 0px 5px 0px; display:none">

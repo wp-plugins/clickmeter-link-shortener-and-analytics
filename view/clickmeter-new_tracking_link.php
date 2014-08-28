@@ -248,9 +248,9 @@ function copyToClipboard() {
 		</center>
 		<br><br>
 		<center>
-			<a class="clickmeter_link" href="<?php echo esc_url(add_query_arg(array('page' => 'clickmeter/view/clickmeter-list_tracking_links.php'), admin_url('admin.php'))); ?>"><span style="padding: 5px 5px;width:20%;" class="clickmeter-button">View Tracking Links list</span></a>
+			<a class="clickmeter_link" href="<?php echo esc_url(add_query_arg(array('page' => 'clickmeter-link-shortener-and-analytics/view/clickmeter-list_tracking_links.php'), admin_url('admin.php'))); ?>"><span style="padding: 5px 5px;width:20%;" class="clickmeter-button">View Tracking Links list</span></a>
 			<span style="padding:0 50px 0 50px"></span>
-			<a class="clickmeter_link" href="<?php echo esc_url(add_query_arg(array('page' => 'clickmeter/view/clickmeter-new_tracking_link.php'), admin_url('admin.php'))); ?>"><span style="padding: 5px 5px;width:20%;" class="clickmeter-button">Create New Link</span></a>
+			<a class="clickmeter_link" href="<?php echo esc_url(add_query_arg(array('page' => 'clickmeter-link-shortener-and-analytics/view/clickmeter-new_tracking_link.php'), admin_url('admin.php'))); ?>"><span style="padding: 5px 5px;width:20%;" class="clickmeter-button">Create New Link</span></a>
 		</center>
 	</div>
 
