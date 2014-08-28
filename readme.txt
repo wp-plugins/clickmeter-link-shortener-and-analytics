@@ -46,7 +46,7 @@ To use this all-in-one plugin you need a [ClickMeter Account](http://clickmeter.
 - Activate the plugin through the 'Plugins' menu in WordPress
 
 == Frequently Asked Questions ==
-You'll find the FAQ on [ClickMeter Knowledge Base](http://support.clickmeter.com/forums/21156669-WordPress-plugin).
+You'll find updated FAQs on [ClickMeter Knowledge Base](http://support.clickmeter.com/forums/21156669-WordPress-plugin).
 
 == Screenshots ==
 1. Create your ClickMeter Account (free or premium) in seconds. Settings are very easy and available in the same page. 
