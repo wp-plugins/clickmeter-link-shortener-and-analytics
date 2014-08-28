@@ -43,7 +43,7 @@ function copyToClipboard(text) {
 ?>
 	<hr>
 	<br>
-	<a target="_blank" href="<?php echo esc_url(add_query_arg(array('page' => 'clickmeter/view/clickmeter-new_tracking_link.php'), admin_url('admin.php'))); ?>">Create Tracking Link</a> | 
+	<a target="_blank" href="<?php echo esc_url(add_query_arg(array('page' => 'clickmeter-link-shortener-and-analytics/view/clickmeter-new_tracking_link.php'), admin_url('admin.php'))); ?>">Create Tracking Link</a> | 
 	<a target="_blank" href="http://mybeta.clickmeter.com/go?val=<?php echo $boGoVal; ?>&returnUrl=%2FLinks%23campaignId%3D<?php echo $group_id_TL; ?>%26rows%3D10%2614days">View Tracking Links on ClickMeter</a><br><br>
 	<div class="clickmeter_tablenav">
 		<table width="100%">
@@ -71,13 +71,13 @@ function copyToClipboard(text) {
 			<td width="20%">
 				<div class="clickmeter_tablenav_pages">
 					<?php if($current_page!=1): ?>
-					<a class="cm_page_numbers" href="?page=clickmeter/view/clickmeter-list_tracking_links.php&amp;paged=<?php echo $current_page-1; ?>">«</a>
+					<a class="cm_page_numbers" href="?page=clickmeter-link-shortener-and-analytics/view/clickmeter-list_tracking_links.php&amp;paged=<?php echo $current_page-1; ?>">«</a>
 					<?php endif; ?>
-					<!--<a class="cm_page_numbers" href="?page=clickmeter/view/clickmeter-list_tracking_links.php&amp;paged=<?php echo $current_page-1; ?>"><?php echo $current_page-1; ?></a>-->
+					<!--<a class="cm_page_numbers" href="?page=clickmeter-link-shortener-and-analytics/view/clickmeter-list_tracking_links.php&amp;paged=<?php echo $current_page-1; ?>"><?php echo $current_page-1; ?></a>-->
 					<span class="cm_displaying_num"><?php echo $current_page ." of ". $total_pages; ?></span>
-					<!--<a class="cm_page_numbers" href="?page=clickmeter/view/clickmeter-list_tracking_links.php&amp;paged=<?php echo $current_page+1; ?>"><?php echo $current_page+1; ?></a>-->
+					<!--<a class="cm_page_numbers" href="?page=clickmeter-link-shortener-and-analytics/view/clickmeter-list_tracking_links.php&amp;paged=<?php echo $current_page+1; ?>"><?php echo $current_page+1; ?></a>-->
 					<?php if($current_page!=$total_pages): ?>
-					<a class="cm_page_numbers" href="?page=clickmeter/view/clickmeter-list_tracking_links.php&amp;paged=<?php echo $current_page+1; ?>">»</a>
+					<a class="cm_page_numbers" href="?page=clickmeter-link-shortener-and-analytics/view/clickmeter-list_tracking_links.php&amp;paged=<?php echo $current_page+1; ?>">»</a>
 					<?php endif; ?>
 				</div>
 			</td>
@@ -129,13 +129,13 @@ function copyToClipboard(text) {
 	</table>
 	<div class="clickmeter_tablenav_pages">
 		<?php if($current_page!=1): ?>
-		<a class="cm_page_numbers" href="?page=clickmeter/view/clickmeter-list_tracking_links.php&amp;paged=<?php echo $current_page-1; ?>">«</a>
+		<a class="cm_page_numbers" href="?page=clickmeter-link-shortener-and-analytics/view/clickmeter-list_tracking_links.php&amp;paged=<?php echo $current_page-1; ?>">«</a>
 		<?php endif; ?>
-		<!--<a class="cm_page_numbers" href="?page=clickmeter/view/clickmeter-list_tracking_links.php&amp;paged=<?php echo $current_page-1; ?>"><?php echo $current_page-1; ?></a>-->
+		<!--<a class="cm_page_numbers" href="?page=clickmeter-link-shortener-and-analytics/view/clickmeter-list_tracking_links.php&amp;paged=<?php echo $current_page-1; ?>"><?php echo $current_page-1; ?></a>-->
 		<span class="cm_displaying_num"><?php echo $current_page ." of ". $total_pages; ?></span>
-		<!--<a class="cm_page_numbers" href="?page=clickmeter/view/clickmeter-list_tracking_links.php&amp;paged=<?php echo $current_page+1; ?>"><?php echo $current_page+1; ?></a>-->
+		<!--<a class="cm_page_numbers" href="?page=clickmeter-link-shortener-and-analytics/view/clickmeter-list_tracking_links.php&amp;paged=<?php echo $current_page+1; ?>"><?php echo $current_page+1; ?></a>-->
 		<?php if($current_page!=$total_pages): ?>
-		<a class="cm_page_numbers" href="?page=clickmeter/view/clickmeter-list_tracking_links.php&amp;paged=<?php echo $current_page+1; ?>">»</a>
+		<a class="cm_page_numbers" href="?page=clickmeter-link-shortener-and-analytics/view/clickmeter-list_tracking_links.php&amp;paged=<?php echo $current_page+1; ?>">»</a>
 		<?php endif; ?>
 	</div>
 
