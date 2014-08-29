@@ -319,7 +319,7 @@
 			}
 		}?>
 	</select>
-	<span><img class="callout" src="/wp-content/plugins/clickmeter-link-shortener-and-analytics-link-shortener-and-analytics/img/callout_black.gif" />
+	<span><img class="callout" src="/wp-content/plugins/clickmeter-link-shortener-and-analytics/img/callout_black.gif" />
 		Choose the domain for your tracking link.
 	</span></span>
 <br><br>
@@ -382,7 +382,7 @@
 				}
 			}?>
 	</select>
-	<span><img class="callout" src="/wp-content/plugins/clickmeter-link-shortener-and-analytics-link-shortener-and-analytics/img/callout_black.gif" />
+	<span><img class="callout" src="/wp-content/plugins/clickmeter-link-shortener-and-analytics/img/callout_black.gif" />
 		Associate this tracking link to a conversion goal.
 	</span></span>
 	<br><br>
@@ -403,7 +403,7 @@
 			}
 		?>
 	</select>
-	<span><img class="callout" src="/wp-content/plugins/clickmeter-link-shortener-and-analytics-link-shortener-and-analytics/img/callout_black.gif" />
+	<span><img class="callout" src="/wp-content/plugins/clickmeter-link-shortener-and-analytics/img/callout_black.gif" />
 		Choose to redirect your customers to different destination URLs depending on different conditions.
 	</span>
 	</span>
@@ -416,8 +416,8 @@
 	<span style="padding-right: 10px"><input class type="radio" name="link_cloak_flag" value="true">Yes</span>
 	<input type="radio" name="link_cloak_flag" checked="true" value="false">No (default)
 	<?php endif; ?>
-	<span class="tooltip" style="padding-right:5px;"><img style="margin-left: 10px;" src="/wp-content/plugins/clickmeter-link-shortener-and-analytics-link-shortener-and-analytics/img/tooltip_icon.png">
-		<span><img class="callout" src="/wp-content/plugins/clickmeter-link-shortener-and-analytics-link-shortener-and-analytics/img/callout_black.gif" />
+	<span class="tooltip" style="padding-right:5px;"><img style="margin-left: 10px;" src="/wp-content/plugins/clickmeter-link-shortener-and-analytics/img/tooltip_icon.png">
+		<span><img class="callout" src="/wp-content/plugins/clickmeter-link-shortener-and-analytics/img/callout_black.gif" />
 				URL masking allows you to hide the destination URL after someone clicks on the tracking link.
 		</span></span>
 	<br><br>
