@@ -12,7 +12,7 @@ body {
 }
 
 .spinner {
-	background: url('/wp-content/plugins/clickmeter/img/spinner.gif') no-repeat;
+	background: url('/wp-content/plugins/clickmeter-link-shortener-and-analytics/img/spinner.gif') no-repeat;
 	background-size: 30px 30px;
 	display: block;
 	width: 30px;

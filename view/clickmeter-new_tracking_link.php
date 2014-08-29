@@ -85,7 +85,7 @@ function copyToClipboard() {
 				<tr>
 					<td style="width:20%"><span style="color:#6B6B6B;font-size: 15px;">Destination URL: </span></td>
 					<td style="width:80%">
-						<span class="tooltip"><input type="text" style="width:60%" value="http://" id="redirection_link_url" id="redirection_link_url"/><span><img class="callout" src="/wp-content/plugins/clickmeter/img/callout_black.gif" />
+						<span class="tooltip"><input type="text" style="width:60%" value="http://" id="redirection_link_url" id="redirection_link_url"/><span><img class="callout" src="/wp-content/plugins/clickmeter-link-shortener-and-analytics/img/callout_black.gif" />
 							This is the link you want to track: the landing page where you want to send your visitors (eg. http://clickmeter.com).
 						</span></span>
 						<span style="display:none" class="error" id="error_url"></span>
@@ -95,7 +95,7 @@ function copyToClipboard() {
 					<td style="width:20%"><span style="color:#6B6B6B;font-size: 15px;">Link name: </span></td>
 					<td style="width:80%">
 						<span class="tooltip"><input type="text" style="width:60%" value="" id="redirection_link_name" id="redirection_link_name" maxlength="50"/>
-						<span><img class="callout" src="/wp-content/plugins/clickmeter/img/callout_black.gif" />
+						<span><img class="callout" src="/wp-content/plugins/clickmeter-link-shortener-and-analytics/img/callout_black.gif" />
 							This is the part of the link that goes after the choosen domain (e.g. http://trk.as/link-name). It is also the name to identify this tracking link in your reports.
 						</span></span>
 						<span style="display:none" class="error" id="error_fname"></span>
@@ -122,7 +122,7 @@ function copyToClipboard() {
 					
 				}?>
 			</select>
-			<span><img class="callout" src="/wp-content/plugins/clickmeter/img/callout_black.gif" />
+			<span><img class="callout" src="/wp-content/plugins/clickmeter-link-shortener-and-analytics/img/callout_black.gif" />
 				Choose the domain for your tracking link.
 			</span>
 			</span>
@@ -143,7 +143,7 @@ function copyToClipboard() {
 					
 				}?>
 			</select>
-			<span><img class="callout" src="/wp-content/plugins/clickmeter/img/callout_black.gif" />
+			<span><img class="callout" src="/wp-content/plugins/clickmeter-link-shortener-and-analytics/img/callout_black.gif" />
 				Organize your links in campaigns (groups of links). Choose which campaign this tracking link belongs to.
 			</span>
 			</span>
@@ -165,7 +165,7 @@ function copyToClipboard() {
 					}
 				}?>
 			</select>
-			<span><img class="callout" src="/wp-content/plugins/clickmeter/img/callout_black.gif" />
+			<span><img class="callout" src="/wp-content/plugins/clickmeter-link-shortener-and-analytics/img/callout_black.gif" />
 				Associate this tracking link to a conversion goal.
 			</span>
 			</span>
@@ -188,7 +188,7 @@ function copyToClipboard() {
 						}
 					}?>
 			</select>
-			<span><img class="callout" src="/wp-content/plugins/clickmeter/img/callout_black.gif" />
+			<span><img class="callout" src="/wp-content/plugins/clickmeter-link-shortener-and-analytics/img/callout_black.gif" />
 				Associate this tracking link to a conversion goal.
 			</span>
 			</span>
@@ -210,7 +210,7 @@ function copyToClipboard() {
 					}
 				?>
 			</select>
-			<span><img class="callout" src="/wp-content/plugins/clickmeter/img/callout_black.gif" />
+			<span><img class="callout" src="/wp-content/plugins/clickmeter-link-shortener-and-analytics/img/callout_black.gif" />
 				Choose to redirect your customers to different destination URLs depending on different conditions.
 			</span></span>
 			<br><br>
@@ -222,7 +222,7 @@ function copyToClipboard() {
 			<span style="padding-right: 10px"><input class type="radio" name="link_cloak_flag" value="true">Yes</span>
 			<input type="radio" name="link_cloak_flag" checked="true" value="false">No (default)
 			<?php endif; ?>
-			<span class="tooltip" style="padding-right:5px;"><img style="margin-left: 10px;" src="/wp-content/plugins/clickmeter/img/tooltip_icon.png"><span><img class="callout" src="/wp-content/plugins/clickmeter/img/callout_black.gif" />
+			<span class="tooltip" style="padding-right:5px;"><img style="margin-left: 10px;" src="/wp-content/plugins/clickmeter-link-shortener-and-analytics/img/tooltip_icon.png"><span><img class="callout" src="/wp-content/plugins/clickmeter-link-shortener-and-analytics/img/callout_black.gif" />
 				URL masking allows you to hide the destination URL after someone clicks on the tracking link.
 			</span></span>
 		</form>
