@@ -42,8 +42,26 @@ To use this all-in-one plugin you need a [ClickMeter Account](http://clickmeter.
 - Other features: Real-time, hosted engines and databases, multilanguage dashboard, Google analytics compatible; SEO safe (301 or 307) redirect
 
 == Installation ==
-- Upload 'clickmeter.zip' to the '/wp-content/plugins/' directory
-- Activate the plugin through the 'Plugins' menu in WordPress
+
+<h4>Install plugin</h4>
+You can install ClickMeter Link Shortener and Analytics in the following ways:
+<ul>
+<li> Activate the plugin through the 'Plugins' menu in WordPress (Plugins > Add New)
+<li> Upload 'clickmeter-link-shortener-and-analytics.zip' to the '/wp-content/plugins/' directory
+</ul>
+Once activated, enter your [ClickMeter API key](http://mybeta.clickmeter.com/api-key).
+
+<h4>Update plugin</h4>
+Every available update will be shown on the Dashboard Panel with an alert on the Plugin's menu title, and on the Plugin List.
+
+<h4>Uninstall plugin</h4>
+To uninstall ClickMeter Link Shortener and Analytics:
+<ol>
+<li> Go to Plugins screen.
+<li> Select the plugin.
+<li> Click Deactivate.
+</ol>
+<br><br>If you need more information about installing, updating or uninstalling plugins, take a look to the official [WordPress guide](http://codex.wordpress.org/Managing_Plugins).
 
 == Frequently Asked Questions ==
 You'll find updated FAQs on [ClickMeter Knowledge Base](http://support.clickmeter.com/forums/21156669-WordPress-plugin).
