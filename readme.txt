@@ -81,4 +81,11 @@ You'll find updated FAQs on [ClickMeter Knowledge Base](http://support.clickmete
 First version release.
 
 = 1.1.0 =
-First version release.
+<ul>
+<li>Multiple WordPress blogs installation
+<li>Campaing names changed in "your_wordpress_blog_name".com-xxxxxx
+<li>New conversions management: select to associate conversion only to posts, pages or both of them
+<li>Added WordPress database cleaning after uninstalling
+<li>Added cloaking with URL encryption for tracking links
+<li>Minor bugfix
+</ul>
