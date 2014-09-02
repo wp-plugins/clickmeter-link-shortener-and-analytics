@@ -79,3 +79,6 @@ You'll find updated FAQs on [ClickMeter Knowledge Base](http://support.clickmete
 == Changelog ==
 = 1.0.0 =
 First version release.
+
+= 1.1.0 =
+First version release.
