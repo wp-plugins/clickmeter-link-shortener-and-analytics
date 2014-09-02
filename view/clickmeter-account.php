@@ -191,10 +191,10 @@
 <br><hr>
 <h2>Track conversions: <a style="display:none;cursor:pointer;" class="compress_section">[collapse-]</a><a style="cursor:pointer;" class="expand_section">[expand+]</a></h2>
 <div id="clickmeter_track_conversions" style="display:none;">
-<p>Track how many conversions were lead by your WP posts. <strong>You will be able to activate up to two conversion trackings.</strong></p><br>
+<p>How many conversions were lead by your WordPress blog?</p><br>
 
 <form id="conversion1_form" action="#clickmeter_track_conversions" method="post">
-<?php if($workInProgress!="true") : ?>
+	<?php if($workInProgress!="true") : ?>
 	<select name="conversion_type" style="width:200px;">
 		<option value="null" selected>Choose conversion type</option>
 		<optgroup label="Create new conversion">
@@ -211,18 +211,32 @@
 			?>
 		</optgroup>
 	</select>
-	<input type="submit" style="font-size: 13px; padding: 4px;width:120px;" class="clickmeter-button" value="Activate">
+	<span style="padding-left:10px; padding-right:5px;">Posts</span><input type="checkbox" checked name="conversion_target_list[]" value="post"/>
+	<span style="padding-right:5px;">Pages</span><input type="checkbox" checked name="conversion_target_list[]" value="page"/>
+	<span style="padding-left: 10px"><input type="submit" style="font-size: 13px; padding: 4px;width:120px;" class="clickmeter-button" value="Activate"></span>
 	<span class="error"><?php echo $conversionErr;?></span>
+	<span class="tooltip" style="padding-right:5px;"><img style="margin-left: 10px;" src="/wp-content/plugins/clickmeter-link-shortener-and-analytics/img/tooltip_icon.png"><span><img class="callout" src="/wp-content/plugins/clickmeter-link-shortener-and-analytics/img/callout_black.gif" />
+		 Check the boxes to associate this conversions to all tracked Posts and/or Pages in this WordPress account.
+	</span></span>
+
 <?php else : ?>
 	<div style="padding: 10px 0px 10px 0px"><span style="color:green;"><div class="spinner_wp"></div>A background operation is currently in execution. Wait some minutes, then click on ClickMeter menu to reload.</span></div>
 <?php endif; ?>
 </form>
 <div id="conversion1_created">
 	<input id="conversion1_id" type="hidden" value="<?php echo $conversion1_id; ?>"/>
-	<p>Copy the conversion code snippet and paste it inside the body tag of the purchase confirmation page (also called thank you page or sign up completion page).</p>
+	<p>Copy the conversion code snippet and paste it inside the body tag of the confirmation page (also called thank you page or sign up completion page).</p>
 	<table>
 		<tr>
-			<td><strong><span style="padding-right:20px"><?php echo $conversion1_name; ?></span></strong></td>
+			<td><strong><span style="padding-right:20px">
+				<?php 
+					echo $conversion1_name; 
+					if(sizeof($conversion1_target)==1){
+						if(in_array("page", $conversion1_target)) echo " (Pages only)";
+						elseif(in_array("post", $conversion1_target)) echo " (Posts only)";
+					}
+				?>
+			</span></strong></td>
 			<td><a style="padding-right:20px" target="_blank" href="http://mybeta.clickmeter.com/go?val=<?php echo $boGoVal; ?>&returnUrl=%2FConversions%2FConversionConfirm%3FconversionId%3D<?php echo $conversion1_id; ?>%26codeView%3Dtrue">View conversion code</a></td>
 			<td>
 				<form action="#clickmeter_track_conversions" method="post" id="first_conv_form">
@@ -266,8 +280,13 @@
 			?>
 		</optgroup>
 	</select>
-	<input type="submit" style="font-size: 13px; padding: 4px;width:120px;" class="clickmeter-button" value="Activate">
+	<span style="padding-left:10px;padding-right:5px;">Posts</span><input type="checkbox" checked name="conversion_target_list[]" value="post"/>
+	<span style="padding-right:5px;">Pages</span><input type="checkbox" checked name="conversion_target_list[]" value="page"/>
+	<span style="padding-left: 10px"><input type="submit" style="font-size: 13px; padding: 4px;width:120px;" class="clickmeter-button" value="Activate"></span>
 	<span class="error"><?php echo $conversionErr;?></span>
+	<span class="tooltip" style="padding-right:5px;"><img style="margin-left: 10px;" src="/wp-content/plugins/clickmeter-link-shortener-and-analytics/img/tooltip_icon.png"><span><img class="callout" src="/wp-content/plugins/clickmeter-link-shortener-and-analytics/img/callout_black.gif" />
+		 Check the boxes to associate this conversions to all tracked Posts and/or Pages in this WordPress account.
+	</span></span>
 <?php else : ?>
 	<div style="padding: 10px 0px 10px 0px"><span style="color:green;"><div class="spinner_wp"></div>A background operation is currently in execution. Wait some minutes, then click on ClickMeter menu to reload.</span></div>
 <?php endif; ?>
@@ -276,7 +295,15 @@
 	<input id="conversion2_id" type="hidden" value="<?php echo $conversion2_id; ?>"/>
 	<table>
 		<tr>
-			<td><strong><span style="padding-right:20px"><?php echo $conversion2_name; ?></span></strong></td>
+			<td><strong><span style="padding-right:20px">
+				<?php 
+					echo $conversion2_name; 
+					if(sizeof($conversion2_target)==1){
+						if(in_array("page", $conversion2_target)) echo " (Pages only)";
+						elseif(in_array("post", $conversion2_target)) echo " (Posts only)";
+					}
+					?>
+			</span></strong></td>
 			<td><a style="padding-right:20px" target="_blank" href="http://mybeta.clickmeter.com/go?val=<?php echo $boGoVal; ?>&returnUrl=%2FConversions%2FConversionConfirm%3FconversionId%3D<?php echo $conversion2_id; ?>%26codeView%3Dtrue">View conversion code</a></td>
 			<td>
 				<form action="#clickmeter_track_conversions" method="post" id="second_conv_form">
@@ -418,7 +445,7 @@
 	<?php endif; ?>
 	<span class="tooltip" style="padding-right:5px;"><img style="margin-left: 10px;" src="/wp-content/plugins/clickmeter-link-shortener-and-analytics/img/tooltip_icon.png">
 		<span><img class="callout" src="/wp-content/plugins/clickmeter-link-shortener-and-analytics/img/callout_black.gif" />
-				URL masking allows you to hide the destination URL after someone clicks on the tracking link.
+				URL cloaking allows you to hide the destination URL after someone clicks on the tracking link. If selected, this option will “encrypt” the destination URL in the source code too, so that it will not be easy to discover the affiliate ID if any.
 		</span></span>
 	<br><br>
 
@@ -433,7 +460,7 @@
 <br><hr>
 <h2>Track and Manage 404 errors: <a style="display:none;cursor:pointer;" class="compress_section">[collapse-]</a><a style="cursor:pointer;" class="expand_section">[expand+]</a></h2>
 <div id="manage_404_errors" style="display:none;">
-<p>In case some visitor will try to access a wrong page (404 - Page Not Found) on your WordPress site, you can track it and redirect him to a specific landing (destination) page</p><br>
+<p>In case some visitor will try to access a wrong page (404 - Page Not Found) on your WordPress site. You can track it and redirect him to a specific landing (destination) page.</p><br>
 <form method="post" action="#manage_404_errors">
 	<span style="padding-right: 10px"><strong>Enable link tracking for your WordPress 404 errors?</strong></span>
 	<?php if ($track_404_flag==1) : ?>
@@ -461,5 +488,8 @@
 </div>
 
 <?php endif; ?>
+<br>
+<hr><br><br><br>
+<p><i>If you're finding ClickMeter Link Shortener and Analytics‏ useful, please <a target="_blank" href="http://wordpress.org/support/view/plugin-reviews/clickmeter-link-shortener-and-analytics">rate it on the plugin's WordPress page</a>.</i></p>
 </body>
 </html>

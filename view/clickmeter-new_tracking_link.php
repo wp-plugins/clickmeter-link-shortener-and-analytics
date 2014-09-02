@@ -223,7 +223,7 @@ function copyToClipboard() {
 			<input type="radio" name="link_cloak_flag" checked="true" value="false">No (default)
 			<?php endif; ?>
 			<span class="tooltip" style="padding-right:5px;"><img style="margin-left: 10px;" src="/wp-content/plugins/clickmeter-link-shortener-and-analytics/img/tooltip_icon.png"><span><img class="callout" src="/wp-content/plugins/clickmeter-link-shortener-and-analytics/img/callout_black.gif" />
-				URL masking allows you to hide the destination URL after someone clicks on the tracking link.
+				URL cloaking allows you to hide the destination URL after someone clicks on the tracking link. If selected, this option will “encrypt” the destination URL in the source code too, so that it will not be easy to discover the affiliate ID if any.
 			</span></span>
 		</form>
 		</div>

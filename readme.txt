@@ -3,7 +3,7 @@ Contributors: ClickMeter
 Tags: url shortener, link tracking, analytics, link monitor, link management, link tracker, tracking, stats, analytic, redirect, 301 redirect, short url, permalink, views, clicks, redirect,  shorturl, shortlink, shorten, click, clicks, track, mask, masking, cloak, cloaking, statistics, page, post, pages, posts, qr code, custom url, pageviews, online users, analyze, reports, spiders, tracker, monitor, world map, automation, admin, widget, plugin, marketing, agencies, affiliates, publishers, advertisers, wordpress, Google Analytics, GA, clickmeter, tinyurl, bit.ly, wp.me, wp.gl, 
 Requires at least: 3.5.0
 Tested up to: 3.9.1
-Stable tag: 1.0.0
+Stable tag: 1.1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Donate link: http://clickmeter.com/pricing-signup

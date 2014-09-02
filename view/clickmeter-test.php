@@ -56,6 +56,39 @@ jQuery('#test').click(function(){
 #   echo $timezone_name .' '. date('D d M Y H:i');
     echo "<table><tr><td>Timezone: </td><td><div style='padding-right:20px'>".$timezone_name ." ". date('D d M Y H:i') ."</div></td></tr></table>";
 
+
+    $args = array(
+    'posts_per_page' => -1,
+    'post_type' => array('post', 'page'),
+    'post_status' => array('publish', 'private', 'future'),
+    'orderby' => 'title',
+    'order' => 'ASC'
+    );
+    $posts_array = get_posts( $args );
+
+    $remove = array();
+    foreach ($posts_array as $post) {
+        $post_id = $post->ID;
+        $pixel_data = WPClickmeter::get_pixel($post_id);
+        //Look for already existent pixels in clickmeter for actual campaign with the same title of the post
+        if($pixel_data!=null){
+            //if exist -> take it
+            $doc = new DOMDocument();
+            if(!empty($post->post_content)){
+                $doc->loadHTML(mb_convert_encoding($post->post_content, 'HTML-ENTITIES', 'UTF-8'));
+                $doc->encoding = 'UTF-8';
+                $divTags = $doc->getElementsByTagName('div');
+                //echo $pixel_name . "<br>";
+                foreach ($divTags as $div) {
+                    if(preg_match("/clkmtr_tracking_pixel/",$div->attributes->getNamedItem('id')->nodeValue)){
+                        $remove[] = $div;
+                    }
+                }
+            }
+        }
+    }
+    print_r($remove);
+
     // $t=time();
     // echo $t;
 

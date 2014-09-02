@@ -49,9 +49,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && array_key_exists("API_key",$_POST)) 
 			WPClickmeter::store_option( 'clickmeter_api_key', $api_key);
 			$json_output = WPClickmeter::api_request('http://apiv2.clickmeter.com/account', 'GET', NULL, $api_key);
 			$boGoVal = $json_output[boGoVal];
-			$timezone = $json_output[timezone];
 			if($boGoVal!=NULL) WPClickmeter::store_option( 'clickmeter_backOffice_key', $boGoVal);
-			if($timezone!=NULL) WPClickmeter::store_option( 'clickmeter_user_timezone', $timezone);
+
+			$blog_name = get_site_url();
+			$blog_name = substr($blog_name,7);
 
 			//look for TP campaign into WP database
 			$group_id_TP = WPClickmeter::get_option('clickmeter_TPcampaign_id');
@@ -61,7 +62,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && array_key_exists("API_key",$_POST)) 
 				$json_output = WPClickmeter::api_request('http://apiv2.clickmeter.com:80/groups?status=active&_expand=true', 'GET', NULL, $api_key);
 				$groups = $json_output[entities];
 				foreach ($groups as $group) {
-					if(strcasecmp($group[name],'My WordPress views')==0){
+					if(strcasecmp($group[name], $blog_name.'-views')==0){
 						$group_id_TP = $group[id];
 						WPClickmeter::store_option( 'clickmeter_TPcampaign_id', $group_id_TP );	
 						break;
@@ -70,7 +71,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && array_key_exists("API_key",$_POST)) 
 				//if not present in clickmeter, create it
 				if($group_id_TP == null){
 					//Create campaign for wordpress pixels
-					$body=array('name'=>'My WordPress views');
+					$body=array('name'=>$blog_name.'-views');
 					$json_output = WPClickmeter::api_request('http://apiv2.clickmeter.com/groups','POST', json_encode($body), $api_key);
 					$group_id_TP = $json_output[id];
 					WPClickmeter::store_option( 'clickmeter_TPcampaign_id', $group_id_TP );
@@ -85,7 +86,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && array_key_exists("API_key",$_POST)) 
 				$json_output = WPClickmeter::api_request('http://apiv2.clickmeter.com:80/groups?status=active&_expand=true', 'GET', NULL, $api_key);
 				$groups = $json_output[entities];
 				foreach ($groups as $group) {
-					if(strcasecmp($group[name],'My WordPress links')==0){
+					if(strcasecmp($group[name],$blog_name.'-links')==0){
 						$group_id_TL = $group[id];
 						WPClickmeter::store_option( 'clickmeter_TLcampaign_id', $group_id_TL );	
 						break;	
@@ -94,13 +95,36 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && array_key_exists("API_key",$_POST)) 
 				//if not present in clickmeter, create it
 				if($group_id_TL == null){
 					//Create campaign for wordpress tracking links
-					$body=array('name'=>'My WordPress links');
+					$body=array('name'=>$blog_name.'-links');
 					$json_output = WPClickmeter::api_request('http://apiv2.clickmeter.com/groups','POST', json_encode($body), $api_key);
 					$group_id_TL = $json_output[id];
 					WPClickmeter::store_option( 'clickmeter_TLcampaign_id', $group_id_TL );
 				}
 			}
 
+			//look for 404_reports campaign into WP database
+			$group_id_404_reports = WPClickmeter::get_option('clickmeter_404_reports_campaign_id');
+			//if not present
+			if($group_id_404_reports==null){
+				//search it into clickmeter and save it
+				$json_output = WPClickmeter::api_request('http://apiv2.clickmeter.com:80/groups?status=active&_expand=true', 'GET', NULL, $api_key);
+				$groups = $json_output[entities];
+				foreach ($groups as $group) {
+					if(strcasecmp($group[name],$blog_name.'-404 reports')==0){
+						$group_id_404_reports = $group[id];
+						WPClickmeter::store_option( 'clickmeter_404_reports_campaign_id', $group_id_404_reports );	
+						break;	
+					} 
+				}
+				//if not present in clickmeter, create it
+				if($group_id_404_reports == null){
+					//Create campaign for wordpress tracking links
+					$body=array('name'=>$blog_name.'-404 reports');
+					$json_output = WPClickmeter::api_request('http://apiv2.clickmeter.com/groups','POST', json_encode($body), $api_key);
+					$group_id_404_reports = $json_output[id];
+					WPClickmeter::store_option( 'clickmeter_404_reports_campaign_id', $group_id_404_reports );
+				}
+			}
 			WPClickmeter::store_option( 'clickmeter_startup_create_TP', $_POST["startup_create_TP"]);
 			
 			if($_POST["startup_create_TP"]=="true"){
@@ -135,19 +159,34 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && array_key_exists("API_key",$_POST)) 
 				//workaround to reload the page
 				echo '<meta http-equiv="refresh" content="0">';
 			}
-			
+
+			// //I don't have conversion ids in the database, search on ClickMeter by blog name.
+			// $active_conversions = WPClickmeter::api_request('http://apiv2.clickmeter.com/conversions?status=active&_expand=true', 'GET', NULL, $api_key);
+			// $conversion1_name = "";
+			// //conversion 1
+			// foreach ($active_conversions[entities] as $conversion) {
+			// 	if((preg_match("#".$blog_name."#", $conversion[name]) && $conversion2_name!=$conversion[name])){
+			// 		WPClickmeter::store_option("clickmeter_conversionId1", $conversion[id]);
+			// 		WPClickmeter::store_option("clickmeter_conversionName1", $conversion[name]);
+			// 		WPClickmeter::store_option("clickmeter_conversionTarget1", array("post", "page"));
+			// 		$conversion1_name = $conversion[name];
+			// 	}
+			// }
+
+			// //conversion 2
+			// foreach ($active_conversions[entities] as $conversion) {
+			// 	if((preg_match("#".$blog_name."#", $conversion[name]) && $conversion1_name!=$conversion[name])){
+			// 		WPClickmeter::store_option("clickmeter_conversionId2", $conversion[id]);
+			// 		WPClickmeter::store_option("clickmeter_conversionName2", $conversion[name]);
+			// 		WPClickmeter::store_option("clickmeter_conversionTarget2", array("post", "page"));
+			// 	}
+			// }
 		}
 	}
 }
 
 if($_POST["API_key_delete"]!=NULL){
-	echo '<input type="hidden" value="'.WPClickmeter::get_option('clickmeter_api_key').'" id="api_key" name="api_key">';
-	echo '<input type="hidden" value="'.WPClickmeter::get_option('clickmeter_TPcampaign_id').'" id="group_id" name="group_id">';
 	echo '<script>callAjaxTP_delete();</script>';
-
-	global $wpdb;
-	$options_table = $wpdb->prefix . 'clickmeter_options';
-	$wpdb->query("TRUNCATE TABLE $options_table");
 	echo '<meta http-equiv="refresh" content="0">';
 }
 
@@ -188,6 +227,7 @@ if($api_key!=NULL){
 	//GET TRACKING PIXELS LIST
 	$group_id_TP = WPClickmeter::get_option('clickmeter_TPcampaign_id');
 	$group_id_TL = WPClickmeter::get_option('clickmeter_TLcampaign_id');
+	$group_id_404_reports = WPClickmeter::get_option('clickmeter_404_reports_campaign_id');
 
 	//TRACKING PIXELS
 	if($_POST["pixels_flags"]=="true"){
@@ -239,8 +279,12 @@ if($api_key!=NULL){
 		$conversion_type= $_POST["conversion_type"];
 		if($conversion_type == "null"){
 			$conversionErr = " *Please choose a conversion type";
+		}
+		elseif($_POST["conversion_target_list"]==NULL || empty($_POST["conversion_target_list"])){
+			$conversionErr = " *Please choose a conversion target";
 		}else{
 			WPClickmeter::store_option("clickmeter_workinprogress_flag", "true");
+			WPClickmeter::store_option("clickmeter_lastconversion_target", $_POST["conversion_target_list"]);
 			if(preg_match("/existing_conversion/", $conversion_type)){
 				//ASSOCIATE EXISTING CONVERSION
 				preg_match("/[0-9]*$/",$conversion_type, $match);
@@ -252,7 +296,6 @@ if($api_key!=NULL){
 				WPClickmeter::store_option("clickmeter_lastconversion_type", $conversion_type);
 				echo '<script>callAjax_create_conversion();</script>';	
 			}
-			
 		}
 	}
 	
@@ -310,8 +353,10 @@ if($api_key!=NULL){
 
 	$conversion1_id = WPClickmeter::get_option('clickmeter_conversionId1');
 	$conversion1_name = WPClickmeter::get_option("clickmeter_conversionName1");
+	$conversion1_target = WPClickmeter::get_option("clickmeter_conversionTarget1");
 	$conversion2_id = WPClickmeter::get_option('clickmeter_conversionId2');
 	$conversion2_name = WPClickmeter::get_option("clickmeter_conversionName2");
+	$conversion2_target = WPClickmeter::get_option("clickmeter_conversionTarget2");
 
 	$pixel_value=WPClickmeter::get_option('clickmeter_pixel_flag');
 	$pixel_default_value = WPClickmeter::get_option('clickmeter_pixel_new_articles');	
@@ -425,7 +470,7 @@ if($api_key!=NULL){
 		if($clickmeter_404_tl==null){
 			$body=array('type'=> 0,
 				'title'=> "WordPress 404",
-				'groupId'=> $group_id_TP,
+				'groupId'=> $group_id_404_reports,
 				'name'=> $url_404_name,
 				'typeTL'=>array('domainId'=> WPClickmeter::get_option("clickmeter_default_domainId"),'url'=> $url_404)
 			);

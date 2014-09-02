@@ -288,13 +288,8 @@ function callAjaxTP_savechanges(){
 
 //REMOVE APIKEY FUNCTIONS
 function callAjaxTP_delete(){
-	var api_key_value = jQuery("#api_key").val();
-	var group_id_value = jQuery("#group_id").val();
-
 	var post_data = {
-        action: 'TP_delete_apikey',
-        api_key: api_key_value,
-        group_id_TP: group_id_value
+        action: 'TP_delete_apikey'
     };
 
     var timeout_val = 3600*1000;
@@ -454,7 +449,7 @@ function callAjax_create_custom_trackinglink(redirection_flag){
 //CREATE CONVERSION FUNCTIONS
 function callAjax_create_conversion(){
 	var post_data = {
-        action: 'TP_create_conversion',
+        action: 'TP_create_conversion'
     };
 
 	var timeout_val = 3600*1000;
