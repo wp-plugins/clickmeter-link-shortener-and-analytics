@@ -4,7 +4,7 @@ Plugin Name: ClickMeter Link Shortener and Analytics
 Description: Customizable Link Shortener combined with Powerful Real-Time Analytics. Create short tracking links and track everything about your visitors.
 Plugin URI: http://support.clickmeter.com/forums/21156669-WordPress-plugin
 Author: ClickMeter
-Version: 1.1.0
+Version: 1.2.0
 */
 /*  Copyright 2014  ClickMeter 
 
@@ -24,9 +24,9 @@ Version: 1.1.0
 
 require_once( plugin_dir_path( __FILE__ ) . 'clickmeter_views.class.php');
 
-//register_uninstall_hook(plugin_dir_path( __FILE__ ) . 'uninstall.php', "clickmeter_uninstall_plugin");
-
 error_reporting(E_ERROR | E_PARSE); // skip error reporting
+
+set_time_limit(3600); //Set the number of seconds a script is allowed to run.
 
 function wpclickmeter_init() {
 	WPClickmeter::on_load(); 
@@ -39,7 +39,11 @@ class WPClickmeter {
 		$version = get_option('clickmeter_plugin_version');
 		if($version == "1.0.0" || $version == null){
 			WPClickmeter::checkCampaigns(); //SCRIPT TO MOVE FROM v.1.0.0 TO v.1.1.0
-			update_option('clickmeter_plugin_version', "1.1.0");
+			$version = "1.1.0";
+			update_option('clickmeter_plugin_version', $version);
+		}
+		if($version == "1.1.0"){
+			update_option('clickmeter_plugin_version', "1.2.0");
 		}
 		
 		add_action('admin_enqueue_scripts', array(__CLASS__, 'javascriptAndCss_init'));
@@ -54,6 +58,7 @@ class WPClickmeter {
 			add_action( 'add_meta_boxes', array(__CLASS__, 'clickmeter_add_meta_box' ), 10 , 2);
 			add_action( 'save_post', array(__CLASS__, 'clickmeter_save_meta_box_data' ));
 			add_action( 'edit_post', array(__CLASS__, 'clickmeter_edit_meta_box_data' ));
+			add_filter( 'plugin_action_links_'.plugin_basename( plugin_dir_path( __FILE__ ) . 'clickmeter.php'), array(__CLASS__, 'add_uninstall_link') );
 			add_action( 'delete_post', array(__CLASS__, 'clickmeter_delete_post' ));
 			//ADD COLUMN TO POSTS PAGE
 			//add_filter('manage_posts_columns',  array(__CLASS__, 'clickmeter_column'));
@@ -117,6 +122,15 @@ class WPClickmeter {
 		}
 
 
+	}
+
+	static function add_uninstall_link($links) {
+  		$uninstall_link = '<a onclick="return confirm(\'ATTENTION!!! Removing API key will cause deletion of all data saved in your WordPress blog about ClickMeter’s plugin, and your posts will no more be tracked. Furthermore, tracking links created with WordPress domain will stop working. Continue?\')" title="" style="" href="'.esc_url(add_query_arg(array('page' => 'clickmeter-link-shortener-and-analytics/view/clickmeter-loading_tracking_pixels_ops.php&API_key_delete=true'), admin_url('admin.php'))).'">Remove plugin data</a>';
+  		array_unshift( $links, $uninstall_link ); 
+  		if ((array_key_exists("deactivate", $links))) {
+		    unset($links["deactivate"]);
+		}
+  		return $links;		
 	}
 
 	static function clickmeter_column($columns) {
@@ -288,7 +302,12 @@ class WPClickmeter {
 	}
 
 	static function javascriptAndCss_init() {
-		wp_enqueue_script( 'clickmeter_js', plugins_url( '/js/clickmeter.js', __FILE__ ), array('jquery') );	
+		wp_enqueue_script( 'clickmeter_js', plugins_url( '/js/clickmeter.js', __FILE__ ), array('jquery') );
+		wp_enqueue_script (  'cm-modal' ,       // handle
+                        plugins_url( '/js/cm-dialog.js', __FILE__ )  ,       // source
+                        array('jquery-ui-dialog')); // dependencies
+    	// A style available in WP               
+    	wp_enqueue_style ('wp-jquery-ui-dialog');
 		wp_enqueue_style( 'clickmeter_css', plugins_url( '/css/clickmeter_plugin_style.css', __FILE__ ), array('dashicons'), '1.0');
 	}
 
@@ -327,22 +346,31 @@ class WPClickmeter {
 		$group_id_TP = WPClickmeter::get_option('clickmeter_TPcampaign_id');
 		$group_id_TL = WPClickmeter::get_option('clickmeter_TLcampaign_id');
 		$group_id_404_reports = WPClickmeter::get_option('clickmeter_404_reports_campaign_id');
-		
-		add_menu_page( 'ClickMeter | Account Info', 'ClickMeter', $role, 'clickmeter-link-shortener-and-analytics/view/clickmeter-account.php', '','dashicons-chart-bar');
-		add_submenu_page( 'clickmeter-link-shortener-and-analytics/view/clickmeter-account.php', 'ClickMeter | Settings', 'Settings', $role, 'clickmeter-link-shortener-and-analytics/view/clickmeter-account.php'); 
 
-		$submenu['clickmeter-link-shortener-and-analytics/view/clickmeter-account.php'][] = array('<div class="openInNewWindow">Visits Report</div>', $role,'http://mybeta.clickmeter.com/go?val='.$boGoVal.'&returnUrl=%2Fpixels%23campaignId%3D'.$group_id_TP.'%26rows%3D100%26lastMonth');
-		$submenu['clickmeter-link-shortener-and-analytics/view/clickmeter-account.php'][] = array('<div class="openInNewWindow">Visitors Stream</div>', $role,'http://mybeta.clickmeter.com/go?val='.$boGoVal.'&returnUrl=%2FClickStream%23campaign%3D'.$group_id_TP.'%2660sec');
-		$submenu['clickmeter-link-shortener-and-analytics/view/clickmeter-account.php'][] = array('<div class="openInNewWindow">World Stream</div>', $role,'http://mybeta.clickmeter.com/go?val='.$boGoVal.'&returnUrl=%2Fworldstream%23campaign%3D'.$group_id_TP.'%2660sec');
-		//$submenu['clickmeter-link-shortener-and-analytics/view/clickmeter-account.php'][] = array('<div class="openInNewWindow">List of Tracking Links</div>', $role,'http://mybeta.clickmeter.com/go?val='.$boGoVal.'&returnUrl=%2FLinks%23campaignId%3D'.$group_id_TL.'%26rows%3D10%2614days');
-		add_submenu_page( 'clickmeter-link-shortener-and-analytics/view/clickmeter-account.php', 'ClickMeter | List of Tracking Links', 'List of Tracking Links', $role, 'clickmeter-link-shortener-and-analytics/view/clickmeter-list_tracking_links.php');
-		add_submenu_page( 'clickmeter-link-shortener-and-analytics/view/clickmeter-account.php', 'ClickMeter | New Tracking Link', 'New Tracking Link', $role, 'clickmeter-link-shortener-and-analytics/view/clickmeter-new_tracking_link.php'); 
-		//$submenu['clickmeter-link-shortener-and-analytics/view/clickmeter-account.php'][] = array('<div class="openInNewWindow">New Tracking Link</div>', $role,'http://mybeta.clickmeter.com/go?val='.$boGoVal.'&returnUrl=%2Flinks%2Fnew');
-		$submenu['clickmeter-link-shortener-and-analytics/view/clickmeter-account.php'][] = array('<div class="openInNewWindow">404 Report</div>', $role,'http://mybeta.clickmeter.com/go?val='.$boGoVal.'&returnUrl=%2FLinks%23campaignId%3D'.$group_id_404_reports.'%26rows%3D100%26last90');
-		$submenu['clickmeter-link-shortener-and-analytics/view/clickmeter-account.php'][] = array('<div class="openInNewWindow">Support</div>', $role,'http://support.clickmeter.com/forums/21156669-WordPress-plugin');
+		$workinprogress_flag = WPClickmeter::get_option("clickmeter_workinprogress_flag");
+		if($workinprogress_flag == "inprogress" || $workinprogress_flag == "error"){
+			add_menu_page( 'ClickMeter | Settings', 'ClickMeter', $role, 'clickmeter-link-shortener-and-analytics/view/clickmeter-loading_tracking_pixels_ops.php', '','dashicons-chart-bar');
+			add_submenu_page( 'clickmeter-link-shortener-and-analytics/view/clickmeter-loading_tracking_pixels_ops.php', 'ClickMeter | Settings', 'Settings', $role, 'clickmeter-link-shortener-and-analytics/view/clickmeter-loading_tracking_pixels_ops.php'); 
+			$submenu['clickmeter-link-shortener-and-analytics/view/clickmeter-loading_tracking_pixels_ops.php'][] = array('<div class="openInNewWindow">Support</div>', $role,'http://support.clickmeter.com/forums/21156669-WordPress-plugin');
+		}else{
+			add_menu_page( 'ClickMeter | Settings', 'ClickMeter', $role, 'clickmeter-link-shortener-and-analytics/view/clickmeter-account.php', '','dashicons-chart-bar');
+			add_submenu_page( 'clickmeter-link-shortener-and-analytics/view/clickmeter-account.php', 'ClickMeter | Settings', 'Settings', $role, 'clickmeter-link-shortener-and-analytics/view/clickmeter-account.php'); 
 
-		//Page for tests
-		//add_submenu_page( 'clickmeter-link-shortener-and-analytics/view/clickmeter-account.php', 'ClickMeter | TEST', 'Test page', $role, 'clickmeter-link-shortener-and-analytics/view/clickmeter-test.php'); 
+			$submenu['clickmeter-link-shortener-and-analytics/view/clickmeter-account.php'][] = array('<div class="openInNewWindow">Support</div>', $role,'http://support.clickmeter.com/forums/21156669-WordPress-plugin');
+			$submenu['clickmeter-link-shortener-and-analytics/view/clickmeter-account.php'][] = array('<div class="openInNewWindow">Visits Report</div>', $role,'http://mybeta.clickmeter.com/go?val='.$boGoVal.'&returnUrl=%2Fpixels%23campaignId%3D'.$group_id_TP.'%26rows%3D100%26lastMonth');
+			$submenu['clickmeter-link-shortener-and-analytics/view/clickmeter-account.php'][] = array('<div class="openInNewWindow">Visitors Stream</div>', $role,'http://mybeta.clickmeter.com/go?val='.$boGoVal.'&returnUrl=%2FClickStream%23campaign%3D'.$group_id_TP.'%2660sec');
+			$submenu['clickmeter-link-shortener-and-analytics/view/clickmeter-account.php'][] = array('<div class="openInNewWindow">World Stream</div>', $role,'http://mybeta.clickmeter.com/go?val='.$boGoVal.'&returnUrl=%2Fworldstream%23campaign%3D'.$group_id_TP.'%2660sec');
+			//$submenu['clickmeter-link-shortener-and-analytics/view/clickmeter-account.php'][] = array('<div class="openInNewWindow">List of Tracking Links</div>', $role,'http://mybeta.clickmeter.com/go?val='.$boGoVal.'&returnUrl=%2FLinks%23campaignId%3D'.$group_id_TL.'%26rows%3D10%2614days');
+			add_submenu_page( 'clickmeter-link-shortener-and-analytics/view/clickmeter-account.php', 'ClickMeter | List of Tracking Links', 'List of Tracking Links', $role, 'clickmeter-link-shortener-and-analytics/view/clickmeter-list_tracking_links.php');
+			add_submenu_page( 'clickmeter-link-shortener-and-analytics/view/clickmeter-account.php', 'ClickMeter | New Tracking Link', 'New Tracking Link', $role, 'clickmeter-link-shortener-and-analytics/view/clickmeter-new_tracking_link.php'); 
+			//$submenu['clickmeter-link-shortener-and-analytics/view/clickmeter-account.php'][] = array('<div class="openInNewWindow">New Tracking Link</div>', $role,'http://mybeta.clickmeter.com/go?val='.$boGoVal.'&returnUrl=%2Flinks%2Fnew');
+			$submenu['clickmeter-link-shortener-and-analytics/view/clickmeter-account.php'][] = array('<div class="openInNewWindow">404 Report</div>', $role,'http://mybeta.clickmeter.com/go?val='.$boGoVal.'&returnUrl=%2FLinks%23campaignId%3D'.$group_id_404_reports.'%26rows%3D100%26last90');
+			add_submenu_page( 'clickmeter-link-shortener-and-analytics/view/clickmeter-account.php', 'ClickMeter | Loader', '<div style="display:none" class="cm_hidden">Loading page</div>', $role, 'clickmeter-link-shortener-and-analytics/view/clickmeter-loading_tracking_pixels_ops.php'); 
+	
+			//Page for tests
+			//add_submenu_page( 'clickmeter-link-shortener-and-analytics/view/clickmeter-account.php', 'ClickMeter | TEST2', 'Test page 2', $role, 'clickmeter-link-shortener-and-analytics/view/clickmeter-test.php'); 
+		}
+	
 	}
 
 
@@ -548,22 +576,22 @@ class WPClickmeter {
 	
 		//get information about this post's tracking link if exist
 		$link_data = WPClickmeter::get_link($post_id);
-		if($link_data!=null) $tracking_link_id = $link_data[tracking_link_id];
+		if($link_data!=null) $tracking_link_id = $link_data['tracking_link_id'];
 
 		//get information about this post's tracking pixel if exist
 		$pixel_data = WPClickmeter::get_pixel($post_id);
-		if($pixel_data!=null) $tracking_pixel_id = $pixel_data[pixel_id];
+		if($pixel_data!=null) $tracking_pixel_id = $pixel_data['pixel_id'];
 
 		//WPClickmeter::store_option("clickmeter_debug_delete_tl", $tracking_link_id);
 		//WPClickmeter::store_option("clickmeter_debug_delete_tp", $tracking_pixel_id);
 
 		//DELETE ELEMENT FROM CLICKMETER
-		if($tracking_link_id!=null){
-			$json_output = WPClickmeter::api_request('http://apiv2.clickmeter.com/datapoints/'.$tracking_link_id, 'DELETE', NULL, $api_key);	
-		}
-		if($tracking_pixel_id!=null){
-			$json_output = WPClickmeter::api_request('http://apiv2.clickmeter.com/datapoints/'.$tracking_pixel_id, 'DELETE', NULL, $api_key);	
-		}
+		// if($tracking_link_id!=null){
+		// 	$json_output = WPClickmeter::api_request('http://apiv2.clickmeter.com/datapoints/'.$tracking_link_id, 'DELETE', NULL, $api_key);	
+		// }
+		// if($tracking_pixel_id!=null){
+		// 	$json_output = WPClickmeter::api_request('http://apiv2.clickmeter.com/datapoints/'.$tracking_pixel_id, 'DELETE', NULL, $api_key);	
+		// }
 		
 		WPClickmeter::delete_pixel($post_id);
 		WPClickmeter::delete_link($post_id);
@@ -902,6 +930,14 @@ class WPClickmeter {
 		$result = $wpdb->get_row("SELECT * FROM $table_name WHERE post_id = '$post_id'", ARRAY_A);
 		return $result;
 	}
+
+	static function get_pixel_count(){
+		global $wpdb;
+		$table_name = $wpdb->prefix . 'clickmeter_tracking_pixels';
+		$result = $wpdb->get_var("SELECT COUNT(*) FROM $table_name");
+		return $result;
+	}
+
 
 	static function delete_pixel($post_id){
 		global $wpdb;
@@ -1389,25 +1425,19 @@ function ajax_create_batch_tl() {
 add_action( 'wp_ajax_create_batch_tl', 'ajax_create_batch_tl' );
 
 function TP_savechanges() {
-	set_time_limit(3600); //Set the number of seconds a script is allowed to run.
 	global $wpdb; // this is how you get access to the database
 
 	$api_key=WPClickmeter::get_option('clickmeter_api_key');
 	$group_id_TP = WPClickmeter::get_option('clickmeter_TPcampaign_id');
 
 	//WPClickmeter::store_option("clickmeter_debug_pixellist", $pixels_list);
-	
-	$args = array(
-	'posts_per_page' => -1,
-	'post_type' => array('post', 'page'),
-	'post_status' => array('publish', 'private', 'future'),
-	'orderby' => 'title',
-	'order' => 'ASC'
-	);
-	$posts_array = get_posts( $args );
 
-	$exclusion_list = WPClickmeter::get_option("clickmeter_exclusion_list");
-	$inclusion_list = WPClickmeter::get_option("clickmeter_inclusion_list");
+	// $exclusion_list = WPClickmeter::get_option("clickmeter_exclusion_list");
+	// $inclusion_list = WPClickmeter::get_option("clickmeter_inclusion_list");
+	$exclusion_list = $_POST["exclusion_list"];
+	//WPClickmeter::store_option("debug_exclusion", $exclusion_list);
+	$inclusion_list = $_POST["inclusion_list"];
+	//WPClickmeter::store_option("debug_inclusion", $inclusion_list);
 	$pixels_flag = WPClickmeter::get_option("clickmeter_pixel_flag");
 
 	if($pixels_flag==1){
@@ -1510,14 +1540,14 @@ function TP_savechanges() {
 		            $conversion_target1 = WPClickmeter::get_option("clickmeter_conversionTarget1");
 					$conversion_target2 = WPClickmeter::get_option("clickmeter_conversionTarget2");
 					if($conversion1_id != null){
-						if(in_array($post_type, $conversion_target1)) $body["firstConversionId"] = $conversion1_id;
+						if(in_array($post_type, $conversion_target1)) $track_pix["firstConversionId"] = $conversion1_id;
 					}
 					if($conversion2_id != null){
 						if(in_array($post_type, $conversion_target2)){
-							if($body["firstConversionId"] == null){
-								$body["firstConversionId"] = $conversion2_id;
+							if($track_pix["firstConversionId"] == null){
+								$track_pix["firstConversionId"] = $conversion2_id;
 							}else{
-								$body["secondConversionId"] = $conversion2_id;
+								$track_pix["secondConversionId"] = $conversion2_id;
 							}
 						}
 					}
@@ -1657,49 +1687,55 @@ function TP_savechanges() {
 	}
 
 	if($pixels_flag==0){
-		$exclusion_list = WPClickmeter::get_option("clickmeter_exclusion_list");
-
-		foreach ($posts_array as $post) {
-			$post_id = $post->ID;
-            //Look for already existent pixels in clickmeter for actual campaign with the same title of the post
-                //if exist -> take it
-			$doc = new DOMDocument();
-			if(!empty($post->post_content)){
-				$remove = array();
-				$doc->loadHTML(mb_convert_encoding($post->post_content, 'HTML-ENTITIES', 'UTF-8'));
-				$doc->encoding = 'UTF-8';
-				$divTags = $doc->getElementsByTagName('div');
-				//echo $pixel_name . "<br>";
-				foreach ($divTags as $div) {
-                    if(preg_match("/clkmtr_tracking_pixel/",$div->attributes->getNamedItem('id')->nodeValue)){
-                        $remove[] = $div;
-                    }
-				}
-				foreach ($remove as $item){
-					$item->parentNode->removeChild($item); 
-				}
-				$new_content = preg_replace(array("/^\<\!DOCTYPE.*?<html><body>/si","!</body></html>$!si"),"",$doc->saveHTML());
-				$modified_post = array(
-				'ID'           => $post->ID,
-				'post_content' => $new_content
-				);
-				wp_update_post( $modified_post );
-				//echo "pixel rimosso true, dentro ".$post->post_title."<br>";
+		//header('HTTP/1.0 403 Forbidden');
+		//for each post into exclusion list
+		if(!empty($exclusion_list)){
+			foreach ($exclusion_list as $post_id) {
+				$post = get_post($post_id);
+				$pixel_data = WPClickmeter::get_pixel($post_id);
+                //Look for already existent pixels in clickmeter for actual campaign with the same title of the post
+           		if($pixel_data!=null){
+                    //if exist -> take it
+                    $pixel_name = $pixel_data[pixel_name];
+					//delete tracking pixel into post by tracking code
+					$doc = new DOMDocument();
+					if(!empty($post->post_content)){
+						$remove = array();
+						//WPClickmeter::store_option("clickmeter_debug_content", $post->post_content);
+						$doc->loadHTML(mb_convert_encoding($post->post_content, 'HTML-ENTITIES', 'UTF-8'));
+						//WPClickmeter::store_option("clickmeter_debug_content", $doc->saveHTML());
+						$doc->encoding = 'UTF-8';
+						$divTags = $doc->getElementsByTagName('div');
+						//echo $pixel_name . "<br>";
+						foreach ($divTags as $div) {
+			                if(preg_match("/clkmtr_tracking_pixel/",$div->attributes->getNamedItem('id')->nodeValue)){
+			                    $remove[] = $div;
+			                }
+						}
+						foreach ($remove as $item){
+							$item->parentNode->removeChild($item); 
+						}
+						$new_content = preg_replace(array("/^\<\!DOCTYPE.*?<html><body>/si","!</body></html>$!si"),"",$doc->saveHTML());
+						$modified_post = array(
+						'ID'           => $post->ID,
+						'post_content' => $new_content
+						);
+						wp_update_post( $modified_post );
+						//echo "pixel rimosso true, dentro ".$post->post_title."<br>";
+					}
+					//check if exists on ClickMeter
+					$tracking_pixel_id = $pixel_data[pixel_id];
+					$this_post_pixel = WPClickmeter::api_request('http://apiv2.clickmeter.com/datapoints/'.$tracking_pixel_id,'GET', null, $api_key);
+					if($this_post_pixel[errors]!=null || $this_post_pixel[status]==3){
+						WPClickmeter::delete_pixel($post_id);
+					} 
+                }
 			}
-			//check if exists on ClickMeter
-			$pixel_data = WPClickmeter::get_pixel($post_id);
-			$tracking_pixel_id = $pixel_data[pixel_id];
-			$this_post_pixel = WPClickmeter::api_request('http://apiv2.clickmeter.com/datapoints/'.$tracking_pixel_id,'GET', null, $api_key);
-			if($this_post_pixel[errors]!=null || $this_post_pixel[status]==3){
-				WPClickmeter::delete_pixel($post_id);
-			}
-			$exclusion_list[] = $post->ID;
 		}
-		WPClickmeter::store_option( 'clickmeter_exclusion_list', $exclusion_list);
 	}
  
- 	WPClickmeter::store_option("clickmeter_workinprogress_flag", "false");
- 	echo "Execution terminated ok";
+ 	//WPClickmeter::store_option("clickmeter_workinprogress_flag", "false");
+ 	//echo "Execution terminated ok";
 	die(); // this is required to return a proper result
 }
 add_action( 'wp_ajax_TP_savechanges', 'TP_savechanges' );
@@ -1726,106 +1762,7 @@ function TP_init_creation() {
 
 	$api_key=WPClickmeter::get_option('clickmeter_api_key');
 	$group_id_TP = WPClickmeter::get_option('clickmeter_TPcampaign_id');
-	$pixels_list = array();
-	$offset = 0;
-	$json_output = WPClickmeter::api_request('http://apiv2.clickmeter.com/groups/'.$group_id_TP.'/datapoints?offset=0&limit=100&type=TP&status=active&_expand=true', 'GET', NULL, $api_key);
-	while(!empty($json_output[entities])){
-		foreach ($json_output[entities] as $pixel) {
-			$pixels_list[] = $pixel;	
-		}
-		$offset += 100;
-		$json_output = WPClickmeter::api_request('http://apiv2.clickmeter.com/groups/'.$group_id_TP.'/datapoints?offset='.$offset.'&limit=100&type=TP&status=active&_expand=true', 'GET', NULL, $api_key);
-	}
-
-	$args = array(
-	'posts_per_page' => -1,
-	'post_type' => array('post', 'page'),
-	'post_status' => array('publish', 'private', 'future'),
-	'orderby' => 'title',
-	'order' => 'ASC'
-	);
-	$posts_array = get_posts( $args );
-
-	$inclusion_list = array();
-	foreach ($posts_array as $page) {
-		$inclusion_list[] = $page->ID;
-	}
-
-    $toCreateList = array();
-    //for each post into inclusion list
-    if(!empty($inclusion_list)){
-        foreach ($inclusion_list as $post_id) {
-            //echo "trovata pagina nella inclusion list ".$post_id." <br>";
-            $tracking_pixel = null;
-            $post = get_post($post_id);
-            $post_title = $post->post_title;
-            if(!empty($pixels_list)){
-                //Look for already existent pixels in clickmeter for actual campaign with the same title of the post
-                foreach ($pixels_list as $pixel) {
-                    //if exist -> take it
-                    if(strcasecmp($pixel[title],$post_title)==0){
-                        //echo "esiste un pixel con quel titolo su clickmeter <br>";
-                        $pixel_id = $pixel[id];
-                        $pixel_name = $pixel[name];
-                        $json_output = WPClickmeter::api_request('http://apiv2.clickmeter.com/datapoints/'.$pixel_id, 'GET', NULL, $api_key);
-                        $trackingCode = $json_output[trackingCode];
-                        $timestamp = $json_output[creationDate];
-                        //$tracking_pixel = "<img height='0' width='0' alt='' src='".$trackingCode."' />";
-                        $tracking_pixel ="<div id='clkmtr_tracking_pixel'>
-                        	<!--ClickMeter.com WordPress tracking: ".$post_title." -->
-                            <script type='text/javascript'>
-                            var ClickMeter_pixel_url = '".$trackingCode."';
-                            </script>
-                            <script type='text/javascript' id='cmpixelscript' src='https://www.clickmeter.com/js/pixel.js'></script>
-                            <noscript>
-                            <img height='0' width='0' alt='' src='".$trackingCode."' />
-                            </noscript>
-                        </div>";
-
-						$post_type = $post->post_type;
-                        WPClickmeter::store_pixel($post_id, $pixel_id, $pixel_name, $trackingCode, $group_id_TP, $post_type, $timestamp);
-
-                        //add tracking pixel to post
-	                    $already_tracked = false;
-	                    $doc = new DOMDocument();
-	                    //check if a pixel is already inside the post..
-	                    if(!empty($post->post_content)){
-	                        //echo "controllo se la pagina non è già tracciata <br>";
-	                        $doc->loadHTML(mb_convert_encoding($post->post_content, 'HTML-ENTITIES', 'UTF-8'));
-	                        $doc->encoding = 'UTF-8';
-	                        $divTags = $doc->getElementsByTagName('div');
-	                        foreach ($divTags as $div) {
-	                            if(preg_match("/".$pixel_name."/",$div->nodeValue)){
-	                                //echo "pagina già tracciata <br>";
-	                                $already_tracked = true;
-	                            }
-	                        }
-	                    }
-	                    //if not, add the tracking pixel to the post
-	                    if(!$already_tracked){
-	                        //echo "pagina non tracciata <br>";
-	                        if(empty($post->post_content)){
-	                            $new_content =  $tracking_pixel;    
-	                        }else{
-	                            $new_content = $post->post_content . $tracking_pixel;   
-	                        }
-	                        $modified_post = array(
-	                        'ID'           => $post->ID,
-	                        'post_content' => $new_content
-	                        );
-	                        wp_update_post( $modified_post );
-	                        //echo "tracking pixel incluso nella pagina ".$post->ID;
-	                    } 
-                    }
-                }
-            }
-
-            //if not exist -> add post_id to create list
-            if($tracking_pixel == null){
-                $toCreateList[] = $post_id;
-            }
-        }
-    }
+	$toCreateList = $_POST["inclusion_list"];
 
     //Create new tracking pixels in batch mode
     if(!empty($toCreateList)){
@@ -1850,14 +1787,14 @@ function TP_init_creation() {
 	            $conversion_target1 = WPClickmeter::get_option("clickmeter_conversionTarget1");
 				$conversion_target2 = WPClickmeter::get_option("clickmeter_conversionTarget2");
 				if($conversion1_id != null){
-					if(in_array($post_type, $conversion_target1)) $body["firstConversionId"] = $conversion1_id;
+					if(in_array($post_type, $conversion_target1)) $track_pix["firstConversionId"] = $conversion1_id;
 				}
 				if($conversion2_id != null){
 					if(in_array($post_type, $conversion_target2)){
-						if($body["firstConversionId"] == null){
-							$body["firstConversionId"] = $conversion2_id;
+						if($track_pix["firstConversionId"] == null){
+							$track_pix["firstConversionId"] = $conversion2_id;
 						}else{
-							$body["secondConversionId"] = $conversion2_id;
+							$track_pix["secondConversionId"] = $conversion2_id;
 						}
 					}
 				}
@@ -1947,21 +1884,15 @@ function TP_init_creation() {
 		$json_output = WPClickmeter::api_request('http://apiv2.clickmeter.com/tags','POST', json_encode($tag_body), $api_key);
     }
 
-    WPClickmeter::store_option("clickmeter_workinprogress_flag", "false");
+    //WPClickmeter::store_option("clickmeter_workinprogress_flag", "false");
 	die(); // this is required to return a proper result
 }
 add_action( 'wp_ajax_TP_init_creation', 'TP_init_creation' );
 
 function TP_delete_apikey() {
-
-  	$args = array(
-	'posts_per_page' => -1,
-	'post_type' => array('post', 'page'),
-	'post_status' => array('publish', 'private', 'future'),
-	'orderby' => 'title',
-	'order' => 'ASC'
-	);
-	$posts_array = get_posts( $args );
+	$api_key=WPClickmeter::get_option('clickmeter_api_key');
+	$posts_array = WPClickmeter::get_option("clickmeter_current_exclusion_list");
+	$body = array();
 
 	//delete all tracking pixel from pages
 	foreach ($posts_array as $post) {
@@ -1988,118 +1919,30 @@ function TP_delete_apikey() {
 			wp_update_post( $modified_post );
 			//echo "pixel rimosso true, dentro ".$post->post_title."<br>";
 		}
-	}
- 
-	global $wpdb;
-	$options_table = $wpdb->prefix . 'clickmeter_options';
-	//$wpdb->query("TRUNCATE TABLE $options_table");
-	$wpdb->query( "TRUNCATE TABLE $options_table" );
-	$pixel_table_name = $wpdb->prefix . 'clickmeter_tracking_pixels';
-	$wpdb->query( "TRUNCATE TABLE $pixel_table_name" );
-	$link_table_name = $wpdb->prefix . 'clickmeter_tracking_links';
-	$wpdb->query( "TRUNCATE TABLE $link_table_name" );
 
-  die(); // this is required to return a proper result
+		//delete tracking pixel from clickmeter
+		// $pixel_data = WPClickmeter::get_pixel($post->ID);
+		// if($pixel_data != null) $tracking_pixel_id = $pixel_data[pixel_id];
+		// if($tracking_pixel_id != null) $track_pix = array('id'=>$tracking_pixel_id);
+		// $body["entities"][] = $track_pix;
+	}
+
+	//$json_output = WPClickmeter::api_request('http://apiv2.clickmeter.com/datapoints/batch','DELETE', json_encode($body), $api_key);
+
+  	die(); // this is required to return a proper result
 }
 add_action( 'wp_ajax_TP_delete_apikey', 'TP_delete_apikey' );
 
-function TP_create_conversion() {
-	set_time_limit(3600); //Set the number of seconds a script is allowed to run.
-	global $wpdb; // this is how you get access to the database
-
-	//get the list of tracking pixels from clickmeter's APIs
-	$api_key=WPClickmeter::get_option('clickmeter_api_key');
-	$group_id_TP = WPClickmeter::get_option('clickmeter_TPcampaign_id');
-	$conversion_type = WPClickmeter::get_option('clickmeter_lastconversion_type');
-	$conversion_target = WPClickmeter::get_option('clickmeter_lastconversion_target');
-
-	$conversion1_id = WPClickmeter::get_option('clickmeter_conversionId1');
-	$conversion2_id = WPClickmeter::get_option('clickmeter_conversionId2');
-	
-	//CREATE CONVERSION CODE
-	$blog_name = get_site_url();
-	$blog_name = substr($blog_name,7);
-	$body=array('description'=>'Conversion code created from my ClickMeter WP plugin - '.date("Y/m/d"),'name'=> $blog_name.'-'.$conversion_type );
-	$json_output = WPClickmeter::api_request('http://apiv2.clickmeter.com/conversions','POST', json_encode($body), $api_key);
-	$conversionId = $json_output[id];
-	$json_output = WPClickmeter::api_request('http://apiv2.clickmeter.com/conversions/'.$conversionId, 'GET', NULL, $api_key);
-	$conversion_name = $json_output[name];
-
-	if($conversion1_id!=null){
-		WPClickmeter::store_option("clickmeter_conversionId2", $conversionId);
-		WPClickmeter::store_option("clickmeter_conversionName2", $conversion_name);
-		WPClickmeter::store_option("clickmeter_conversionTarget2", $conversion_target);
-	}
-	else{
-		WPClickmeter::store_option("clickmeter_conversionId1", $conversionId);
-		WPClickmeter::store_option("clickmeter_conversionName1", $conversion_name);
-		WPClickmeter::store_option("clickmeter_conversionTarget1", $conversion_target);
-	}
-
-  	$args = array(
-	'posts_per_page' => -1,
-	'post_type' => array('post', 'page'),
-	'post_status' => array('publish', 'private', 'future'),
-	'orderby' => 'title',
-	'order' => 'ASC'
-	);
-	$posts_array = get_posts( $args );
-	foreach ($posts_array as $post) {
-		$post_id = $post->ID;
-		$pixel_data = WPClickmeter::get_pixel($post_id);
-	    //Look for already existent pixels in clickmeter for actual campaign with the same title of the post
-		if($pixel_data!=null){
-			$pixel_id = $pixel_data[pixel_id];
-			$pixel_tag = $pixel_data[tag];
-			if(in_array($pixel_tag, $conversion_target)){
-				$body=array('action'=>'add','id'=>$pixel_id );
-				$json_output = WPClickmeter::api_request('http://apiv2.clickmeter.com/conversions/'.$conversionId.'/datapoints/patch','PUT', json_encode($body), $api_key);	
-			}
-		}
-	}
-
-	WPClickmeter::store_option("clickmeter_workinprogress_flag", "false");
- 	die(); // this is required to return a proper result
-}
-add_action( 'wp_ajax_TP_create_conversion', 'TP_create_conversion' );
-
 function TP_associate_conversion() {
-	set_time_limit(3600); //Set the number of seconds a script is allowed to run.
 	global $wpdb; // this is how you get access to the database
 
 	//get the list of tracking pixels from clickmeter's APIs
 	$api_key=WPClickmeter::get_option('clickmeter_api_key');
-	$group_id_TP = WPClickmeter::get_option('clickmeter_TPcampaign_id');
 	$conversionToAssociate = $_POST["conversion_id"];
 	$conversion_target = WPClickmeter::get_option('clickmeter_lastconversion_target');
-
-	$conversion1_id = WPClickmeter::get_option('clickmeter_conversionId1');
-
-	//GET CONV DATA
-	$json_output = WPClickmeter::api_request('http://apiv2.clickmeter.com/conversions/'.$conversionToAssociate, 'GET', NULL, $api_key);
-	$conversion_name = $json_output[name];
-
-	if($conversion1_id!=null){
-		WPClickmeter::store_option("clickmeter_conversionId2", $conversionToAssociate);
-		WPClickmeter::store_option("clickmeter_conversionName2", $conversion_name);
-		WPClickmeter::store_option("clickmeter_conversionTarget2", $conversion_target);
-	}
-	else{
-		WPClickmeter::store_option("clickmeter_conversionId1", $conversionToAssociate);
-		WPClickmeter::store_option("clickmeter_conversionName1", $conversion_name);
-		WPClickmeter::store_option("clickmeter_conversionTarget1", $conversion_target);
-	}
-
-  	$args = array(
-	'posts_per_page' => -1,
-	'post_type' => array('post', 'page'),
-	'post_status' => array('publish', 'private', 'future'),
-	'orderby' => 'title',
-	'order' => 'ASC'
-	);
-	$posts_array = get_posts( $args );
-	foreach ($posts_array as $post) {
-		$post_id = $post->ID;
+	$posts_array = $_POST["post_list"];
+	//WPClickmeter::store_option('clickmeter_debug', $posts_array);
+	foreach ($posts_array as $post_id) {
 		$pixel_data = WPClickmeter::get_pixel($post_id);
 	    //Look for already existent pixels in clickmeter for actual campaign with the same title of the post
 		if($pixel_data!=null){
@@ -2112,15 +1955,35 @@ function TP_associate_conversion() {
 		}
 	}
 
-	WPClickmeter::store_option("clickmeter_workinprogress_flag", "false");
+	//WPClickmeter::store_option("clickmeter_workinprogress_flag", "false");
  	die(); // this is required to return a proper result
 }
 add_action( 'wp_ajax_TP_associate_conversion', 'TP_associate_conversion' );
 
 
-function TP_delete_first_conversion() {
-	set_time_limit(3600); //Set the number of seconds a script is allowed to run.
+function TP_delete_conversion(){
+	global $wpdb; // this is how you get access to the database
 
+	$api_key=WPClickmeter::get_option('clickmeter_api_key');
+
+	$conversionToDelete = $_POST["conversion_id"];
+	$posts_array = $_POST["post_list"];
+	foreach ($posts_array as $post_id) {
+		$pixel_data = WPClickmeter::get_pixel($post_id);
+	    //Look for already existent pixels in clickmeter for actual campaign with the same title of the post
+		if($pixel_data!=null){
+			$pixel_id = $pixel_data[pixel_id];
+			$body=array('action'=>'remove','id'=>$pixel_id );
+			$json_output = WPClickmeter::api_request('http://apiv2.clickmeter.com/conversions/'.$conversionToDelete.'/datapoints/patch','PUT', json_encode($body), $api_key);
+		}
+	}
+
+	//WPClickmeter::store_option("clickmeter_workinprogress_flag", "false");
+	die(); // this is required to return a proper result
+}
+add_action( 'wp_ajax_TP_delete_conversion', 'TP_delete_conversion' );
+
+function TP_delete_first_conversion() {
 	global $wpdb; // this is how you get access to the database
 
 	//get the list of tracking pixels from clickmeter's APIs
@@ -2150,14 +2013,12 @@ function TP_delete_first_conversion() {
 		}
     }
 
-	WPClickmeter::store_option("clickmeter_workinprogress_flag", "false");
+	//WPClickmeter::store_option("clickmeter_workinprogress_flag", "false");
 	die(); // this is required to return a proper result
 }
 add_action( 'wp_ajax_TP_delete_first_conversion', 'TP_delete_first_conversion' );
 
 function TP_delete_second_conversion() {
-	set_time_limit(3600); //Set the number of seconds a script is allowed to run.
-
 	global $wpdb; // this is how you get access to the database
 
 	//get the list of tracking pixels from clickmeter's APIs
@@ -2187,7 +2048,7 @@ function TP_delete_second_conversion() {
 		}
     }
 
-	WPClickmeter::store_option("clickmeter_workinprogress_flag", "false");
+	//WPClickmeter::store_option("clickmeter_workinprogress_flag", "false");
 
 	die(); // this is required to return a proper result
 }
@@ -2304,4 +2165,5 @@ function clickmeter_install() {
 }
 
 register_activation_hook( __FILE__, 'clickmeter_install' );
+
 ?>

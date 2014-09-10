@@ -21,9 +21,11 @@ window.onload=function(){
 	});
 }
 
-function copyToClipboard() {
-	var text = jQuery("#created_tracking_link_code").text();
-	window.prompt("Copy to clipboard: Ctrl+C, Enter", text);
+function cm_select_text() {
+	jQuery(".cm_select").prev().select();
+}
+function copyToClipboard(){
+	jQuery("#cm_dialog").dialog({height: 160, width: 450 });
 }
 
 </script>
@@ -254,8 +256,11 @@ function copyToClipboard() {
 		</center>
 	</div>
 
-
-
+	<div id="cm_dialog" style="display:none" title="Copy to clipboard">
+		<p style="color:grey"><i>Select URL than type CTRL + C to copy</i></p>
+    	<input id="cm_copy_tl" style="width: 80%;" type="text" value=""/>
+    	<button type="button" class="cm_select" onclick="cm_select_text()">Select</button>
+	</div>
 	
 </body>
 </html>

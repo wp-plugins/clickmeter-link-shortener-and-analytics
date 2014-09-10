@@ -6,19 +6,20 @@ jQuery("input[name=post_title]").keyup(function() {
 	jQuery("#clickmeter_post_title").attr('value', title);
 });
 
+function cm_select_text() {
+	jQuery(".cm_select").prev().select();
+}
+function copyToClipboard(){
+	jQuery("#cm_dialog").dialog({height: 160, width: 450 });
+}
+
 function confirmation_box() {
 	var result = confirm("You are going to delete this tracking link. Continue?");
 	return result;
 }
 
-function copyToClipboard() {
-	var text = jQuery("#clickmeter_tracking_code").attr("href");
-	window.prompt("Copy to clipboard: Ctrl+C, Enter", text);
-}
-
-
-
 </script>
+
 <body>
 	<?php
 	$api_key=WPClickmeter::get_option('clickmeter_api_key');
@@ -113,6 +114,8 @@ function copyToClipboard() {
 
 	$boGoVal = WPClickmeter::get_option('clickmeter_backOffice_key');
 
+	//add_thickbox();
+
 	?>
 	
 <?php if ($post->post_status == "auto-draft") : //CREATE NEW POST BOX?>
@@ -154,8 +157,12 @@ function copyToClipboard() {
 		<a style="text-decoration:underline" title="Get QR code" target="_blank" href="http://<?php echo $tracking_link ?>.qr">QR</a> |
 		<input title="Copy to clipboard" type="button" class="link_button" value="Copy" onclick="copyToClipboard()"/> |
 		<a title="Send an email with this tracking link" target="blank" href="mailto:?subject=<?php echo $post_title; ?>&body=I’d like to share this article with you: http://<?php echo $tracking_link; ?>">Email</a>
-		
-	</form>
+	</form>	
+	<div id="cm_dialog" style="display:none" title="Copy to clipboard">
+		<p style="color:grey"><i>Select URL than type CTRL + C to copy</i></p>
+    	<input style="width: 80%;" type="text" value="<?php echo $tracking_link; ?>"/>
+    	<button type="button" class="cm_select" onclick="cm_select_text()">Select</button>
+	</div>
 	
 <?php else : //UPDATE POST BOX NO TRACKING LINK?>
 	<?php

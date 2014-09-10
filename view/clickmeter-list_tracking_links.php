@@ -1,11 +1,13 @@
 <html>
 <script type="text/javascript">
-
-function copyToClipboard(text) {
-	window.prompt("Copy to clipboard: Ctrl+C, Enter", text);
+function cm_select_text() {
+	jQuery(".cm_select").prev().select();
 }
-
+function copyToClipboard(tracking_link_id){
+	jQuery("#"+tracking_link_id+"_dialog").dialog({height: 160, width: 450 });
+}
 </script>
+
 <body>
 <?php
 	$api_key=WPClickmeter::get_option('clickmeter_api_key');
@@ -39,7 +41,6 @@ function copyToClipboard(text) {
 	for($start_index;$start_index<$end_index;$start_index++){
 		if($stored_links[$start_index]!=null) $current_page_links[] = $stored_links[$start_index];
 	}
-	add_thickbox();
 ?>
 	<hr>
 	<br>
@@ -117,8 +118,13 @@ function copyToClipboard(text) {
 							<a style="text-decoration:underline" title="Edit tracking link on ClickMeter" target="blank" href="http://mybeta.clickmeter.com/go?val='.$boGoVal.'&returnUrl=%2Flinks%2Fedit%2F'.$tracking_link_id.'">Edit</a> |
 							<a style="text-decoration:underline" title="View tracking link stats on ClickMeter " target="blank" href="http://mybeta.clickmeter.com/go?val='.$boGoVal.'&returnUrl=%2FLinks%3FlinkId%3D'.$tracking_link_id.'">Stats</a> |
 							<a style="text-decoration:underline" title="Get QR code" target="_blank" href="'.$alternative_url.'.qr">QR</a> |
-							<input title="Copy to clipboard" type="button" class="link_button" value="Copy" onclick="copyToClipboard(\''.$tracking_link.'\')"/>						
+							<input title="Copy to clipboard" type="button" class="link_button" value="Copy" onclick="copyToClipboard(\''.$tracking_link_id.'\')"/>
 						</form>
+						<div id="'.$tracking_link_id.'_dialog" style="display:none" title="Copy to clipboard">
+							<p style="color:grey"><i>Select URL than type CTRL + C to copy</i></p>
+						    <input style="width: 80%;" type="text" value="'.$tracking_link.'"/>
+						    <button type="button" class="cm_select" onclick="cm_select_text()">Select</button>
+						</div>
 					</td>
 					<td><a href="'.$dest_url.'" target="_blank">'.$dest_url.'</a></td>
 					<td>'.$tracking_link_campaign.'</td>

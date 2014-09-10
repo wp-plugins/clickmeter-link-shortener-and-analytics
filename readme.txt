@@ -1,9 +1,9 @@
 === Plugin Name ===
 Contributors: ClickMeter
-Tags: url shortener, link tracking, analytics, link monitor, link management, link tracker, tracking, stats, analytic, redirect, 301 redirect, short url, permalink, views, clicks, redirect,  shorturl, shortlink, shorten, click, clicks, track, mask, masking, cloak, cloaking, statistics, page, post, pages, posts, qr code, custom url, pageviews, online users, analyze, reports, spiders, tracker, monitor, world map, automation, admin, widget, plugin, marketing, agencies, affiliates, publishers, advertisers, wordpress, Google Analytics, GA, clickmeter, tinyurl, bit.ly, wp.me, wp.gl, 
+Tags: 301 redirect, admin, advertisers, affiliates, Agencies, analytic, analytics, analyze, automation, bitly, click, clickmeter, clicks, cloak, cloaking, custom url, ga, google analytics, link management, link monitor, link tracker, link tracking, marketing, mask, masking, monitor, online users, page, pages, pageviews, permalink, plugin, Post, posts, publishers, qr code, redirect, reports, short url, shorten, shortlink, shorturl, spiders, statistics, stats, tinyurl, track, tracker, tracking, url shortener, views, widget, wordpress, world map, wp.gl, wp.me.
 Requires at least: 3.5.0
-Tested up to: 3.9.1
-Stable tag: 1.1.0
+Tested up to: 4.0
+Stable tag: 1.2.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Donate link: http://clickmeter.com/pricing-signup
@@ -11,23 +11,23 @@ Donate link: http://clickmeter.com/pricing-signup
 Customizable Link Shortener combined with Powerful Real-Time Analytics. Create short tracking links and track everything about your visitors.
 
 == Description ==
-ClickMeter Link Shortener and Analytics‏ is dedicated to marketing Agencies, Affiliates, Publishers and Advertisers. This powerful all-in-one plugin allows you to immediately optimize your web-marketing actions:
+The ClickMeter Link Shortener and Analytics plugin‏ is dedicated to marketing Agencies, Affiliates, Publishers and Advertisers. This powerful all-in-one plugin allows you to immediately optimize your web-marketing actions:
 
 - <strong>Custom Domain link shortner</strong>:
-Short every link, inside and outside your WordPress site, using your own domain name (as opposed to using tinyurl.com, goo.gl, bit.ly, or any other link shortner service!). Using a dedicated domain, short url will increase your brand awareness, will show a short url than does not look spammy, will not be blacklisted. 
+Shorten every link inside and outside of your WordPress site using your own domain name (as opposed to using tinyurl.com, goo.gl, bit.ly, or any other link shortner service). Using a dedicated domain, short url’s will increase brand awareness, not look spammy and will not be blacklisted.
 
 - <strong>Advanced url redirect</strong>:
-Using the advanced redirection options you will be able to redirect users where they yield best conversion rates, will be able to protect your affiliate codes and create safe links for SEO.
+Using the advanced redirection options you will be able to redirect users where they yield the best conversion rates, be able to protect your affiliate codes and create safe links for SEO.
 
 - <strong>Actionable analytics</strong>:
-Understand which of your posts or pages is the most viewed, which leads the most valuable conversions and why. You will be able to see all results in one easy-to read page or drill-down to every single click or conversion. 
+Understand which posts or pages are the most viewed, which posts or pages lead to the most valuable conversions and why.  You have the ability to see all the results in one easy-to read report or if you prefer you can drill-down to view every single click or conversion.
 
 - <strong>Link Monitor</strong>:
-Discover broken links and redirect them to a custom page, detect click fraud activities, blacklisted landing pages and other wrong server activities.
+ Discover broken links and redirect them to a custom page, detect click fraud activities, blacklisted landing pages and other wrong server activities.
+ 
+Our WordPress plugin is a powerful and extremely scalable tool because it is based on ClickMeter Engines API and database clusters so it will not load your WP database and server. You will be able to create as many links and track as many posts and pages as you need.
 
-This Wordpress plugin is powerful and extremely scalable because it is based on ClickMeter Engines API and database clusters so it will not load your WP database and server. You will be able to create as many links and track as many posts and pages as you need. 
-
-To use this all-in-one plugin you need a [ClickMeter Account](http://clickmeter.com/pricing-signup). You can subscribe for free or choose a premium plan depending on how many events you need to track or short links you need to create. 
+To use this all-in-one plugin you need a [ClickMeter Account](http://clickmeter.com/pricing-signup). You can subscribe for free or choose a premium plan depending on how many events you need to track or short links you need to create.
 
 = Features =
 - Create <strong>short links</strong> using your own domain name
@@ -57,9 +57,11 @@ Every available update will be shown on the Dashboard Panel with an alert on the
 <h4>Uninstall plugin</h4>
 To uninstall ClickMeter Link Shortener and Analytics:
 <ol>
-<li> Go to Plugins screen.
-<li> Select the plugin.
-<li> Click Deactivate.
+<li> Click on “Remove API-Key” button in the main page of the plugin (Settings menù).</li>
+<li> Wait for the delete operation to complete.</li>
+<li> Go to plugins directory in the WordPress admin dashboard.</li>
+<li> Click on "deactivate" button to turn off the plugin.</li>
+<li> Click on "delete" button to complete the uninstall process.</li>
 </ol>
 <br><br>If you need more information about installing, updating or uninstalling plugins, take a look to the official [WordPress guide](http://codex.wordpress.org/Managing_Plugins).
 
@@ -82,10 +84,20 @@ First version release.
 
 = 1.1.0 =
 <ul>
-<li>Multiple WordPress blogs installation
-<li>Campaing names changed in "your_wordpress_blog_name".com-xxxxxx
-<li>New conversions management: select to associate conversion only to posts, pages or both of them
-<li>Added WordPress database cleaning after uninstalling
-<li>Added cloaking with URL encryption for tracking links
-<li>Minor bugfix
+<li>Multiple WordPress blogs installation</li>
+<li>Campaing names changed in "your_wordpress_blog_name".com-xxxxxx</li>
+<li>New conversions management: select to associate conversion only to posts, pages or both of them</li>
+<li>Added WordPress database cleaning after uninstalling</li>
+<li>Added cloaking with URL encryption for tracking links</li>
+<li>Minor bugfix</li>
+</ul>
+
+= 1.2.0 =
+<ul>
+<li>New system to manage operations involving lots of posts/pages</li>
+<li>Removed "on start" tracking pixel creation</li>
+<li>New "safe" uninstalling system</li>
+<li>Compatibility tested upon WordPress 4.0</li>
+<li>New copy-to-clipboard dialog</li>
+<li>Other bugfix</li>
 </ul>

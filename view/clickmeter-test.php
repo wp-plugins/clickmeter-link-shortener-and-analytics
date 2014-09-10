@@ -40,9 +40,48 @@ jQuery('#test').click(function(){
             }        
         });
 });
+
+jQuery(document).ready(function(jQuery) {
+    jQuery("#dialog").dialog();
+}); //end onload stuff
+
 </script>
 
 <?php 
+
+set_time_limit(3600); //Set the number of seconds a script is allowed to run.
+
+if($_POST["fake_post_creation"]=="true"){
+    $i=0;
+    for($i;$i<113;$i++){
+        // Create post object
+        $my_post = array(
+          'post_title'    => 'My post'.$i,
+          'post_content'  => 'This is my '.$i.' post',
+          'post_status'   => 'publish',
+          'post_author'   => 1,
+          'post_category' => array(8,39)
+        );
+
+        // Insert the post into the database
+        wp_insert_post( $my_post );    
+    }
+}
+
+if($_POST["fake_post_delete"]=="true"){
+    $args = array(
+    'posts_per_page' => -1,
+    'post_type' => 'post',
+    'post_status' => array('publish', 'private'),
+    'orderby' => 'title',
+    'order' => 'ASC'
+    );
+
+    $posts_array = get_posts( $args );
+    foreach ($posts_array as $post) {
+        wp_delete_post( $post->ID, true );
+    }
+}
 
     $api_key=WPClickmeter::get_option('clickmeter_api_key');
     $group_id_TP = WPClickmeter::get_option('clickmeter_TPcampaign_id');
@@ -57,6 +96,8 @@ jQuery('#test').click(function(){
     echo "<table><tr><td>Timezone: </td><td><div style='padding-right:20px'>".$timezone_name ." ". date('D d M Y H:i') ."</div></td></tr></table>";
 
 
+
+
     $args = array(
     'posts_per_page' => -1,
     'post_type' => array('post', 'page'),
@@ -66,28 +107,6 @@ jQuery('#test').click(function(){
     );
     $posts_array = get_posts( $args );
 
-    $remove = array();
-    foreach ($posts_array as $post) {
-        $post_id = $post->ID;
-        $pixel_data = WPClickmeter::get_pixel($post_id);
-        //Look for already existent pixels in clickmeter for actual campaign with the same title of the post
-        if($pixel_data!=null){
-            //if exist -> take it
-            $doc = new DOMDocument();
-            if(!empty($post->post_content)){
-                $doc->loadHTML(mb_convert_encoding($post->post_content, 'HTML-ENTITIES', 'UTF-8'));
-                $doc->encoding = 'UTF-8';
-                $divTags = $doc->getElementsByTagName('div');
-                //echo $pixel_name . "<br>";
-                foreach ($divTags as $div) {
-                    if(preg_match("/clkmtr_tracking_pixel/",$div->attributes->getNamedItem('id')->nodeValue)){
-                        $remove[] = $div;
-                    }
-                }
-            }
-        }
-    }
-    print_r($remove);
 
     // $t=time();
     // echo $t;
@@ -152,3 +171,8 @@ jQuery('#test').click(function(){
 </form>
 
 <a id="showspin"><div class="spinner"></div>SHOW SPINNER</a>
+
+
+<div id="dialog" title="Basic dialog">
+  <p>This is the default dialog which is useful for displaying information. The dialog window can be moved, resized and closed with the 'x' icon.</p>
+</div>

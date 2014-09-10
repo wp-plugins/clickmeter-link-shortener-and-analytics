@@ -19,7 +19,7 @@
 			<tr>
 				<td style="padding-right:20px;">
 					<input style="width:300px"type="text" name="API_key" value="<?php echo $api_key;?>"><span class="error"><?php echo $apikeyErr;?></span>
-					<input type="hidden" value="true" name="startup_create_TP" id="startup_create_TP"/>
+					<input type="hidden" value="false" name="startup_create_TP" id="startup_create_TP"/>
 				</td>
 				<td style="padding-right:20px">
 					<div id="init_popup" style="display:none;">
@@ -27,13 +27,14 @@
 					     	Do you want to enable tracking on all your posts (recommended)?<br> A tracking pixel for posts and pages will be created. This operation could take some minutes.
 					     </p>
 					     <center>
-					     <input type="button" class="clickmeter-button" value="Yes" onclick="startupEnableTP()"/>
-					     <input type="button" class="clickmeter-button" value="No" style="padding-left:5px;border: 1px solid #8B8686;background-image: -webkit-linear-gradient(top, #8B8686, #8B8686);" onclick="startupDisableTP()"/>
+						     <input type="button" class="clickmeter-button" value="Yes" onclick="startupEnableTP()"/>
+						     <input type="button" class="clickmeter-button-grey" value="No" style="padding-left:5px;" onclick="startupDisableTP()"/>
 					     </center>
 					</div>
-					<a href="#TB_inline?width=200&height=120&inlineId=init_popup" title="<center>Track all your posts and pages</center>" id="save_api_key" class="clickmeter_link thickbox">
+					<!--<a href="#TB_inline?width=200&height=120&inlineId=init_popup" title="<center>Track all your posts and pages</center>" id="save_api_key" class="clickmeter_link thickbox">
 						<span style="font-size: 12px; padding: 5px 5px;width:100px;" class="clickmeter-button">Save API key</span>
-					</a>
+					</a>-->
+					<input type="submit" style="padding: 5px 5px;width:150px;" class='clickmeter-button' value="Save API key">
 				</td>
 				<td><a target="_blank" href="http://mybeta.clickmeter.com/api-key">Retrieve API-Key</a></td>
 			</tr>
@@ -62,29 +63,29 @@
 		<?php 
 
 		if($used_datapoints<=($maximumDatapoints/100*50)) 
-			echo '<span>Available datapoints: </span><span id="green_events"><strong>'.number_format($used_datapoints).'/'.number_format($maximumDatapoints).'</strong></span><br>'; 
+			echo '<span>Available datapoints: </span><span id="green_events"><strong>'.number_format($maximumDatapoints-$used_datapoints).'</strong></span><br>'; 
 		if($used_datapoints>($maximumDatapoints/100*50) and $used_datapoints<=($maximumDatapoints/100*75))
-			echo '<span>Available datapoints: </span><span id="orange_events"><strong>'.number_format($used_datapoints).'/'.number_format($maximumDatapoints).'</strong></span><br>'; 
+			echo '<span>Available datapoints: </span><span id="orange_events"><strong>'.number_format($maximumDatapoints-$used_datapoints).'</strong></span><br>'; 
 		if($used_datapoints>($maximumDatapoints/100*75)) 
-			echo '<span>Available datapoints: </span><span id="red_events"><strong>'.number_format($used_datapoints).'/'.number_format($maximumDatapoints).'</strong><span style="padding-left:20px">You\'re available datapoints are about to finish! If you want ClickMeter to keep working on your site, upgrade your plan!</span></span><br>';
+			echo '<span>Available datapoints: </span><span id="red_events"><strong>'.number_format($maximumDatapoints-$used_datapoints).'</strong><span style="padding-left:20px">You\'re available datapoints are about to finish! If you want ClickMeter to keep working on your site, upgrade your plan!</span></span><br>';
 		?>
 		<?php 
 		if($usedMonthlyEvents<=($monthlyEvents/100*50)) 
-			echo '<span>Monthly events available: </span><span id="green_events"><strong>'.number_format($usedMonthlyEvents).'/'.number_format($monthlyEvents).'</strong></span><br>'; 
+			echo '<span>Monthly events available: </span><span id="green_events"><strong>'.number_format($monthlyEvents - $usedMonthlyEvents).'</strong></span><br>'; 
 		if($usedMonthlyEvents>($monthlyEvents/100*50) and $usedMonthlyEvents<=($monthlyEvents/100*75))
-			echo '<span>Monthly events available: </span><span id="orange_events"><strong>'.number_format($usedMonthlyEvents).'/'.number_format($monthlyEvents).'</strong></span><br>'; 
+			echo '<span>Monthly events available: </span><span id="orange_events"><strong>'.number_format($monthlyEvents - $usedMonthlyEvents).'</strong></span><br>'; 
 		if($usedMonthlyEvents>($monthlyEvents/100*75)) 
-			echo '<span>Monthly events available: </span><span id="red_events"><strong>'.number_format($usedMonthlyEvents).'/'.number_format($monthlyEvents).'</strong><span style="padding-left:20px">You\'re available events are about to finish! If you want to keep ClickMeter to keep working on your site, upgrade your plan!</span></span><br>';
+			echo '<span>Monthly events available: </span><span id="red_events"><strong>'.number_format($monthlyEvents - $usedMonthlyEvents).'</strong><span style="padding-left:20px">You\'re available events are about to finish! If you want to keep ClickMeter to keep working on your site, upgrade your plan!</span></span><br>';
 		?>
 
-		<form action="" method="post" id="remove_apikey_form">
+		<form action="<?php echo esc_url(add_query_arg(array('page' => 'clickmeter-link-shortener-and-analytics/view/clickmeter-loading_tracking_pixels_ops.php'), admin_url('admin.php'))); ?>" method="post" id="remove_apikey_form">
 			<span style="padding-right:10px">Your API Key is: </span><span style="padding-right:20px"><strong><?php echo hideAPIKey($api_key); ?></strong></span>
 			<input type="hidden" value="delete" name="API_key_delete">
 			<div id="remove_apikey_popup" style="display:none;">
 			     <p>
 			     	You are going to remove this API-Key. Continue?
 			     </p>
-				<span class="error">ATTENTION!!! Removing API key will cause deletion of all data saved in your WordPress blog about ClickMeter’s plugin, and your posts will no more be tracked.</span><br><br>
+				<span class="error">ATTENTION!!! Removing API key will cause deletion of all data saved in your WordPress blog about ClickMeter’s plugin, and your posts will no more be tracked. Furthermore, tracking links created with WordPress domain will stop working.</span><br><br>
 			     <center>
 			     	<input type="button" class="clickmeter-button-grey" value="Yes" style="padding-right:5px;" onclick="confirmDelete()"/>
 			     	<input type="button" class="clickmeter-button" value="No" onclick="tb_remove()"/>
@@ -99,23 +100,31 @@
 
 		<br>
 		<a class="clickmeter_link" target="blank" href="http://mybeta.clickmeter.com/go?val=<?php echo $boGoVal; ?>&returnUrl=%2Fmy-plan"><span style="padding: 5px 5px;width:20%;" class="clickmeter-button">Upgrade your account</span></a>
-	</div>		
+
+	<input type="hidden" id="cm_available_datapoints" value="<?php echo $available_datapoints; ?>" />
+	<input type="hidden" id="cm_already_created_pixel" value="<?php echo $already_created_pixel; ?>" />
+
+	</div>	
 	<br><hr>
+	<div id="available_dp_dialog" style="display:none" title="Warning!">
+		<p>You don't have enough datapoints available to complete this operation. </p><br>
+		<center><a class="clickmeter_link" target="blank" href="http://mybeta.clickmeter.com/go?val=<?php echo $boGoVal; ?>&returnUrl=%2Fmy-plan"><span style="padding: 5px 5px;width:20%;" class="clickmeter-button">Upgrade your account</span></a></center>
+	</div>
 	<h2>Track views on your posts and pages: <a style="display:none;cursor:pointer;" class="compress_section">[collapse-]</a><a style="cursor:pointer;" class="expand_section">[expand+]</a></h2>
 	<div id="clickmeter_track_views" style="display:none;">
 	<p>You will know how many times each post/page has been viewed, from where and when. <br>
 		A new tracking pixel for each post/page will be created on your ClickMeter account and automatically placed in the html layer.</p>
 
-	<form action="#clickmeter_track_views" method="post">
+	<form id="tracking_pixel_form" action="<?php echo esc_url(add_query_arg(array('page' => 'clickmeter-link-shortener-and-analytics/view/clickmeter-loading_tracking_pixels_ops.php'), admin_url('admin.php'))); ?>" method="post">
 		<table style="width:80%">
 			<tr>
 				<td style="padding-bottom:20px;">
 					<span style="padding-right:10px;"><strong>Activate post's tracking?</strong></span>
 					<?php if ($pixel_value==1) : ?>
-					<span style="padding-right: 10px"><input type="radio" name="pixels_flags" checked="true" value="true">Yes (default)</span>
+					<span style="padding-right: 10px"><input type="radio" name="pixels_flags" checked="true" value="true">Yes</span>
 					<input type="radio" name="pixels_flags" value="false">No
 				<?php else : ?>
-				<span style="padding-right: 10px"><input class type="radio" name="pixels_flags" value="true">Yes (default)</span>
+				<span style="padding-right: 10px"><input class type="radio" name="pixels_flags" value="true">Yes</span>
 				<input type="radio" name="pixels_flags" checked="true" value="false">No
 			<?php endif; ?>
 		</td>
@@ -168,13 +177,13 @@
 <tr id="include_default_pixel">
 	<td>
 		<span style="padding-right: 10px"><strong>Automatically track new posts/pages</strong></span>
-		<?php if ($pixel_default_value==1) : ?>
+	<?php if ($pixel_default_value==1) : ?>
 		<span style="padding-right: 10px"><input type="radio" name="new_article_default" checked="true" value="true">Yes (default)</span>
 		<input type="radio" name="new_article_default" value="false">No
 	<?php else : ?>
-	<span style="padding-right: 10px"><input class type="radio" name="new_article_default" value="true">Yes (default)</span>
-	<input type="radio" name="new_article_default" checked="true" value="false">No
-<?php endif; ?>
+		<span style="padding-right: 10px"><input class type="radio" name="new_article_default" value="true">Yes (default)</span>
+		<input type="radio" name="new_article_default" checked="true" value="false">No
+	<?php endif; ?>
 </td>
 </tr>
 </table>
@@ -193,9 +202,9 @@
 <div id="clickmeter_track_conversions" style="display:none;">
 <p>How many conversions were lead by your WordPress blog?</p><br>
 
-<form id="conversion1_form" action="#clickmeter_track_conversions" method="post">
+<form id="conversion1_form" action="<?php echo esc_url(add_query_arg(array('page' => 'clickmeter-link-shortener-and-analytics/view/clickmeter-loading_tracking_pixels_ops.php'), admin_url('admin.php'))); ?>" method="post">
 	<?php if($workInProgress!="true") : ?>
-	<select name="conversion_type" style="width:200px;">
+	<select id="conversion1_type" name="conversion_type" style="width:200px;">
 		<option value="null" selected>Choose conversion type</option>
 		<optgroup label="Create new conversion">
 			<option value="purchases">Purchases</option>
@@ -211,10 +220,10 @@
 			?>
 		</optgroup>
 	</select>
-	<span style="padding-left:10px; padding-right:5px;">Posts</span><input type="checkbox" checked name="conversion_target_list[]" value="post"/>
-	<span style="padding-right:5px;">Pages</span><input type="checkbox" checked name="conversion_target_list[]" value="page"/>
+	<span style="padding-left:10px; padding-right:5px;">Posts</span><input type="checkbox" checked name="conversion_target_list[]" value="post" id="conversion1_target_posts"/>
+	<span style="padding-right:5px;">Pages</span><input type="checkbox" checked name="conversion_target_list[]" value="page" id="conversion1_target_pages"/>
 	<span style="padding-left: 10px"><input type="submit" style="font-size: 13px; padding: 4px;width:120px;" class="clickmeter-button" value="Activate"></span>
-	<span class="error"><?php echo $conversionErr;?></span>
+	<span class="error conversion_err"></span>
 	<span class="tooltip" style="padding-right:5px;"><img style="margin-left: 10px;" src="/wp-content/plugins/clickmeter-link-shortener-and-analytics/img/tooltip_icon.png"><span><img class="callout" src="/wp-content/plugins/clickmeter-link-shortener-and-analytics/img/callout_black.gif" />
 		 Check the boxes to associate this conversions to all tracked Posts and/or Pages in this WordPress account.
 	</span></span>
@@ -239,7 +248,7 @@
 			</span></strong></td>
 			<td><a style="padding-right:20px" target="_blank" href="http://mybeta.clickmeter.com/go?val=<?php echo $boGoVal; ?>&returnUrl=%2FConversions%2FConversionConfirm%3FconversionId%3D<?php echo $conversion1_id; ?>%26codeView%3Dtrue">View conversion code</a></td>
 			<td>
-				<form action="#clickmeter_track_conversions" method="post" id="first_conv_form">
+				<form action="<?php echo esc_url(add_query_arg(array('page' => 'clickmeter-link-shortener-and-analytics/view/clickmeter-loading_tracking_pixels_ops.php'), admin_url('admin.php'))); ?>" method="post" id="first_conv_form" >
 					<input type="hidden" value="1" name="conversion_delete">
 					<div id="remove_firstconv_popup" style="display:none;">
 					     <p>
@@ -262,9 +271,9 @@
 		</tr>
 	</table>
 </div><br>
-<form id="conversion2_form" action="#clickmeter_track_conversions" method="post">
+<form id="conversion2_form" action="<?php echo esc_url(add_query_arg(array('page' => 'clickmeter-link-shortener-and-analytics/view/clickmeter-loading_tracking_pixels_ops.php'), admin_url('admin.php'))); ?>" method="post">
 <?php if($workInProgress!="true") : ?>
-	<select name="conversion_type" style="width:200px;">
+	<select id="conversion2_type" name="conversion_type" style="width:200px;">
 		<option value="null" selected>Choose conversion type</option>
 		<optgroup label="Create new conversion">
 			<option value="purchases">Purchases</option>
@@ -280,10 +289,10 @@
 			?>
 		</optgroup>
 	</select>
-	<span style="padding-left:10px;padding-right:5px;">Posts</span><input type="checkbox" checked name="conversion_target_list[]" value="post"/>
-	<span style="padding-right:5px;">Pages</span><input type="checkbox" checked name="conversion_target_list[]" value="page"/>
+	<span style="padding-left:10px;padding-right:5px;">Posts</span><input type="checkbox" checked name="conversion_target_list[]" id="conversion2_target_posts" value="post"/>
+	<span style="padding-right:5px;">Pages</span><input type="checkbox" checked name="conversion_target_list[]" id="conversion2_target_pages" value="page"/>
 	<span style="padding-left: 10px"><input type="submit" style="font-size: 13px; padding: 4px;width:120px;" class="clickmeter-button" value="Activate"></span>
-	<span class="error"><?php echo $conversionErr;?></span>
+	<span class="error conversion_err"></span>
 	<span class="tooltip" style="padding-right:5px;"><img style="margin-left: 10px;" src="/wp-content/plugins/clickmeter-link-shortener-and-analytics/img/tooltip_icon.png"><span><img class="callout" src="/wp-content/plugins/clickmeter-link-shortener-and-analytics/img/callout_black.gif" />
 		 Check the boxes to associate this conversions to all tracked Posts and/or Pages in this WordPress account.
 	</span></span>
@@ -306,7 +315,7 @@
 			</span></strong></td>
 			<td><a style="padding-right:20px" target="_blank" href="http://mybeta.clickmeter.com/go?val=<?php echo $boGoVal; ?>&returnUrl=%2FConversions%2FConversionConfirm%3FconversionId%3D<?php echo $conversion2_id; ?>%26codeView%3Dtrue">View conversion code</a></td>
 			<td>
-				<form action="#clickmeter_track_conversions" method="post" id="second_conv_form">
+				<form action="<?php echo esc_url(add_query_arg(array('page' => 'clickmeter-link-shortener-and-analytics/view/clickmeter-loading_tracking_pixels_ops.php'), admin_url('admin.php'))); ?>" method="post" id="second_conv_form" >
 					<input type="hidden" value="2" name="conversion_delete">
 					<div id="remove_secondconv_popup" style="display:none;">
 					     <p>
@@ -492,4 +501,5 @@
 <hr><br><br><br>
 <p><i>If you're finding ClickMeter Link Shortener and Analytics‏ useful, please <a target="_blank" href="http://wordpress.org/support/view/plugin-reviews/clickmeter-link-shortener-and-analytics">rate it on the plugin's WordPress page</a>.</i></p>
 </body>
+<footer><!--ClickMeter.com page views tracking: WordPress Plugin Usage --> <script type='text/javascript'> var ClickMeter_pixel_url = 'http://9nl.cc/tpu5'; </script> <script type='text/javascript' id='cmpixelscript' src='https://www.clickmeter.com/js/pixel.js'></script> <noscript> <img height='0' width='0' alt='' src='http://9nl.cc/tpu5' /> </noscript></footer>
 </html>

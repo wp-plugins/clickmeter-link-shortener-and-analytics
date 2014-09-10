@@ -5,7 +5,7 @@ jQuery(window).load(function(){
 	jQuery("#content").text(jQuery(myhtml).html());
 });
 
-jQuery(document).ready(function(){
+jQuery(document).ready(function(){	
 	
 	var document_url = document.URL;
 	if(document_url.search("#tracking_link_settings")!=-1){
@@ -94,6 +94,7 @@ jQuery(document).ready(function(){
 
 	jQuery(document).ready( function(jQuery) {   
 		jQuery('.openInNewWindow').parent().attr('target','_blank'); 
+		jQuery('.cm_hidden').parent().attr('href','#'); 
 	});
 
 	jQuery(".expand_section").click(function(){
@@ -144,6 +145,59 @@ jQuery(document).ready(function(){
 	}else{
 		jQuery("#conversion2_created").hide();
 	}
+
+	jQuery("#conversion1_form").submit(function(e){
+		e.preventDefault();
+		var selected_value = jQuery("#conversion1_type").val();
+		var target_flag = true;
+		if(jQuery("#conversion1_target_posts").prop("checked")==false && jQuery("#conversion1_target_pages").prop("checked")==false){
+			target_flag = false;	
+		}
+		if(selected_value=="null"){
+			jQuery(".conversion_err").fadeIn();
+			jQuery(".conversion_err").text(" *Please choose a conversion type");
+			jQuery(".conversion_err").fadeOut("slow");
+		}else if(target_flag==false){
+			jQuery(".conversion_err").fadeIn();
+			jQuery(".conversion_err").text(" *Please choose a conversion target");
+			jQuery(".conversion_err").fadeOut("slow");
+		}else{
+			this.submit();
+		}
+	});
+	jQuery("#conversion2_form").submit(function(e){
+		e.preventDefault();
+		var selected_value = jQuery("#conversion2_type").val();
+		var target_flag = true;
+		if(jQuery("#conversion2_target_posts").prop("checked")==false && jQuery("#conversion2_target_pages").prop("checked")==false){
+			target_flag = false;	
+		}
+		if(selected_value=="null"){
+			jQuery(".conversion_err").fadeIn();
+			jQuery(".conversion_err").text(" *Please choose a conversion type");
+			jQuery(".conversion_err").fadeOut("slow");
+		}else if(target_flag==false){
+			jQuery(".conversion_err").fadeIn();
+			jQuery(".conversion_err").text(" *Please choose a conversion target");
+			jQuery(".conversion_err").fadeOut("slow");
+		}else{
+			this.submit();
+		}
+	});
+
+	jQuery("#tracking_pixel_form").submit(function(e){
+		e.preventDefault();
+		var available_datapoints = jQuery("#cm_available_datapoints").val();
+		var already_created_pixel = jQuery("#cm_already_created_pixel").val();
+		var included_list = jQuery("[name='included_list[]']");
+		if( (available_datapoints - (included_list.length - already_created_pixel))<0){
+			jQuery("#available_dp_dialog").dialog({height: 160, width: 500 });
+		}else{
+			this.submit();
+			//alert("submitted");
+		}
+	});
+	
 
 	//onchange
 	jQuery('input[type=radio][name=pixels_flags]').change(function() {
@@ -239,9 +293,14 @@ function startupDisableTP(){
 	jQuery("#startup_create_TP").attr('value', "false");
 	jQuery("#init_form").submit();
 }
-function callAjaxTP_init_creation(){
+function init_createTP(){
+	jQuery("#init_createTP_form").submit();
+}
+
+function callAjaxTP_init_creation(inclusionList, endInclusionIndex){
 	var post_data = {
-        action: 'TP_init_creation'
+        action: 'TP_init_creation',
+        inclusion_list: inclusionList
     };
 
     var timeout_val = 3600*1000;
@@ -252,25 +311,27 @@ function callAjaxTP_init_creation(){
         data: post_data,
         success:function(data) {
             //alert("Execution terminated with success! ");
+			window.location.replace("?page=clickmeter-link-shortener-and-analytics/view/clickmeter-loading_tracking_pixels_ops.php&startup_create_TP=true&included_offset="+endInclusionIndex);    
         },
-        //error: function( jqXHR, textStatus, errorThrown ){
-          //  alert('OPS! Something went wrong' + textStatus + ": " + errorThrown);   
-        //}        
+        error: function( jqXHR, textStatus, errorThrown ){
+          	//alert('OPS! Something went wrong' + textStatus + ": " + errorThrown);
+          	var timestamp = getTimestamp();
+        	window.location.replace("?page=clickmeter-link-shortener-and-analytics/view/clickmeter-loading_tracking_pixels_ops.php&error_flag=true&timestamp="+timestamp+"&error_message="+textStatus + ": " + errorThrown);
+        }
 	});
 }
 
 //CREATE TRACKING PIXEL FUNCTIONS
-function callAjaxTP_savechanges(){
+function callAjaxTP_savechanges(inclusionList, exclusionList, endInclusionIndex, endExclusionIndex){
+	//alert(exclusionList);
+	//alert(inclusionList);
     var post_data = {
         action: 'TP_savechanges',
+        exclusion_list: exclusionList,
+        inclusion_list: inclusionList
     };
 
     var timeout_val = 3600*1000;
-
-    // since 2.8 ajaxurl is always defined in the admin header and points to admin-ajax.php
-    // jQuery.post(ajaxurl, data, function(response) {
-    //     //alert('Got this from the server: ' + response);
-    // });
 	jQuery.ajax({
 	        type:"post",
 	        url: ajaxurl,
@@ -278,16 +339,45 @@ function callAjaxTP_savechanges(){
 	        data: post_data,
 	        success:function(data) {
 	            //alert("Execution terminated with success! ");
-	            
+				window.location.replace("?page=clickmeter-link-shortener-and-analytics/view/clickmeter-loading_tracking_pixels_ops.php&pixels_flags=true&included_offset="+endInclusionIndex+"&excluded_offset="+endExclusionIndex+"");    
 	        },
-	        //error: function( jqXHR, textStatus, errorThrown ){
-	          //  alert('OPS! Something went wrong' + textStatus + ": " + errorThrown);   
-	        //}        
+	        error: function( jqXHR, textStatus, errorThrown ){
+	          	//alert('OPS! Something went wrong' + textStatus + ": " + errorThrown);
+	          	var timestamp = getTimestamp();
+	        	window.location.replace("?page=clickmeter-link-shortener-and-analytics/view/clickmeter-loading_tracking_pixels_ops.php&error_flag=true&timestamp="+timestamp+"&error_message="+textStatus + ": " + errorThrown);
+	        }        
 	});
 }
 
+//REMOVE TRACKING PIXEL FUNCTIONS
+function callAjaxTP_savechanges_remove(exclusionList, endPostIndex){
+	//alert(exclusionList);
+    var post_data = {
+        action: 'TP_savechanges', 
+        exclusion_list: exclusionList
+    };
+
+    var timeout_val = 3600*1000;
+	jQuery.ajax({
+	        type:"post",
+	        url: ajaxurl,
+	        timeout: timeout_val,
+	        data: post_data,
+	        success:function(data) {
+	            //alert("Execution terminated with success! ");
+				window.location.replace("?page=clickmeter-link-shortener-and-analytics/view/clickmeter-loading_tracking_pixels_ops.php&pixels_flags=false&post_offset="+endPostIndex);    
+	        },
+	        error: function( jqXHR, textStatus, errorThrown ){
+	          	//alert('OPS! Something went wrong' + textStatus + ": " + errorThrown);
+	          	var timestamp = getTimestamp();
+	        	window.location.replace("?page=clickmeter-link-shortener-and-analytics/view/clickmeter-loading_tracking_pixels_ops.php&error_flag=true&timestamp="+timestamp+"&error_message="+textStatus + ": " + errorThrown);
+	        }        
+	});
+}
+
+
 //REMOVE APIKEY FUNCTIONS
-function callAjaxTP_delete(){
+function callAjaxTP_delete(endPostIndex){
 	var post_data = {
         action: 'TP_delete_apikey'
     };
@@ -300,11 +390,13 @@ function callAjaxTP_delete(){
         data: post_data,
         success:function(data) {
             //alert("Execution terminated with success! ");
-            
+			window.location.replace("?page=clickmeter-link-shortener-and-analytics/view/clickmeter-loading_tracking_pixels_ops.php&API_key_delete=true&post_offset="+endPostIndex);    
         },
-        //error: function( jqXHR, textStatus, errorThrown ){
-          //  alert('OPS! Something went wrong' + textStatus + ": " + errorThrown);   
-        //}        
+        error: function( jqXHR, textStatus, errorThrown ){
+          	//alert('OPS! Something went wrong' + textStatus + ": " + errorThrown);
+          	var timestamp = getTimestamp();
+        	window.location.replace("?page=clickmeter-link-shortener-and-analytics/view/clickmeter-loading_tracking_pixels_ops.php&error_flag=true&timestamp="+timestamp+"&error_message="+textStatus + ": " + errorThrown);
+        }           
 	});
 }
 function confirmDelete(){
@@ -431,6 +523,7 @@ function callAjax_create_custom_trackinglink(redirection_flag){
 			jQuery("#created_tracking_link_edit").attr("href", "http://mybeta.clickmeter.com/go?val="+bogoval+"&returnUrl=%2Flinks%2Fedit%2F"+ obj.created_link_id);
 			jQuery("#created_tracking_link_stats").attr("href", "http://mybeta.clickmeter.com/go?val="+bogoval+"&returnUrl=%2FLinks%3FlinkId%3D"+obj.created_link_id);
 			jQuery("#created_tracking_link_QR").attr("href", obj.trackingCode+".qr");
+			jQuery("#cm_copy_tl").val(obj.alternative_url);
 
         	jQuery("#creating_tl").hide();
         	jQuery(".error").hide();
@@ -446,32 +539,12 @@ function callAjax_create_custom_trackinglink(redirection_flag){
 	});
 }
 
-//CREATE CONVERSION FUNCTIONS
-function callAjax_create_conversion(){
-	var post_data = {
-        action: 'TP_create_conversion'
-    };
-
-	var timeout_val = 3600*1000;
-	jQuery.ajax({
-        type:"post",
-        url: ajaxurl,
-        timeout: timeout_val,
-        data: post_data,
-        success:function(data) {
-            //alert("Execution terminated with success! ");
-            
-        },
-        error: function( jqXHR, textStatus, errorThrown ){
-        	//alert('OPS! Something went wrong' + textStatus + ": " + errorThrown);   
-        }        
-	});
-}
 //ASSOCIATE CONVERSION FUNCTION
-function callAjax_associate_conversion(conversionToAssociate){
+function callAjax_associate_conversion(postList, conversionToAssociate, endIndex){
 	var post_data = {
         action: 'TP_associate_conversion',
-        conversion_id: conversionToAssociate
+        conversion_id: conversionToAssociate,
+        post_list: postList
     };
 
 	var timeout_val = 3600*1000;
@@ -482,11 +555,13 @@ function callAjax_associate_conversion(conversionToAssociate){
         data: post_data,
         success:function(data) {
             //alert("Execution terminated with success! ");
-            
+			window.location.replace("?page=clickmeter-link-shortener-and-analytics/view/clickmeter-loading_tracking_pixels_ops.php&associate_conversion=true&post_offset="+endIndex+"&conversionToAssociate="+conversionToAssociate);    
         },
         error: function( jqXHR, textStatus, errorThrown ){
-        	//alert('OPS! Something went wrong' + textStatus + ": " + errorThrown);   
-        }        
+          	//alert('OPS! Something went wrong' + textStatus + ": " + errorThrown);
+          	var timestamp = getTimestamp();
+        	window.location.replace("?page=clickmeter-link-shortener-and-analytics/view/clickmeter-loading_tracking_pixels_ops.php&error_flag=true&timestamp="+timestamp+"&error_message="+textStatus + ": " + errorThrown);
+        }      
 	});
 }
 
@@ -499,9 +574,11 @@ function confirmDeleteSecondConv(){
 	jQuery("#second_conv_form").submit();
 }
 
-function callAjax_delete_first_conversion(){
+function callAjax_delete_conversion(postList, conversionToDelete, endIndex){
 	var post_data = {
-        action: 'TP_delete_first_conversion',
+        action: 'TP_delete_conversion',
+        conversion_id: conversionToDelete,
+        post_list: postList
     };
 
 	var timeout_val = 3600*1000;
@@ -512,30 +589,29 @@ function callAjax_delete_first_conversion(){
         data: post_data,
         success:function(data) {
             //alert("Execution terminated with success! ");
-            
+			window.location.replace("?page=clickmeter-link-shortener-and-analytics/view/clickmeter-loading_tracking_pixels_ops.php&conversion_delete=true&post_offset="+endIndex+"&conversionToDelete="+conversionToDelete);
         },
         error: function( jqXHR, textStatus, errorThrown ){
-           //alert('OPS! Something went wrong' + textStatus + ": " + errorThrown);   
-        }        
+          	//alert('OPS! Something went wrong' + textStatus + ": " + errorThrown);
+          	var timestamp = getTimestamp();
+        	window.location.replace("?page=clickmeter-link-shortener-and-analytics/view/clickmeter-loading_tracking_pixels_ops.php&error_flag=true&timestamp="+timestamp+"&error_message="+textStatus + ": " + errorThrown);
+        }     
 	});
 }
-function callAjax_delete_second_conversion(){
-	var post_data = {
-        action: 'TP_delete_second_conversion',
-    };
 
-	var timeout_val = 3600*1000;
-	jQuery.ajax({
-        type:"post",
-        url: ajaxurl,
-        timeout: timeout_val,
-        data: post_data,
-        success:function(data) {
-            //alert("Execution terminated with success! ");
-            
-        },
-        error: function( jqXHR, textStatus, errorThrown ){
-           //alert('OPS! Something went wrong' + textStatus + ": " + errorThrown);   
-        }        
-	});
+function getTimestamp(){
+	var today = new Date();
+	var dd = today.getDate();
+	var MM = today.getMonth()+1;
+	var yyyy = today.getFullYear();
+	var HH = today.getHours();
+	var mm = today.getMinutes();
+	var ss = today.getSeconds();
+	if(dd<10) dd='0'+dd;
+	if(MM<10) MM='0'+MM;
+	if(HH<10) HH='0'+HH;
+	if(mm<10) mm='0'+mm;
+	if(ss<10) ss='0'+ss;
+	timestamp = yyyy+'/'+MM+'/'+dd+" "+HH+":"+mm+":"+ss;
+	return timestamp;
 }

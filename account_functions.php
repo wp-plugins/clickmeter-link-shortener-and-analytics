@@ -125,40 +125,38 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && array_key_exists("API_key",$_POST)) 
 					WPClickmeter::store_option( 'clickmeter_404_reports_campaign_id', $group_id_404_reports );
 				}
 			}
-			WPClickmeter::store_option( 'clickmeter_startup_create_TP', $_POST["startup_create_TP"]);
-			
-			if($_POST["startup_create_TP"]=="true"){
-				WPClickmeter::store_option("clickmeter_workinprogress_flag", "true");
+			//WPClickmeter::store_option( 'clickmeter_startup_create_TP', $_POST["startup_create_TP"]);
+			if($_POST["startup_create_TP"]=="false"){
+					WPClickmeter::store_option("clickmeter_workinprogress_flag", "false");
+					WPClickmeter::store_option( 'clickmeter_pixel_flag', 0 );
+					WPClickmeter::store_option('clickmeter_pixel_new_articles', 1 );
+					WPClickmeter::store_option( 'clickmeter_inclusion_list', array());
+					WPClickmeter::store_option( 'clickmeter_exclusion_list', array());
+					WPClickmeter::store_option("track_404_flag", 0);
+					WPClickmeter::store_option("link_cloak_flag", 0);
+					WPClickmeter::store_option("clickmeter_wp_redirection_flag", 0);
+					WPClickmeter::store_option("clickmeter_default_redirection_type", "301");
+					echo '<meta http-equiv="refresh" content="0">';
+
+			}elseif($_POST["startup_create_TP"]=="true"){
 				$inclusion_list = array();
 				foreach ($posts_array as $post) {
 					$inclusion_list[] = $post->ID;
 				}
 				foreach ($pages_array as $page) {
 					$inclusion_list[] = $page->ID;
-				}
+				}				
 				WPClickmeter::store_option( 'clickmeter_inclusion_list', $inclusion_list);
-				//update flag active pixels into database
 				WPClickmeter::store_option( 'clickmeter_pixel_flag', 1 );
 				WPClickmeter::store_option('clickmeter_pixel_new_articles', 1 );
 				WPClickmeter::store_option("track_404_flag", 0);
 				WPClickmeter::store_option("link_cloak_flag", 0);
 				WPClickmeter::store_option("clickmeter_wp_redirection_flag", 0);
 				WPClickmeter::store_option("clickmeter_default_redirection_type", "301");
-				echo '<script>callAjaxTP_init_creation();</script>';
 				echo '<meta http-equiv="refresh" content="0">';
-			}else{
-				WPClickmeter::store_option("clickmeter_workinprogress_flag", "false");
-				WPClickmeter::store_option( 'clickmeter_pixel_flag', 0 );
-				WPClickmeter::store_option('clickmeter_pixel_new_articles', 0 );
-				WPClickmeter::store_option( 'clickmeter_inclusion_list', array());
-				WPClickmeter::store_option( 'clickmeter_exclusion_list', array());
-				WPClickmeter::store_option("track_404_flag", 0);
-				WPClickmeter::store_option("link_cloak_flag", 0);
-				WPClickmeter::store_option("clickmeter_wp_redirection_flag", 0);
-				WPClickmeter::store_option("clickmeter_default_redirection_type", "301");
-				//workaround to reload the page
-				echo '<meta http-equiv="refresh" content="0">';
+				echo '<script>window.location.replace("?page=clickmeter-link-shortener-and-analytics/view/clickmeter-loading_tracking_pixels_ops.php&startup_create_TP=true");</script>';
 			}
+
 
 			// //I don't have conversion ids in the database, search on ClickMeter by blog name.
 			// $active_conversions = WPClickmeter::api_request('http://apiv2.clickmeter.com/conversions?status=active&_expand=true', 'GET', NULL, $api_key);
@@ -183,11 +181,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && array_key_exists("API_key",$_POST)) 
 			// }
 		}
 	}
-}
-
-if($_POST["API_key_delete"]!=NULL){
-	echo '<script>callAjaxTP_delete();</script>';
-	echo '<meta http-equiv="refresh" content="0">';
 }
 
 $api_key=WPClickmeter::get_option('clickmeter_api_key');
@@ -224,91 +217,20 @@ if($api_key!=NULL){
 	$json_output = WPClickmeter::api_request('http://apiv2.clickmeter.com/datapoints/count', 'GET', NULL, $api_key);
 	$used_datapoints = $json_output[count];
 
+	$datapoints_flag = true;
+	$available_datapoints = $maximumDatapoints - $used_datapoints;
+	$already_created_pixel = WPClickmeter::get_pixel_count();
+
 	//GET TRACKING PIXELS LIST
 	$group_id_TP = WPClickmeter::get_option('clickmeter_TPcampaign_id');
 	$group_id_TL = WPClickmeter::get_option('clickmeter_TLcampaign_id');
 	$group_id_404_reports = WPClickmeter::get_option('clickmeter_404_reports_campaign_id');
-
-	//TRACKING PIXELS
-	if($_POST["pixels_flags"]=="true"){
-		WPClickmeter::store_option("clickmeter_workinprogress_flag", "true");
-
-		WPClickmeter::store_option( 'clickmeter_pixel_flag', 1 );
-
-		if($_POST["excluded_list"]!=NULL)
-			WPClickmeter::store_option( 'clickmeter_exclusion_list', $_POST["excluded_list"]);
-		if($_POST["excluded_list"]==NULL and $_POST["included_list"]!=NULL)
-			WPClickmeter::store_option( 'clickmeter_exclusion_list', array());
-
-		if($_POST["included_list"]!=NULL)
-			WPClickmeter::store_option( 'clickmeter_inclusion_list', $_POST["included_list"]);
-		if($_POST["included_list"]==NULL and $_POST["excluded_list"]!=NULL)
-			WPClickmeter::store_option( 'clickmeter_inclusion_list', array());
-
-		if($_POST["new_article_default"]=="true"){
-			WPClickmeter::store_option('clickmeter_pixel_new_articles', 1 );
-		}
-		if($_POST["new_article_default"]=="false"){
-			WPClickmeter::store_option('clickmeter_pixel_new_articles', 0 );
-		}
-
-		echo '<script>callAjaxTP_savechanges();</script>';
-	}
-
-	if($_POST["pixels_flags"]=="false"){
-
-		WPClickmeter::store_option("clickmeter_workinprogress_flag", "true");
-
-		WPClickmeter::store_option( 'clickmeter_pixel_flag', 0 );
-		WPClickmeter::store_option('clickmeter_pixel_new_articles', 0 );
-
-		WPClickmeter::store_option( 'clickmeter_inclusion_list', array());
-		WPClickmeter::store_option( 'clickmeter_exclusion_list', array());
-
-		echo '<script>callAjaxTP_savechanges();</script>';
-	}
 
 	//CONVERSIONS
 	$conversion1_id = WPClickmeter::get_option('clickmeter_conversionId1');
 	$conversion1_name = WPClickmeter::get_option("clickmeter_conversionName1");
 	$conversion2_id = WPClickmeter::get_option('clickmeter_conversionId2');
 	$conversion2_name = WPClickmeter::get_option("clickmeter_conversionName2");
-
-	//Create conversion
-	if($_POST["conversion_type"]!=null){
-		$conversion_type= $_POST["conversion_type"];
-		if($conversion_type == "null"){
-			$conversionErr = " *Please choose a conversion type";
-		}
-		elseif($_POST["conversion_target_list"]==NULL || empty($_POST["conversion_target_list"])){
-			$conversionErr = " *Please choose a conversion target";
-		}else{
-			WPClickmeter::store_option("clickmeter_workinprogress_flag", "true");
-			WPClickmeter::store_option("clickmeter_lastconversion_target", $_POST["conversion_target_list"]);
-			if(preg_match("/existing_conversion/", $conversion_type)){
-				//ASSOCIATE EXISTING CONVERSION
-				preg_match("/[0-9]*$/",$conversion_type, $match);
-				$conversion_id = "";
-				if(!empty($match)) $conversion_id = $match[0];
-				echo '<script>callAjax_associate_conversion('.$conversion_id.');</script>';	
-			}else{
-				//CREATE CONVERSION CODE
-				WPClickmeter::store_option("clickmeter_lastconversion_type", $conversion_type);
-				echo '<script>callAjax_create_conversion();</script>';	
-			}
-		}
-	}
-	
-	//Delete conversion
-	if($_POST["conversion_delete"]!=NULL){
-		WPClickmeter::store_option("clickmeter_workinprogress_flag", "true");
-		if($_POST["conversion_delete"] == "1"){
-			echo '<script>callAjax_delete_first_conversion();</script>';
-		}
-		if($_POST["conversion_delete"] == "2"){
-			echo '<script>callAjax_delete_second_conversion();</script>';
-		}
-	}
 	
 
 	//Check for existing conversions in ClickMeter
@@ -332,24 +254,6 @@ if($api_key!=NULL){
 	$blog_name = get_site_url();
 	$blog_name = substr($blog_name,7);
 	$active_conversions = WPClickmeter::api_request('http://apiv2.clickmeter.com/conversions?status=active&_expand=true', 'GET', NULL, $api_key);
-	// if($conversion1_id==null){
-	// 	foreach ($active_conversions[entities] as $conversion) {
-	// 		if((preg_match("#".$blog_name."#", $conversion[name]) && $conversion2_name!=$conversion[name])){
-	// 			WPClickmeter::store_option("clickmeter_conversionId1", $conversion[id]);
-	// 			WPClickmeter::store_option("clickmeter_conversionName1", $conversion[name]);	
-	// 		}
-	// 	}
-	// }
-
-	
-	// if($conversion2_id==null){
-	// 	foreach ($active_conversions[entities] as $conversion) {
-	// 		if((preg_match("#".$blog_name."#", $conversion[name]) && $conversion1_name!=$conversion[name])){
-	// 			WPClickmeter::store_option("clickmeter_conversionId2", $conversion[id]);
-	// 			WPClickmeter::store_option("clickmeter_conversionName2", $conversion[name]);	
-	// 		}
-	// 	}
-	// }
 
 	$conversion1_id = WPClickmeter::get_option('clickmeter_conversionId1');
 	$conversion1_name = WPClickmeter::get_option("clickmeter_conversionName1");
@@ -447,16 +351,6 @@ if($api_key!=NULL){
 		WPClickmeter::store_option("link_cloak_flag", 0);
 	}
 	$link_cloak_flag = WPClickmeter::get_option("link_cloak_flag");
-
-
-	//BLOG DOMAIN REDIRECTION LINKS
-	// if($_POST['wp_redirection_flag']=="true"){
-	// 	WPClickmeter::store_option("clickmeter_wp_redirection_flag", 1);
-	// }
-	// if($_POST['wp_redirection_flag']=="false"){
-	// 	WPClickmeter::store_option("clickmeter_wp_redirection_flag", 0);
-	// }
-	// $wp_redirection_flag = WPClickmeter::get_option("clickmeter_wp_redirection_flag");
 
 	//404 TRACKING
 	if($_POST['track_404_flag']=="true"){

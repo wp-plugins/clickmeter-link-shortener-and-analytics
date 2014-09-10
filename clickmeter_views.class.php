@@ -31,9 +31,6 @@ class ClickmeterViews {
 	static function clickmeter_meta_box_redirection_callback($post) {
     	include self::template_path('/view/clickmeter-post_redirection_meta_box');
 	}
-
-
-
 }
 
 ?>
