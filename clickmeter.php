@@ -4,7 +4,7 @@ Plugin Name: ClickMeter Link Shortener and Analytics
 Description: Customizable Link Shortener combined with Powerful Real-Time Analytics. Create short tracking links and track everything about your visitors.
 Plugin URI: http://support.clickmeter.com/forums/21156669-WordPress-plugin
 Author: ClickMeter
-Version: 1.2.0
+Version: 1.2.1
 */
 /*  Copyright 2014  ClickMeter 
 
@@ -44,6 +44,9 @@ class WPClickmeter {
 		}
 		if($version == "1.1.0"){
 			update_option('clickmeter_plugin_version', "1.2.0");
+		}
+		if($version == "1.2.0"){
+			update_option('clickmeter_plugin_version', "1.2.1");
 		}
 		
 		add_action('admin_enqueue_scripts', array(__CLASS__, 'javascriptAndCss_init'));
@@ -303,9 +306,8 @@ class WPClickmeter {
 
 	static function javascriptAndCss_init() {
 		wp_enqueue_script( 'clickmeter_js', plugins_url( '/js/clickmeter.js', __FILE__ ), array('jquery') );
-		wp_enqueue_script (  'cm-modal' ,       // handle
-                        plugins_url( '/js/cm-dialog.js', __FILE__ )  ,       // source
-                        array('jquery-ui-dialog')); // dependencies
+		wp_enqueue_script( 'jquery-ui-core' );  
+		wp_enqueue_script( 'jquery-ui-dialog' ); 
     	// A style available in WP               
     	wp_enqueue_style ('wp-jquery-ui-dialog');
 		wp_enqueue_style( 'clickmeter_css', plugins_url( '/css/clickmeter_plugin_style.css', __FILE__ ), array('dashicons'), '1.0');

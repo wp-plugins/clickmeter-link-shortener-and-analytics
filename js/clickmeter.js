@@ -399,9 +399,6 @@ function callAjaxTP_delete(endPostIndex){
         }           
 	});
 }
-function confirmDelete(){
-	jQuery("#remove_apikey_form").submit();
-}
 
 //CREATE TRACKING LINK
 function callAjax_create_trackinglink(){

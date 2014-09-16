@@ -1,4 +1,25 @@
 <html>
+<script type="text/javascript">
+function removeApiKeyWarning(){
+	    var removeDialog = jQuery("#remove_apikey_popup").dialog({                   
+	        'dialogClass'   : 'wp-dialog',           
+	        'modal'         : true,
+	        'autoOpen'      : false, 
+	        'closeOnEscape' : true,
+	        'height': 250, 
+	        'width': 450
+	    });
+	    removeDialog.dialog('open');
+}
+function confirmDelete(){
+	jQuery("#remove_apikey_popup").dialog("close");
+	jQuery("#remove_apikey_form").submit();
+}
+function dialogClose(){
+	jQuery("#remove_apikey_popup").dialog("close");
+}
+
+</script>
 <body>
 	<?php require_once( plugin_dir_path( __FILE__ ) . '../account_functions.php'); ?>
 
@@ -81,18 +102,18 @@
 		<form action="<?php echo esc_url(add_query_arg(array('page' => 'clickmeter-link-shortener-and-analytics/view/clickmeter-loading_tracking_pixels_ops.php'), admin_url('admin.php'))); ?>" method="post" id="remove_apikey_form">
 			<span style="padding-right:10px">Your API Key is: </span><span style="padding-right:20px"><strong><?php echo hideAPIKey($api_key); ?></strong></span>
 			<input type="hidden" value="delete" name="API_key_delete">
-			<div id="remove_apikey_popup" style="display:none;">
+			<div id="remove_apikey_popup" style="display:none;" title="Remove API-Key">
 			     <p>
 			     	You are going to remove this API-Key. Continue?
 			     </p>
 				<span class="error">ATTENTION!!! Removing API key will cause deletion of all data saved in your WordPress blog about ClickMeter’s plugin, and your posts will no more be tracked. Furthermore, tracking links created with WordPress domain will stop working.</span><br><br>
 			     <center>
 			     	<input type="button" class="clickmeter-button-grey" value="Yes" style="padding-right:5px;" onclick="confirmDelete()"/>
-			     	<input type="button" class="clickmeter-button" value="No" onclick="tb_remove()"/>
+			     	<input type="button" class="clickmeter-button" value="No" onclick="dialogClose()"/>
 			     </center>
 			</div>
 			<?php if($workInProgress!="true") : ?>
-			<a href="#TB_inline?width=200&height=160&inlineId=remove_apikey_popup" title="<center><strong>Remove your API-Key</strong></center>" id="remove_apikey" class="thickbox">Remove API-Key</a>
+			<input title="Remove your API-Key" type="button" class="link_button" onclick="removeApiKeyWarning()" value="Remove API-Key">
 			<?php else : ?>
 				<div style="padding: 10px 0px 10px 0px"><span style="color:green;"><div class="spinner_wp"></div>A background operation is currently in execution. Wait some minutes, then click on ClickMeter menu to reload.</span></div>
 			<?php endif; ?>

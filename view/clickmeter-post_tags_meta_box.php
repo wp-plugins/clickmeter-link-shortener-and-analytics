@@ -10,12 +10,34 @@ function cm_select_text() {
 	jQuery(".cm_select").prev().select();
 }
 function copyToClipboard(){
-	jQuery("#cm_dialog").dialog({height: 160, width: 450 });
+	var copyDialog = jQuery("#cm_dialog").dialog({                   
+        'dialogClass'   : 'wp-dialog',           
+        'modal'         : true,
+        'autoOpen'      : false, 
+        'closeOnEscape' : true,
+        'height': 160, 
+        'width': 450
+    });
+    copyDialog.dialog('open');
 }
 
-function confirmation_box() {
-	var result = confirm("You are going to delete this tracking link. Continue?");
-	return result;
+function deleteTLWarning(){
+	    var deleteDialog = jQuery("#dialog_delete").dialog({                   
+	        'dialogClass'   : 'wp-dialog',           
+	        'modal'         : true,
+	        'autoOpen'      : false, 
+	        'closeOnEscape' : true,
+	        'height': 160, 
+	        'width': 450
+	    });
+	    deleteDialog.dialog('open');
+}
+function confirmTLDelete(){
+	jQuery("#dialog_delete").dialog("close");
+	jQuery("#cm_delete_form").submit();
+}
+function dialogClose(){
+	jQuery("#dialog_delete").dialog("close");
 }
 
 </script>
@@ -149,9 +171,9 @@ function confirmation_box() {
 	<input type="hidden" id="clickmeter_update_post" name="clickmeter_update_post" value="true">
 	<input type="hidden" id="clickmeter_settings_link" name="clickmeter_settings_link" value="<?php echo esc_url(add_query_arg(array('page' => 'clickmeter-link-shortener-and-analytics/view/clickmeter-account.php'), admin_url('admin.php'))); ?>">
 	<form action="" method="post"></form>
-	<form action="" onsubmit="return confirm('Are you sure you want to delete this tracking link?');" method="post">
+	<form id="cm_delete_form" action="" method="post">
 		<input type="hidden" value="delete" name="tracking_link_delete">
-		<input title="Delete tracking link" type="submit" class='link_button' style="color:#a00" value="Delete"> |
+		<input title="Delete tracking link" type="button" class="link_button" style="color:#a00" onclick="deleteTLWarning()" value="Delete"> |
 		<a title="Edit tracking link on ClickMeter" target="blank" href="http://mybeta.clickmeter.com/go?val=<?php echo $boGoVal ?>&returnUrl=%2Flinks%2Fedit%2F<?php echo $tracking_link_id ?>">Edit</a> |
 		<a title="View tracking link stats on ClickMeter" target="blank" href="http://mybeta.clickmeter.com/go?val=<?php echo $boGoVal ?>&returnUrl=%2FLinks%3FlinkId%3D<?php echo $tracking_link_id ?>">Stats</a> |
 		<a style="text-decoration:underline" title="Get QR code" target="_blank" href="http://<?php echo $tracking_link ?>.qr">QR</a> |
@@ -163,12 +185,20 @@ function confirmation_box() {
     	<input style="width: 80%;" type="text" value="<?php echo $tracking_link; ?>"/>
     	<button type="button" class="cm_select" onclick="cm_select_text()">Select</button>
 	</div>
+	<div id="dialog_delete" style="display:none" title="Delete Tracking Link">
+		<p>You are going to remove this Tracking Link. Continue?</p>
+	    <center>
+	     	<input type="button" class="clickmeter-button-grey" value="Yes" style="padding-right:5px;" onclick="confirmTLDelete()"/>
+	     	<input type="button" class="clickmeter-button" value="No" onclick="dialogClose()"/>
+		</center>
+	</div>
 	
 <?php else : //UPDATE POST BOX NO TRACKING LINK?>
 	<?php
 		if($tracking_pixel_id!=null){
 			echo '<p><div class="dashicons dashicons-visibility" style="color:#888;padding-right:4px;"></div>Visits: <strong>'.$views.'</strong> <a title="View visits details" target="blank" href="http://mybeta.clickmeter.com/go?val='.$boGoVal.'&returnUrl=%2FLinks%3FlinkId%3D'.$tracking_pixel_id.'">View</a></p>';
 			echo '<p><div class="dashicons dashicons-cart" style="color:#888;padding-right:4px;"></div>Conversions: <strong>'.$conversions_count.'</strong></p>';
+			echo '<input type="hidden" id="tracking_pixel_id" name="tracking_pixel_id" value="'.$tracking_pixel_id.'">';
 		}else{
 			echo '<p>This post is not tracked.</p>';
 		}
@@ -178,7 +208,6 @@ function confirmation_box() {
 	<input type="hidden" id="boGoVal" name="boGoVal" value="<?php echo $boGoVal ?>">
 	<input type="hidden" id="post_url" value="<?php echo $permalink ?>" name="post_url">
 	<input type="hidden" id="clickmeter_post_title" value="<?php echo $post_title ?>" name="clickmeter_post_title">
-	<input type="hidden" id="tracking_pixel_id" name="tracking_pixel_id" value="<?php echo $tracking_pixel_id ?>">
 	<input type="hidden" id="clickmeter_update_post" name="clickmeter_update_post" value="true">
 	<input type="hidden" id="clickmeter_settings_link" name="clickmeter_settings_link" value="<?php echo esc_url(add_query_arg(array('page' => 'clickmeter-link-shortener-and-analytics/view/clickmeter-account.php'), admin_url('admin.php'))); ?>">
 	<div id="get_tracking_link_button">

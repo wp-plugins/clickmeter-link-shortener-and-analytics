@@ -135,9 +135,23 @@
 										    	editor.selection.setContent('<a name="clickmeter_link" title="'+e.data.friendly_name+'" id="'+obj.created_link_id+'" rel="'+nofollow_value+'" target="'+target_value+'" href="'+obj.trackingCode+'">'+selected_content+'</a>');
 									    	}
 
-									    	alert("Tracking link created.");
-									    	button_reference.show();
 									    	editor.windowManager.close();
+									    	editor.windowManager.open({
+									    		title: "Operation Complete",
+									        	width: 380,
+										    	height: 100,
+			    						        body: [
+										        {
+										            type: 'label',
+										            name: 'success_label',
+										            text: 'Your Tracking Link has been successfully created!',
+										            style: 'color: green;font-size:15px;'
+										        }],
+										        onsubmit: function(e) {
+										        	button_reference.show();
+									    			editor.windowManager.close();
+										        }
+											});
 									    });
 						        	}
 						        }

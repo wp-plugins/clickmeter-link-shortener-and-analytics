@@ -88,7 +88,7 @@ function copyToClipboard(){
 					<td style="width:20%"><span style="color:#6B6B6B;font-size: 15px;">Destination URL: </span></td>
 					<td style="width:80%">
 						<span class="tooltip"><input type="text" style="width:60%" value="http://" id="redirection_link_url" id="redirection_link_url"/><span><img class="callout" src="/wp-content/plugins/clickmeter-link-shortener-and-analytics/img/callout_black.gif" />
-							This is the link you want to track: the landing page where you want to send your visitors (eg. http://clickmeter.com).
+							This is the link you want to track: the target URL where you want to send your visitors (eg. http://clickmeter.com).
 						</span></span>
 						<span style="display:none" class="error" id="error_url"></span>
 					</td>
@@ -98,7 +98,7 @@ function copyToClipboard(){
 					<td style="width:80%">
 						<span class="tooltip"><input type="text" style="width:60%" value="" id="redirection_link_name" id="redirection_link_name" maxlength="50"/>
 						<span><img class="callout" src="/wp-content/plugins/clickmeter-link-shortener-and-analytics/img/callout_black.gif" />
-							This is the part of the link that goes after the choosen domain (e.g. http://trk.as/link-name). It is also the name to identify this tracking link in your reports.
+							This is the part of the link that goes after the main domain (e.g. http://yourdomain.com/link-name).
 						</span></span>
 						<span style="display:none" class="error" id="error_fname"></span>
 					</td>

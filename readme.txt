@@ -3,7 +3,7 @@ Contributors: ClickMeter
 Tags: 301 redirect, admin, advertisers, affiliates, Agencies, analytic, analytics, analyze, automation, bitly, click, clickmeter, clicks, cloak, cloaking, custom url, ga, google analytics, link management, link monitor, link tracker, link tracking, marketing, mask, masking, monitor, online users, page, pages, pageviews, permalink, plugin, Post, posts, publishers, qr code, redirect, reports, short url, shorten, shortlink, shorturl, spiders, statistics, stats, tinyurl, track, tracker, tracking, url shortener, views, widget, wordpress, world map, wp.gl, wp.me.
 Requires at least: 3.5.0
 Tested up to: 4.0
-Stable tag: 1.2.0
+Stable tag: 1.2.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Donate link: http://clickmeter.com/pricing-signup
@@ -79,17 +79,12 @@ You'll find updated FAQs on [ClickMeter Knowledge Base](http://support.clickmete
 8. QR-code from one of the shorted links.
 
 == Changelog ==
-= 1.0.0 =
-First version release.
-
-= 1.1.0 =
+= 1.2.1 =
 <ul>
-<li>Multiple WordPress blogs installation</li>
-<li>Campaing names changed in "your_wordpress_blog_name".com-xxxxxx</li>
-<li>New conversions management: select to associate conversion only to posts, pages or both of them</li>
-<li>Added WordPress database cleaning after uninstalling</li>
-<li>Added cloaking with URL encryption for tracking links</li>
-<li>Minor bugfix</li>
+<li>Changed delete TL popup</li>
+<li>Changed some labels</li>
+<li>Changed number of link in the list</li>
+<li>Other bugfix</li>
 </ul>
 
 = 1.2.0 =
@@ -101,3 +96,16 @@ First version release.
 <li>New copy-to-clipboard dialog</li>
 <li>Other bugfix</li>
 </ul>
+
+= 1.1.0 =
+<ul>
+<li>Multiple WordPress blogs installation</li>
+<li>Campaing names changed in "your_wordpress_blog_name".com-xxxxxx</li>
+<li>New conversions management: select to associate conversion only to posts, pages or both of them</li>
+<li>Added WordPress database cleaning after uninstalling</li>
+<li>Added cloaking with URL encryption for tracking links</li>
+<li>Minor bugfix</li>
+</ul>
+
+= 1.0.0 =
+First version release.
