@@ -1,6 +1,6 @@
 === Plugin Name ===
 Contributors: ClickMeter
-Tags: 301 redirect, admin, advertisers, affiliates, Agencies, analytic, analytics, analyze, automation, bitly, click, clickmeter, clicks, cloak, cloaking, custom url, ga, google analytics, link management, link monitor, link tracker, link tracking, marketing, mask, masking, monitor, online users, page, pages, pageviews, permalink, plugin, Post, posts, publishers, qr code, redirect, reports, short url, shorten, shortlink, shorturl, spiders, statistics, stats, tinyurl, track, tracker, tracking, url shortener, views, widget, wordpress, world map, wp.gl, wp.me.
+Tags: 301 redirect, admin, advertisers, affiliates, Agencies, analytic, analytics, analyze, automation, bitly, click, click tracking, clickmeter, clicks, cloak, cloaking, custom url, ga, google analytics, link management, link monitor, link tracker, link tracking, marketing, mask, masking, monitor, online users, page, pages, pageviews, permalink, plugin, Post, posts, publishers, qr code, redirect, reports, short url, shorten, shortlink, shorturl, spiders, statistics, stats, tinyurl, track, tracker, tracking, url shortener, views, widget, wordpress, world map, wp.gl, wp.me.
 Requires at least: 3.5.0
 Tested up to: 4.0
 Stable tag: 1.2.1
