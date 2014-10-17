@@ -291,7 +291,3 @@ star-filled
     -webkit-box-shadow: none;
     box-shadow: none;
 }
-
-a#ciccio+a:hover{
-	display:none;
-}

@@ -46,7 +46,7 @@
 						    editor.windowManager.open( {
 						        title: 'Insert New Short Tracking Link',
 					        	width : 500,
-			   					height : 240,
+			   					height : 250,
 						        body: [
 						        {
 						            type: 'label',

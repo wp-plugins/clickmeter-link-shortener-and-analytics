@@ -25,13 +25,26 @@ function dialogClose(){
 
 	<?php if (empty($api_key)) : ?>
 	<div style="background-color:#E0E0E0;padding-top: 1px;padding-left: 5px;padding-right: 5px;padding-bottom: 7px;">
-		<h1>ClickMeter Link Shortener and Analytics‏</h1>
+		<table style="width:100%">
+			<tr>
+				<td style="width:7%;padding-left: 5px;padding-top: 15px;">
+					<img src="/wp-content/plugins/clickmeter-link-shortener-and-analytics/img/logo.png" alt="clickmeter logo"></img>
+				</td>
+				<td style="width:75%">
+					<h1 style="margin-bottom: 5px">ClickMeter Link Shortener and Analytics‏</h1>
 		<div>
-			<span style="padding-right:10px;">You will be able to track all visits and shares of your articles. To benefit from this plugin you need a ClickMeter Subscription:</span>
-			<a href="http://support.clickmeter.com/home" target="_blank">Learn more</a>
+			<span>You will be able to track all visits and shares of your articles. <br>To benefit from this plugin you need a ClickMeter Subscription:</span>
+			<a style="padding-left:2px" href="http://support.clickmeter.com/home" target="_blank">Learn more</a>
 			-
 			<a href="http://clickmeter.com/pricing-and-signup" target="_blank">Subscibe for free</a>
 		</div>
+				</td>
+				<td style="width:10%;padding-right: 10px;padding-top: 12px;">
+					<a target="_blank" href="http://clickmeter.com/"><img src="/wp-content/plugins/clickmeter-link-shortener-and-analytics/img/logo-powerdby.png" alt="clickmeter logo"></img></a>
+				</td>
+			</tr>
+		</table>
+
 	</div>
 	<br><br>
 	<form action="" id="init_form" method="post">
@@ -71,10 +84,18 @@ function dialogClose(){
 </div>
 <?php else : ?>
 	<div style="background-color:#E0E0E0;padding-top: 5px;padding-left: 5px;padding-right: 5px;padding-bottom: 5px;">
-		<h1>ClickMeter Link Shortener and Analytics‏</h1>
-		<h2>Welcome 
-			<a target='blank' href='http://mybeta.clickmeter.com/go?val=<?php echo $boGoVal; ?>&returnUrl=%2Fmy-data'><?php echo $username?></a>
-		</h2>
+		<table style="width:100%">
+			<tr>
+				<td style="width:7%;padding-left: 5px;">
+					<img src="/wp-content/plugins/clickmeter-link-shortener-and-analytics/img/logo.png" alt="clickmeter logo"></img>
+				</td>
+				<td style="width:75%"><h1>ClickMeter Link Shortener and Analytics‏</h1><h2>Welcome <a target='blank' href='http://mybeta.clickmeter.com/go?val=<?php echo $boGoVal; ?>&returnUrl=%2Fmy-data'><?php echo $username?></a></h2>
+				</td>
+				<td style="width:10%;padding-right: 10px;">
+					<a target="_blank" href="http://clickmeter.com/"><img src="/wp-content/plugins/clickmeter-link-shortener-and-analytics/img/logo-powerdby.png" alt="clickmeter logo"></img></a>
+				</td>
+			</tr>
+		</table>
 	</div>
 	<hr>
 	<div>

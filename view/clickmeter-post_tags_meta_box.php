@@ -150,7 +150,7 @@ function dialogClose(){
 			echo '<p><div class="dashicons dashicons-visibility" style="color:#888;padding-right:4px;"></div>Visits: <strong>'.$views.'</strong> <a title="View visits details" target="blank" href="http://mybeta.clickmeter.com/go?val='.$boGoVal.'&returnUrl=%2FLinks%3FlinkId%3D'.$tracking_pixel_id.'">View</a></p>';
 			echo '<p><div class="dashicons dashicons-cart" style="color:#888;padding-right:4px;"></div>Conversions: <strong>'.$conversions_count.'</strong></p>';
 		}else{
-			echo '<p>This post is not tracked.</p>';
+			echo '<p>Views on this posts are not tracked. Activate tracking in the <a target="_blank" href="'.esc_url(add_query_arg(array('page' => 'clickmeter-link-shortener-and-analytics/view/clickmeter-account.php#clickmeter_track_views'), admin_url('admin.php'))).'">settings page</a></p>';
 		}
 	 ?>
 	<hr>
@@ -200,7 +200,7 @@ function dialogClose(){
 			echo '<p><div class="dashicons dashicons-cart" style="color:#888;padding-right:4px;"></div>Conversions: <strong>'.$conversions_count.'</strong></p>';
 			echo '<input type="hidden" id="tracking_pixel_id" name="tracking_pixel_id" value="'.$tracking_pixel_id.'">';
 		}else{
-			echo '<p>This post is not tracked.</p>';
+			echo '<p>Views on this posts are not tracked. Activate tracking in the <a target="_blank" href="'.esc_url(add_query_arg(array('page' => 'clickmeter-link-shortener-and-analytics/view/clickmeter-account.php#clickmeter_track_views'), admin_url('admin.php'))).'">settings page</a></p>';
 		}
 	 ?>
 	<hr>

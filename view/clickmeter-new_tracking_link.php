@@ -19,6 +19,7 @@ window.onload=function(){
 	jQuery("#redirection_link_name").keyup(function() {
 		jQuery("#resulting_link_label").css('visibility', 'visible');
 	});
+
 }
 
 function cm_select_text() {
@@ -29,6 +30,12 @@ function copyToClipboard(){
 }
 
 </script>
+<style type="text/css">
+    textarea {
+	    max-width:60%;
+      	min-width:60%;
+	}
+</style>
 <body>
 <?php
 	$api_key=WPClickmeter::get_option('clickmeter_api_key');
@@ -87,7 +94,7 @@ function copyToClipboard(){
 				<tr>
 					<td style="width:20%"><span style="color:#6B6B6B;font-size: 15px;">Destination URL: </span></td>
 					<td style="width:80%">
-						<span class="tooltip"><input type="text" style="width:60%" value="http://" id="redirection_link_url" id="redirection_link_url"/><span><img class="callout" src="/wp-content/plugins/clickmeter-link-shortener-and-analytics/img/callout_black.gif" />
+						<span class="tooltip"><textarea style="height:27px" placeholder="http://" id="redirection_link_url" id="redirection_link_url"></textarea><span><img class="callout" src="/wp-content/plugins/clickmeter-link-shortener-and-analytics/img/callout_black.gif" />
 							This is the link you want to track: the target URL where you want to send your visitors (eg. http://clickmeter.com).
 						</span></span>
 						<span style="display:none" class="error" id="error_url"></span>
