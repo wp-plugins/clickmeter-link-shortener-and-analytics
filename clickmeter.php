@@ -4,7 +4,7 @@ Plugin Name: ClickMeter Link Shortener and Analytics
 Description: Customizable Link Shortener combined with Powerful Real-Time Analytics. Create short tracking links and track everything about your visitors.
 Plugin URI: http://support.clickmeter.com/forums/21156669-WordPress-plugin
 Author: ClickMeter
-Version: 1.2.2
+Version: 1.2.3
 */
 /*  Copyright 2014  ClickMeter 
 
@@ -53,6 +53,10 @@ class WPClickmeter {
 		if($version == "1.2.1"){
 			update_option('clickmeter_plugin_version', "1.2.2");
 			$version = "1.2.2";
+		}
+		if($version == "1.2.2"){
+			update_option('clickmeter_plugin_version', "1.2.3");
+			$version = "1.2.3";
 		}
 		
 		add_action('admin_enqueue_scripts', array(__CLASS__, 'javascriptAndCss_init'));
@@ -978,7 +982,7 @@ class WPClickmeter {
 		);
 	}
 
-	static function update_link($key, $value_name, $value){
+	static function update_link($key, $value_name, $value, $timestamp){
 		global $wpdb;
 		$table_name = $wpdb->prefix . 'clickmeter_tracking_links';
 		$timezone = WPClickmeter::get_option("clickmeter_user_timezone");
@@ -986,8 +990,7 @@ class WPClickmeter {
 		$wpdb->update( 
 			$table_name, 
 			array( 
-				$value_name => $value,
-				'time' => current_time( 'mysql', $timezone )
+				$value_name => $value
 			), 
 			array( 'tracking_link_id' => $key )
 		);
@@ -1008,7 +1011,7 @@ class WPClickmeter {
 	static function get_all_links(){
 		global $wpdb;
 		$table_name = $wpdb->prefix . 'clickmeter_tracking_links';
-		$result = $wpdb->get_results("SELECT * FROM $table_name", ARRAY_A);	
+		$result = $wpdb->get_results("SELECT * FROM $table_name ORDER BY time DESC" , ARRAY_A);	
 		
 		return $result;
 	}

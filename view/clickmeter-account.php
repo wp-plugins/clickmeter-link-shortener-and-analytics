@@ -30,7 +30,7 @@ function dialogClose(){
 				<td style="width:7%;padding-left: 5px;padding-top: 15px;">
 					<img src="/wp-content/plugins/clickmeter-link-shortener-and-analytics/img/logo.png" alt="clickmeter logo"></img>
 				</td>
-				<td style="width:75%">
+				<td style="width:92%">
 					<h1 style="margin-bottom: 5px">ClickMeter Link Shortener and Analytics‏</h1>
 		<div>
 			<span>You will be able to track all visits and shares of your articles. <br>To benefit from this plugin you need a ClickMeter Subscription:</span>
@@ -40,7 +40,7 @@ function dialogClose(){
 		</div>
 				</td>
 				<td style="width:10%;padding-right: 10px;padding-top: 12px;">
-					<a target="_blank" href="http://clickmeter.com/"><img src="/wp-content/plugins/clickmeter-link-shortener-and-analytics/img/logo-powerdby.png" alt="clickmeter logo"></img></a>
+					<a target="_blank" href="http://clickmeter.com/"><img src="/wp-content/plugins/clickmeter-link-shortener-and-analytics/img/logo-powerdby.gif" alt="clickmeter logo"></img></a>
 				</td>
 			</tr>
 		</table>
@@ -89,10 +89,10 @@ function dialogClose(){
 				<td style="width:7%;padding-left: 5px;">
 					<img src="/wp-content/plugins/clickmeter-link-shortener-and-analytics/img/logo.png" alt="clickmeter logo"></img>
 				</td>
-				<td style="width:75%"><h1>ClickMeter Link Shortener and Analytics‏</h1><h2>Welcome <a target='blank' href='http://mybeta.clickmeter.com/go?val=<?php echo $boGoVal; ?>&returnUrl=%2Fmy-data'><?php echo $username?></a></h2>
+				<td style="width:92%"><h1>ClickMeter Link Shortener and Analytics‏</h1><h2>Welcome <a target='blank' href='http://mybeta.clickmeter.com/go?val=<?php echo $boGoVal; ?>&returnUrl=%2Fmy-data'><?php echo $username?></a></h2>
 				</td>
 				<td style="width:10%;padding-right: 10px;">
-					<a target="_blank" href="http://clickmeter.com/"><img src="/wp-content/plugins/clickmeter-link-shortener-and-analytics/img/logo-powerdby.png" alt="clickmeter logo"></img></a>
+					<a target="_blank" href="http://clickmeter.com/"><img src="/wp-content/plugins/clickmeter-link-shortener-and-analytics/img/logo-powerdby.gif" alt="clickmeter logo"></img></a>
 				</td>
 			</tr>
 		</table>

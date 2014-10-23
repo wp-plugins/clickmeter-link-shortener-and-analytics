@@ -207,15 +207,13 @@ if($api_key!=NULL){
 	$json_output = WPClickmeter::api_request('http://apiv2.clickmeter.com/account/plan', 'GET', NULL, $api_key);
 	$plan_type = $json_output[name];
 	$maximumDatapoints = $json_output[maximumDatapoints];
+	$used_datapoints = $json_output[usedDatapoints];
 	$monthlyEvents = $json_output[monthlyEvents];
 	$billingPeriodStart = $json_output[billingPeriodStart];
 	$billingPeriodStart = substr($billingPeriodStart,0,4).'/'.substr($billingPeriodStart,4,2).'/'.substr($billingPeriodStart,6,2);
 	$billingPeriodEnd = $json_output[billingPeriodEnd];
 	$billingPeriodEnd = substr($billingPeriodEnd,0,4).'/'.substr($billingPeriodEnd,4,2).'/'.substr($billingPeriodEnd,6,2);
 	$usedMonthlyEvents = $json_output[usedMonthlyEvents];
-
-	$json_output = WPClickmeter::api_request('http://apiv2.clickmeter.com/datapoints/count', 'GET', NULL, $api_key);
-	$used_datapoints = $json_output[count];
 
 	$datapoints_flag = true;
 	$available_datapoints = $maximumDatapoints - $used_datapoints;

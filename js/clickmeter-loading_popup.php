@@ -22,7 +22,7 @@ body {
 </style>
 
 <script type="text/javascript">
-	document.write('<center><div style="padding: 10px 0px 10px 0px"><span><div class="spinner"></div>Please wait some seconds.</span></div></center>');
+	document.write('<center><div style="padding: 10px 0px 10px 0px"><span><div class="spinner"></div>Please wait some seconds</span></div></center>');
 </script>
 <body>
 

@@ -92,7 +92,7 @@ function copyToClipboard(){
 		<table style="width:80%">
 			<tbody>
 				<tr>
-					<td style="width:20%"><span style="color:#6B6B6B;font-size: 15px;">Destination URL: </span></td>
+					<td style="width:20%"><span style="color:#6B6B6B;font-size: 15px;"><strong>Destination URL: </strong></span></td>
 					<td style="width:80%">
 						<span class="tooltip"><textarea style="height:27px" placeholder="http://" id="redirection_link_url" id="redirection_link_url"></textarea><span><img class="callout" src="/wp-content/plugins/clickmeter-link-shortener-and-analytics/img/callout_black.gif" />
 							This is the link you want to track: the target URL where you want to send your visitors (eg. http://clickmeter.com).
@@ -101,7 +101,7 @@ function copyToClipboard(){
 					</td>
 				</tr>
 				<tr>
-					<td style="width:20%"><span style="color:#6B6B6B;font-size: 15px;">Link name: </span></td>
+					<td style="width:20%"><span style="color:#6B6B6B;font-size: 15px;"><strong>Link name: </strong></span></td>
 					<td style="width:80%">
 						<span class="tooltip"><input type="text" style="width:60%" value="" id="redirection_link_name" id="redirection_link_name" maxlength="50"/>
 						<span><img class="callout" src="/wp-content/plugins/clickmeter-link-shortener-and-analytics/img/callout_black.gif" />

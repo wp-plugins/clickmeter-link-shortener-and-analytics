@@ -89,12 +89,12 @@ function dialogClose(tracking_link_id){
 			<td width="60%">
 				<div id="bulk_action_progress" style="padding: 5px 0px 5px 0px; display:none">
 					<table>
-						<tr><td><div class="spinner_cm"></div></td><td><span>Please wait some seconds.</span></td></tr>
+						<tr><td><div class="spinner_cm"></div></td><td><span>Please wait some seconds</span></td></tr>
 					</table>
 				</div>
 				<div id="cm_bulk_edit_url" style="display:none">
 					<span style="color:#6B6B6B;font-size: 15px;">New Destination URL: </span>
-					<input type="text" style="width:55%" value="http://" id="cm_dest_url" id="cm_dest_url" maxlength="50"/><span style="display:none" class="error" id="error_url"></span>
+					<input type="text" style="width:55%" placeholder="http://" id="cm_dest_url" id="cm_dest_url" maxlength="50"/><span style="display:none" class="error" id="error_url"></span>
 					<input type="button" id="cm_bulk_edit_url_confirm" value="Update" class="clickmeter-button"/>
 				</div>
 			</td>
@@ -118,29 +118,30 @@ function dialogClose(tracking_link_id){
 		<thead>
 			<tr>
 				<th class="manage-column column-cb check-column"><input type="checkbox" id="clickmeter_check_all"/></th>
-				<th class="manage-column" width="35%">Tracking Link</th>
-				<th class="manage-column" width="25%">Destination URL</th>
-				<th class="manage-column" width="25%">Campaign Name</th>
-				<th class="manage-column" width="15%">Creation Date</th>
+				<th class="manage-column" width="35%"><strong>Tracking Link</strong></th>
+				<th class="manage-column" width="25%"><strong>Destination URL</strong></th>
+				<th class="manage-column" width="25%"><strong>Campaign Name</strong></th>
+				<th class="manage-column" width="15%"><strong>Creation Date</strong></th>
 			</tr>
 		</thead>
 		<tbody>
 			<?php foreach ($current_page_links as $link_data) {
 				$tracking_link_id = $link_data[tracking_link_id];
-				$tracking_link = $link_data[tracking_code];
+				$tracking_link = str_replace("http://", "", $link_data[tracking_code]);;
         		$tracking_link_campaign = $link_data[campaign_name];
         		$dest_url = $link_data[destination_url];
         		$tracking_link_domain = $link_data[domain_id];
         		$redirection_flag = $link_data[is_redirection_link];
         		$alternative_url = $tracking_link;
         		if($redirection_flag==1){
-        			$tracking_link = "http://" . $blog_name.'/'.$link_data[link_name];
+        			//$tracking_link = "http://" . $blog_name.'/'.$link_data[link_name];
+        			$tracking_link = $blog_name.'/'.$link_data[link_name];
         		} 
 				echo '
 				<tr>
 					<td><input id="cb-select-'.$tracking_link_id.'" type="checkbox" value="'.$tracking_link_id.'" name="tracking_link_rows"/></td>
 					<td>	
-						<strong><a target="_blank" href="'.$tracking_link.'">'.$tracking_link.'</a></strong><br>
+						<strong><a style="font-size:14px" target="_blank" href="http://'.$tracking_link.'">'.$tracking_link.'</a></strong><br>
 						<form id="'.$tracking_link_id.'_delete_form" action="" method="post">
 							<input type="hidden" value="'.$tracking_link_id.'" name="tracking_link_delete">
 							<input title="Delete tracking link" type="button" class="link_button" style="color:#a00" onclick="deleteSingleTLWarning(\''.$tracking_link_id.'\')" value="Delete"> |
@@ -151,7 +152,7 @@ function dialogClose(tracking_link_id){
 						</form>
 						<div id="'.$tracking_link_id.'_dialog_copy" style="display:none" title="Copy to clipboard">
 							<p style="color:grey"><i>Select URL than type CTRL + C to copy</i></p>
-						    <input style="width: 80%;" type="text" value="'.$tracking_link.'"/>
+						    <input style="width: 80%;" type="text" value="http://'.$tracking_link.'"/>
 						    <button type="button" class="cm_select" onclick="cm_select_text()">Select</button>
 						</div>
 						<div id="'.$tracking_link_id.'_dialog_delete" style="display:none" title="Delete Tracking Link">
