@@ -409,7 +409,7 @@ function callAjax_create_trackinglink(){
 	    action: 'create_tl',
 	    friendly_name: jQuery("#clickmeter_post_title").val(),
 	    url: jQuery("#post_url").val(),
-	    post_id: jQuery("#post_ID").val()
+	    post_id: jQuery("#cm_post_id").val()
 	};
 
 	var timeout_val = 3600*1000;

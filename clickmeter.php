@@ -4,7 +4,7 @@ Plugin Name: ClickMeter Link Shortener and Analytics
 Description: Customizable Link Shortener combined with Powerful Real-Time Analytics. Create short tracking links and track everything about your visitors.
 Plugin URI: http://support.clickmeter.com/forums/21156669-WordPress-plugin
 Author: ClickMeter
-Version: 1.2.3
+Version: 1.2.4
 */
 /*  Copyright 2014  ClickMeter 
 
@@ -58,40 +58,46 @@ class WPClickmeter {
 			update_option('clickmeter_plugin_version', "1.2.3");
 			$version = "1.2.3";
 		}
+		if($version == "1.2.3"){
+			update_option('clickmeter_plugin_version', "1.2.4");
+			$version = "1.2.4";
+		}
 		
 		add_action('admin_enqueue_scripts', array(__CLASS__, 'javascriptAndCss_init'));
 
 		$api_key=WPClickmeter::get_option('clickmeter_api_key');
-		if (empty($api_key)){
-			add_action('admin_notices', array(__CLASS__, 'show_warning_message'));
-			add_action('admin_menu', array(__CLASS__, 'firstMenu'));
-		}else{
-			add_action('admin_menu', array(__CLASS__, 'completeMenu'));
+		if(current_user_can( 'manage_options' )){
+			if (empty($api_key)){
+				add_action('admin_notices', array(__CLASS__, 'show_warning_message'));
+				add_action('admin_menu', array(__CLASS__, 'firstMenu'));
+			}else{
+				add_action('admin_menu', array(__CLASS__, 'completeMenu'));
 
-			add_action( 'add_meta_boxes', array(__CLASS__, 'clickmeter_add_meta_box' ), 10 , 2);
-			add_action( 'save_post', array(__CLASS__, 'clickmeter_save_meta_box_data' ));
-			add_action( 'edit_post', array(__CLASS__, 'clickmeter_edit_meta_box_data' ));
-			add_filter( 'plugin_action_links_'.plugin_basename( plugin_dir_path( __FILE__ ) . 'clickmeter.php'), array(__CLASS__, 'add_uninstall_link') );
-			add_action( 'delete_post', array(__CLASS__, 'clickmeter_delete_post' ));
-			//ADD COLUMN TO POSTS PAGE
-			//add_filter('manage_posts_columns',  array(__CLASS__, 'clickmeter_column'));
-			//add_action('manage_posts_custom_column',  array(__CLASS__, 'show_clickmeter_column'));
-			//delete cache data into database
-			//delete_option("clickmeter_TL_list");
-			//delete_option("clickmeter_TP_list");
-			//delete_option("clickmeter_conv_list");
+				add_action( 'add_meta_boxes', array(__CLASS__, 'clickmeter_add_meta_box' ), 10 , 2);
+				add_action( 'save_post', array(__CLASS__, 'clickmeter_save_meta_box_data' ));
+				add_action( 'edit_post', array(__CLASS__, 'clickmeter_edit_meta_box_data' ));
+				add_filter( 'plugin_action_links_'.plugin_basename( plugin_dir_path( __FILE__ ) . 'clickmeter.php'), array(__CLASS__, 'add_uninstall_link') );
+				add_action( 'delete_post', array(__CLASS__, 'clickmeter_delete_post' ));
+				//ADD COLUMN TO POSTS PAGE
+				//add_filter('manage_posts_columns',  array(__CLASS__, 'clickmeter_column'));
+				//add_action('manage_posts_custom_column',  array(__CLASS__, 'show_clickmeter_column'));
+				//delete cache data into database
+				//delete_option("clickmeter_TL_list");
+				//delete_option("clickmeter_TP_list");
+				//delete_option("clickmeter_conv_list");
 
-			//add_filter('manage_edit-post_sortable_columns',  array(__CLASS__, 'clicks_column_register_sortable' ));
-			//add_filter('request',  array(__CLASS__, 'clicks_column_orderby' ));
-			//add_filter('request',  array(__CLASS__, 'views_column_orderby' ));
-			//if(!empty($conversion1_id))
-			//	add_filter('request',  array(__CLASS__, 'conversions_column1_orderby' ));
-			//if(!empty($conversion2_id))
-			//	add_filter('request',  array(__CLASS__, 'conversions_column2_orderby' ));
-			
-			//Save settings
-			if(isset( $_POST['pixels_flags'] ) || isset($_POST['domain_list'])){
-				add_action('admin_notices', array(__CLASS__, 'saveCompletedWarning'));	
+				//add_filter('manage_edit-post_sortable_columns',  array(__CLASS__, 'clicks_column_register_sortable' ));
+				//add_filter('request',  array(__CLASS__, 'clicks_column_orderby' ));
+				//add_filter('request',  array(__CLASS__, 'views_column_orderby' ));
+				//if(!empty($conversion1_id))
+				//	add_filter('request',  array(__CLASS__, 'conversions_column1_orderby' ));
+				//if(!empty($conversion2_id))
+				//	add_filter('request',  array(__CLASS__, 'conversions_column2_orderby' ));
+				
+				//Save settings
+				if(isset( $_POST['pixels_flags'] ) || isset($_POST['domain_list'])){
+					add_action('admin_notices', array(__CLASS__, 'saveCompletedWarning'));	
+				}
 			}
 		}
 	}
@@ -1091,7 +1097,7 @@ class WPClickmeter {
 
 function is_redirect_link($request_uri){
 	$link_data = WPClickmeter::get_redirect_link($request_uri);
-	if($link_data!=null){
+	if($link_data!=null && $link_data[is_post]!=1){
 		return true;
 	}else{
 		return false;
@@ -1115,7 +1121,7 @@ function templateRedirect() {
 	if(is_redirect_link($request_uri)){
 		$link_data = WPClickmeter::get_redirect_link($request_uri);
 		$trackingCode = $link_data[tracking_code];		
-		wp_redirect( $trackingCode, 301 ); 
+		wp_redirect( add_query_arg($_GET, $trackingCode), 301 ); 
 		exit;
 	}
 	
@@ -1140,8 +1146,6 @@ function test_action_callback() {
 	//check_ajax_referer( 'my-special-string', 'security' );
 	$whatever =  intval($_POST['whatever']);
 	$whatever += 10;
-
-	WPClickmeter::store_option("clickmeter_debug1", $whatever);
 
 	echo $whatever;
 
@@ -1218,19 +1222,19 @@ function ajax_create_tl() {
 	$created_link_id = $json_output[id];
 	$timestamp = $json_output[creationDate];
 
+	$is_post=0;
 	if($post_id!="0000"){
+		$is_post=1;
 		$this_post = get_post($post_id);
 		$post_type = $this_post->post_type;
 		$tag_body=array('name'=>$post_type, 'datapoints'=>array($created_link_id));
 		$json_output = WPClickmeter::api_request('http://apiv2.clickmeter.com/tags','POST', json_encode($tag_body), $api_key);
 	}
-
-	$is_post=1;
+	
 	if(isset($_POST['tag_name'])){
 		$tag_name = $_POST['tag_name'];
 		$tag_body=array('name'=>$tag_name, 'datapoints'=>array($created_link_id));
 		$json_output = WPClickmeter::api_request('http://apiv2.clickmeter.com/tags','POST', json_encode($tag_body), $api_key);
-		$is_post=0;
 	}
 
 	$result = array();

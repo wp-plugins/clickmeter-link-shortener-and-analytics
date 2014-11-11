@@ -207,6 +207,7 @@ function dialogClose(){
 	<input type="hidden" id="domainId" name="domainId" value="<?php echo $default_domainId ?>">
 	<input type="hidden" id="boGoVal" name="boGoVal" value="<?php echo $boGoVal ?>">
 	<input type="hidden" id="post_url" value="<?php echo $permalink ?>" name="post_url">
+	<input type="hidden" id="cm_post_id" value="<?php echo $post_id ?>" name="cm_post_id">
 	<input type="hidden" id="clickmeter_post_title" value="<?php echo $post_title ?>" name="clickmeter_post_title">
 	<input type="hidden" id="clickmeter_update_post" name="clickmeter_update_post" value="true">
 	<input type="hidden" id="clickmeter_settings_link" name="clickmeter_settings_link" value="<?php echo esc_url(add_query_arg(array('page' => 'clickmeter-link-shortener-and-analytics/view/clickmeter-account.php'), admin_url('admin.php'))); ?>">
