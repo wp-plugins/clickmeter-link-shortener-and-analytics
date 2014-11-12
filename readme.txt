@@ -82,7 +82,7 @@ You'll find updated FAQs on [ClickMeter Knowledge Base](http://support.clickmete
 
 = 1.2.4.1 =
 <ul>
-<li>Patch to tracking links redirection fix of the previous of version 1.2.4</li>
+<li>Patch to tracking links redirection fix of the previous version 1.2.4</li>
 </ul>
 
 = 1.2.4 =
