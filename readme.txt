@@ -3,7 +3,7 @@ Contributors: ClickMeter
 Tags: 301 redirect, admin, advertisers, affiliates, Agencies, analytic, analytics, analyze, automation, bitly, click, clickmeter, clicks, cloak, cloaking, custom url, ga, google analytics, link management, link monitor, link tracker, link tracking, marketing, mask, masking, monitor, online users, page, pages, pageviews, permalink, plugin, Post, posts, publishers, qr code, redirect, reports, short url, shorten, shortlink, shorturl, spiders, statistics, stats, tinyurl, track, tracker, tracking, url shortener, views, widget, wordpress, world map, wp.gl, wp.me.
 Requires at least: 3.5.0
 Tested up to: 4.0
-Stable tag: 1.2.4
+Stable tag: 1.2.4.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Donate link: http://clickmeter.com/pricing-signup
@@ -79,6 +79,11 @@ You'll find updated FAQs on [ClickMeter Knowledge Base](http://support.clickmete
 8. QR-code from one of the shortened links.
 
 == Changelog ==
+
+= 1.2.4.1 =
+<ul>
+<li>Patch to tracking links redirection fix of the previous of version 1.2.4</li>
+</ul>
 
 = 1.2.4 =
 <ul>
