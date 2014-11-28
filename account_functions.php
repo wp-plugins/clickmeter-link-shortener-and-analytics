@@ -135,7 +135,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && array_key_exists("API_key",$_POST)) 
 					WPClickmeter::store_option("track_404_flag", 0);
 					WPClickmeter::store_option("link_cloak_flag", 0);
 					WPClickmeter::store_option("clickmeter_wp_redirection_flag", 0);
-					WPClickmeter::store_option("clickmeter_default_redirection_type", "301");
+					WPClickmeter::store_option("clickmeter_default_redirection_type", "307");
 					echo '<meta http-equiv="refresh" content="0">';
 
 			}elseif($_POST["startup_create_TP"]=="true"){
@@ -152,7 +152,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && array_key_exists("API_key",$_POST)) 
 				WPClickmeter::store_option("track_404_flag", 0);
 				WPClickmeter::store_option("link_cloak_flag", 0);
 				WPClickmeter::store_option("clickmeter_wp_redirection_flag", 0);
-				WPClickmeter::store_option("clickmeter_default_redirection_type", "301");
+				WPClickmeter::store_option("clickmeter_default_redirection_type", "307");
 				echo '<meta http-equiv="refresh" content="0">';
 				echo '<script>window.location.replace("?page=clickmeter-link-shortener-and-analytics/view/clickmeter-loading_tracking_pixels_ops.php&startup_create_TP=true");</script>';
 			}
@@ -364,7 +364,7 @@ if($api_key!=NULL){
 				'title'=> "WordPress 404",
 				'groupId'=> $group_id_404_reports,
 				'name'=> $url_404_name,
-				'typeTL'=>array('domainId'=> WPClickmeter::get_option("clickmeter_default_domainId"),'url'=> $url_404)
+				'typeTL'=>array('domainId'=> WPClickmeter::get_option("clickmeter_default_domainId"), "redirectType"=> $default_redirection_type, 'url'=> $url_404)
 			);
 			$created_link = WPClickmeter::api_request('http://apiv2.clickmeter.com/datapoints','POST', json_encode($body), $api_key);
 			$json_output = WPClickmeter::api_request('http://apiv2.clickmeter.com/datapoints/'.$created_link[id], 'GET', NULL, $api_key);
@@ -381,7 +381,7 @@ if($api_key!=NULL){
 					'title'=> $json_output[title],
 					'groupId'=> $json_output[groupId],
 					'name'=> $json_output[name],
-					'typeTL'=>array('domainId'=> $json_output[typeTL][domainId],'url'=> $url_404)
+					'typeTL'=>array('domainId'=> $json_output[typeTL][domainId], "redirectType"=> $default_redirection_type, 'url'=> $url_404)
 				);
 				$updated_link = WPClickmeter::api_request('http://apiv2.clickmeter.com/datapoints/'.$tl_404_id,'POST', json_encode($body), $api_key);
 				WPClickmeter::store_option("clickmeter_404_tlID", $updated_link[id]);
