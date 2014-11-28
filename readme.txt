@@ -69,13 +69,14 @@ To uninstall ClickMeter Link Shortener and Analytics:
 You'll find updated FAQs on [ClickMeter Knowledge Base](http://support.clickmeter.com/forums/21156669-WordPress-plugin).
 
 == Screenshots ==
-1. Perfect for content marketing optimisation
-2. Create your ClickMeter Account (free or premium) in seconds. Settings are very easy and available in the same page. 
-3. Every page or post contains a quick access to main actions and reports.
+1. Create your ClickMeter Account (free or premium) in seconds. Settings are very easy and available in the same page. 
+2. Every page or post contains a quick access to main actions and reports.
+3. How to create a dedicated short link.
 4. Fast access to dedicated short link and reports.
-5. List, in real-time, of all the visitors on your posts and short links.
-6. World map with all the people viewing your posts.
-7. QR-code from one of the shortened links.
+5. List of tracked posts.
+6. List, in real-time, of all the visitors on your posts and short links.
+7. World map with all the people viewing your posts.
+8. QR-code from one of the shortened links.
 
 == Changelog ==
 
