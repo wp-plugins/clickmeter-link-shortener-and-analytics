@@ -74,7 +74,7 @@ function dialogClose(tracking_link_id){
 	<hr>
 	<br>
 	<a target="_blank" href="<?php echo esc_url(add_query_arg(array('page' => 'clickmeter-link-shortener-and-analytics/view/clickmeter-new_tracking_link.php'), admin_url('admin.php'))); ?>">Create Tracking Link</a> | 
-	<a target="_blank" href="http://mybeta.clickmeter.com/go?val=<?php echo $boGoVal; ?>&returnUrl=%2FLinks%23campaignId%3D<?php echo $group_id_TL; ?>%26rows%3D10%2614days">View Tracking Links on ClickMeter</a><br><br>
+	<a target="_blank" href="http://my.clickmeter.com/go?val=<?php echo $boGoVal; ?>&returnUrl=%2FLinks%23campaignId%3D<?php echo $group_id_TL; ?>%26rows%3D10%2614days">View Tracking Links on ClickMeter</a><br><br>
 	<div class="clickmeter_tablenav">
 		<table width="100%">
 		<tr>
@@ -145,8 +145,8 @@ function dialogClose(tracking_link_id){
 						<form id="'.$tracking_link_id.'_delete_form" action="" method="post">
 							<input type="hidden" value="'.$tracking_link_id.'" name="tracking_link_delete">
 							<input title="Delete tracking link" type="button" class="link_button" style="color:#a00" onclick="deleteSingleTLWarning(\''.$tracking_link_id.'\')" value="Delete"> |
-							<a style="text-decoration:underline" title="Edit tracking link on ClickMeter" target="blank" href="http://mybeta.clickmeter.com/go?val='.$boGoVal.'&returnUrl=%2Flinks%2Fedit%2F'.$tracking_link_id.'">Edit</a> |
-							<a style="text-decoration:underline" title="View tracking link stats on ClickMeter " target="blank" href="http://mybeta.clickmeter.com/go?val='.$boGoVal.'&returnUrl=%2FLinks%3FlinkId%3D'.$tracking_link_id.'">Stats</a> |
+							<a style="text-decoration:underline" title="Edit tracking link on ClickMeter" target="blank" href="http://my.clickmeter.com/go?val='.$boGoVal.'&returnUrl=%2Flinks%2Fedit%2F'.$tracking_link_id.'">Edit</a> |
+							<a style="text-decoration:underline" title="View tracking link stats on ClickMeter " target="blank" href="http://my.clickmeter.com/go?val='.$boGoVal.'&returnUrl=%2FLinks%3FlinkId%3D'.$tracking_link_id.'">Stats</a> |
 							<a style="text-decoration:underline" title="Get QR code" target="_blank" href="'.$alternative_url.'.qr">QR</a> |
 							<input title="Copy to clipboard" type="button" class="link_button" value="Copy" onclick="copyToClipboard(\''.$tracking_link_id.'\')"/>
 						</form>

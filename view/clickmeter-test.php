@@ -69,15 +69,8 @@ if($_POST["fake_post_creation"]=="true"){
 }
 
 if($_POST["fake_post_delete"]=="true"){
-    $args = array(
-    'posts_per_page' => -1,
-    'post_type' => 'post',
-    'post_status' => array('publish', 'private'),
-    'orderby' => 'title',
-    'order' => 'ASC'
-    );
 
-    $posts_array = get_posts( $args );
+    $posts_array = WPClickmeter::retrieve_posts();
     foreach ($posts_array as $post) {
         wp_delete_post( $post->ID, true );
     }
@@ -98,14 +91,7 @@ if($_POST["fake_post_delete"]=="true"){
 
 
 
-    $args = array(
-    'posts_per_page' => -1,
-    'post_type' => array('post', 'page'),
-    'post_status' => array('publish', 'private', 'future'),
-    'orderby' => 'title',
-    'order' => 'ASC'
-    );
-    $posts_array = get_posts( $args );
+    $posts_array = WPClickmeter::retrieve_posts();
 
 
     // $t=time();

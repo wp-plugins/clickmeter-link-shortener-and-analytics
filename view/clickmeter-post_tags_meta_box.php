@@ -107,11 +107,19 @@ function dialogClose(){
 	$conversion1enabled = false;
 	$conversion2enabled = false;
 	if($tracking_pixel_id != NULL){
-		$json_output = WPClickmeter::api_request('http://apiv2.clickmeter.com/datapoints/'.$tracking_pixel_id.'/aggregated?hourly=false&timeframe=beginning', 'GET', NULL, $api_key);
+        $plan_type = WPClickmeter::get_option( 'clickmeter_plan_type');
+        if($plan_type == "Small") {
+            $json_output = WPClickmeter::api_request('http://apiv2.clickmeter.com/datapoints/'.$tracking_pixel_id.'/aggregated?hourly=false&timeframe=last30', 'GET', NULL, $api_key);
+        }
+        else{
+            $json_output = WPClickmeter::api_request('http://apiv2.clickmeter.com/datapoints/' . $tracking_pixel_id . '/aggregated?hourly=false&timeframe=beginning', 'GET', NULL, $api_key);
+        }
 		if(!empty($json_output)){
 			$views = $json_output[totalViews];
 		}
-		$json_output = WPClickmeter::api_request('http://apiv2.clickmeter.com/datapoints/'.$tracking_pixel_id.'/aggregated?hourly=true&timeframe=last90', 'GET', NULL, $api_key);
+        if($plan_type != "Small") {
+            $json_output = WPClickmeter::api_request('http://apiv2.clickmeter.com/datapoints/' . $tracking_pixel_id . '/aggregated?hourly=true&timeframe=last90', 'GET', NULL, $api_key);
+        }
 		if(!empty($json_output) && array_key_exists("convertedClicks", $json_output)){
 			$conversions_count = $json_output[convertedClicks];
 		}
@@ -147,7 +155,7 @@ function dialogClose(){
 <?php elseif($tracking_link_id!=null) : //UPDATE POST BOX WITH TRACKING LINK?>
 	<?php
 		if($tracking_pixel_id!=null){
-			echo '<p><div class="dashicons dashicons-visibility" style="color:#888;padding-right:4px;"></div>Visits: <strong>'.$views.'</strong> (<a title="View visits details" target="blank" href="http://mybeta.clickmeter.com/go?val='.$boGoVal.'&returnUrl=%2FLinks%3FlinkId%3D'.$tracking_pixel_id.'">Stats</a>)</p>';
+			echo '<p><div class="dashicons dashicons-visibility" style="color:#888;padding-right:4px;"></div>Visits: <strong>'.$views.'</strong> (<a title="View visits details" target="blank" href="http://my.clickmeter.com/go?val='.$boGoVal.'&returnUrl=%2FLinks%3FlinkId%3D'.$tracking_pixel_id.'">Stats</a>)</p>';
 			echo '<p><div class="dashicons dashicons-cart" style="color:#888;padding-right:4px;"></div>Conversions: <strong>'.$conversions_count.'</strong></p>';
 		}else{
 			echo '<p>Views on this posts are not tracked. Activate tracking in the <a target="_blank" href="'.esc_url(add_query_arg(array('page' => 'clickmeter-link-shortener-and-analytics/view/clickmeter-account.php#clickmeter_track_views'), admin_url('admin.php'))).'">settings page</a></p>';
@@ -174,8 +182,8 @@ function dialogClose(){
 	<form id="cm_delete_form" action="" method="post">
 		<input type="hidden" value="delete" name="tracking_link_delete">
 		<input title="Delete tracking link" type="button" class="link_button" style="color:#a00" onclick="deleteTLWarning()" value="Delete"> |
-		<a title="Edit tracking link on ClickMeter" target="blank" href="http://mybeta.clickmeter.com/go?val=<?php echo $boGoVal ?>&returnUrl=%2Flinks%2Fedit%2F<?php echo $tracking_link_id ?>">Edit</a> |
-		<a title="View tracking link stats on ClickMeter" target="blank" href="http://mybeta.clickmeter.com/go?val=<?php echo $boGoVal ?>&returnUrl=%2FLinks%3FlinkId%3D<?php echo $tracking_link_id ?>">Stats</a> |
+		<a title="Edit tracking link on ClickMeter" target="blank" href="http://my.clickmeter.com/go?val=<?php echo $boGoVal ?>&returnUrl=%2Flinks%2Fedit%2F<?php echo $tracking_link_id ?>">Edit</a> |
+		<a title="View tracking link stats on ClickMeter" target="blank" href="http://my.clickmeter.com/go?val=<?php echo $boGoVal ?>&returnUrl=%2FLinks%3FlinkId%3D<?php echo $tracking_link_id ?>">Stats</a> |
 		<a style="text-decoration:underline" title="Get QR code" target="_blank" href="http://<?php echo $tracking_link ?>.qr">QR</a> |
 		<input title="Copy to clipboard" type="button" class="link_button" value="Copy" onclick="copyToClipboard()"/> |
 		<a title="Send an email with this tracking link" target="blank" href="mailto:?subject=<?php echo $post_title; ?>&body=I’d like to share this article with you: http://<?php echo $tracking_link; ?>">Email</a>
@@ -196,7 +204,7 @@ function dialogClose(){
 <?php else : //UPDATE POST BOX NO TRACKING LINK?>
 	<?php
 		if($tracking_pixel_id!=null){
-			echo '<p><div class="dashicons dashicons-visibility" style="color:#888;padding-right:4px;"></div>Visits: <strong>'.$views.'</strong> (<a title="View visits details" target="blank" href="http://mybeta.clickmeter.com/go?val='.$boGoVal.'&returnUrl=%2FLinks%3FlinkId%3D'.$tracking_pixel_id.'">Stats</a>)</p>';
+			echo '<p><div class="dashicons dashicons-visibility" style="color:#888;padding-right:4px;"></div>Visits: <strong>'.$views.'</strong> (<a title="View visits details" target="blank" href="http://my.clickmeter.com/go?val='.$boGoVal.'&returnUrl=%2FLinks%3FlinkId%3D'.$tracking_pixel_id.'">Stats</a>)</p>';
 			echo '<p><div class="dashicons dashicons-cart" style="color:#888;padding-right:4px;"></div>Conversions: <strong>'.$conversions_count.'</strong></p>';
 			echo '<input type="hidden" id="tracking_pixel_id" name="tracking_pixel_id" value="'.$tracking_pixel_id.'">';
 		}else{

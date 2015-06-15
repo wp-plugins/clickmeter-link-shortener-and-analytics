@@ -3,7 +3,6 @@
 	$blog_name = get_site_url();
 	$blog_name = substr($blog_name,7);
 
-	$datapoint_block_size = 10;
 	$conversion_block_size = 5;
 
 	function log_event($action, $params){
@@ -12,6 +11,11 @@
 		WPClickmeter::store_option("clickmeter_lastOP_log", $lastOP_log);
 	}
 
+    $delete_pixels_flag = WPClickmeter::get_option("clickmeter_delete_pixels_flag");
+    if(($delete_pixels_flag != null) && ($delete_pixels_flag == 1)){
+        WPClickmeter::store_option("clickmeter_delete_pixels_flag", 0);
+        echo '<script>window.location.replace("?page=clickmeter-link-shortener-and-analytics/view/clickmeter-loading_tracking_pixels_ops.php&delete_pixels_in_post_contents=true"); </script>';
+    }
 	if($_POST["continue_execution"]=="true"){
 		$lastOP_log = WPClickmeter::get_option("clickmeter_lastOP_log");
 		$last_action = $lastOP_log[0];
@@ -19,7 +23,10 @@
 
 		if($last_action=="API_key_delete"){
 			echo '<script>window.location.replace("?page=clickmeter-link-shortener-and-analytics/view/clickmeter-loading_tracking_pixels_ops.php&API_key_delete=true&post_offset='.$last_params_array[0].'"); </script>';
-		}elseif($last_action=="pixels_flags_true"){
+		}elseif($last_action=="delete_pixels_in_post_contents"){
+            echo '<script>window.location.replace("?page=clickmeter-link-shortener-and-analytics/view/clickmeter-loading_tracking_pixels_ops.php&delete_pixels_in_post_contents=true&included_offset='.$last_params_array[0].'&excluded_offset='.$last_params_array[1].'"); </script>';
+        }
+        elseif($last_action=="pixels_flags_true"){
 			echo '<script>window.location.replace("?page=clickmeter-link-shortener-and-analytics/view/clickmeter-loading_tracking_pixels_ops.php&pixels_flags=true&included_offset='.$last_params_array[0].'&excluded_offset='.$last_params_array[1].'"); </script>';
 		}elseif($last_action=="pixels_flags_false"){
 			echo '<script>window.location.replace("?page=clickmeter-link-shortener-and-analytics/view/clickmeter-loading_tracking_pixels_ops.php&pixels_flags=false&post_offset='.$last_params_array[0].'"); </script>';
@@ -55,7 +62,7 @@
 		$total_percentage = intval(($start_inclusion_index/$total_included)*100);
 
 		if($start_inclusion_index <= $total_included){
-			$end_inclusion_index = $start_inclusion_index + $datapoint_block_size;
+			$end_inclusion_index = $start_inclusion_index + DATAPOINT_BLOCK_SIZE;
 			if($end_inclusion_index > $total_included) $end_inclusion_index = $total_included;
 			for($start_inclusion_index;$start_inclusion_index<$end_inclusion_index;$start_inclusion_index++){
 				if($complete_inclusion_list[$start_inclusion_index]!=null) $current_inclusion_list[] = $complete_inclusion_list[$start_inclusion_index];
@@ -71,32 +78,20 @@
 			echo '<script>callAjaxTP_init_creation('.json_encode($current_inclusion_list).','.$end_inclusion_index.');</script>';
 		}
 	} elseif($_POST["API_key_delete"]!=NULL || $_GET["API_key_delete"]=="true"){
-		
-	  	$args = array(
-		'posts_per_page' => -1,
-		'post_type' => array('post', 'page'),
-		'post_status' => array('publish', 'private', 'future'),
-		'orderby' => 'title',
-		'order' => 'ASC'
-		);
-		$posts_array = get_posts( $args );
 
-		//delete all tracking pixel from pages
-		$total_excluded = sizeof($posts_array);
+        //delete all tracking pixel from pages
+        $total_excluded = wp_count_posts() -> publish;
+        $total_excluded += wp_count_posts() -> private;
+        $total_excluded += wp_count_posts() -> future;
 
-		$start_exclusion_index = 0;
-		if(isset($_GET["post_offset"])) $start_exclusion_index = $_GET["post_offset"];	
-		$total_percentage = intval(($start_exclusion_index/$total_excluded)*100);
+        $start_exclusion_index = 0;
+        if(isset($_GET["post_offset"])) $start_exclusion_index = $_GET["post_offset"];
+        $total_percentage = intval(($start_exclusion_index/$total_excluded)*100);
 
-		if($start_exclusion_index <= $total_excluded){
-			$end_exclusion_index = $start_exclusion_index + $datapoint_block_size;
-			if($end_exclusion_index > $total_excluded) $end_exclusion_index = $total_excluded;
-			for($start_exclusion_index;$start_exclusion_index<$end_exclusion_index;$start_exclusion_index++){
-				if($posts_array[$start_exclusion_index]!=null) $current_exclusion_list[] = $posts_array[$start_exclusion_index];
-			}
-		}
+        $end_exclusion_index = $start_exclusion_index + DATAPOINT_BLOCK_SIZE;
+        $posts_array = WPClickmeter::retrieve_posts(DATAPOINT_BLOCK_SIZE, $start_exclusion_index);
 
-		WPClickmeter::store_option("clickmeter_current_exclusion_list", $current_exclusion_list);
+        WPClickmeter::store_option("clickmeter_current_exclusion_list", $posts_array);
 
 		if($_GET["post_offset"] >= $total_excluded){
 			//WPClickmeter::store_option("clickmeter_debug", "API_key_delete");
@@ -115,7 +110,33 @@
 			log_event("API_key_delete", array($end_exclusion_index));
 			echo '<script>callAjaxTP_delete('.$end_exclusion_index.');</script>';
 		}
-	} elseif($_POST["pixels_flags"]=="true" || $_GET["pixels_flags"]=="true"){
+	}elseif($_GET["delete_pixels_in_post_contents"]=="true"){
+
+        //delete all tracking pixel from pages
+        $total_excluded = wp_count_posts() -> publish;
+        $total_excluded += wp_count_posts() -> private;
+        $total_excluded += wp_count_posts() -> future;
+
+
+        $start_exclusion_index = 0;
+        if(isset($_GET["post_offset"])) $start_exclusion_index = $_GET["post_offset"];
+        $total_percentage = intval(($start_exclusion_index/$total_excluded)*100);
+
+        $end_exclusion_index = $start_exclusion_index + DATAPOINT_BLOCK_SIZE;
+
+        $posts_array = WPClickmeter::retrieve_posts(DATAPOINT_BLOCK_SIZE, $start_exclusion_index);
+
+        WPClickmeter::store_option("clickmeter_current_exclusion_list", $posts_array);
+
+        if($_GET["post_offset"] >= $total_excluded){
+            WPClickmeter::store_option("clickmeter_workinprogress_flag", "completed");
+            $flag="completed";
+        }else{
+            WPClickmeter::store_option("clickmeter_workinprogress_flag", "inprogress");
+            log_event("delete_pixels_in_post_contents", array($end_exclusion_index));
+            echo '<script>callAjaxPixels_delete('.$end_exclusion_index.');</script>';
+        }
+    } elseif($_POST["pixels_flags"]=="true" || $_GET["pixels_flags"]=="true"){
 		if($_POST["pixels_flags"]=="true"){
 			//store settings
 			WPClickmeter::store_option( 'clickmeter_pixel_flag', 1 );
@@ -155,14 +176,14 @@
 		}
 
 		if($start_exclusion_index <= $total_excluded){
-			$end_exclusion_index = $start_exclusion_index + $datapoint_block_size;
+			$end_exclusion_index = $start_exclusion_index + DATAPOINT_BLOCK_SIZE;
 			if($end_exclusion_index > $total_excluded) $end_exclusion_index = $total_excluded;
 			for($start_exclusion_index;$start_exclusion_index<$end_exclusion_index;$start_exclusion_index++){
 				if($complete_exclusion_list[$start_exclusion_index]!=null) $current_exclusion_list[] = $complete_exclusion_list[$start_exclusion_index];
 			}
 		}
 		if($start_inclusion_index <= $total_included){
-			$end_inclusion_index = $start_inclusion_index + $datapoint_block_size;
+			$end_inclusion_index = $start_inclusion_index + DATAPOINT_BLOCK_SIZE;
 			if($end_inclusion_index > $total_included) $end_inclusion_index = $total_included;
 			for($start_inclusion_index;$start_inclusion_index<$end_inclusion_index;$start_inclusion_index++){
 				if($complete_inclusion_list[$start_inclusion_index]!=null) $current_inclusion_list[] = $complete_inclusion_list[$start_inclusion_index];
@@ -186,20 +207,10 @@
 			WPClickmeter::store_option( 'clickmeter_inclusion_list', array());
 			WPClickmeter::store_option( 'clickmeter_exclusion_list', array());
 
-			$args = array(
-			'posts_per_page' => -1,
-			'post_type' => array('post', 'page'),
-			'post_status' => array('publish', 'private', 'future'),
-			'orderby' => 'title',
-			'order' => 'ASC'
-			);
-			$posts_array = get_posts( $args );
+            $exclusion_list = WPClickmeter::retrieve_ids_posts();
+            WPClickmeter::store_option( 'clickmeter_exclusion_list', $exclusion_list);
 
-			foreach ($posts_array as $post) {
-				$exclusion_list[] = $post->ID;
-				WPClickmeter::store_option( 'clickmeter_exclusion_list', $exclusion_list);	
-			}
-		}
+        }
 
 		$complete_exclusion_list = WPClickmeter::get_option( 'clickmeter_exclusion_list');
 		$total_excluded = sizeof($complete_exclusion_list);
@@ -209,7 +220,7 @@
 		$total_percentage = intval(($start_exclusion_index/$total_excluded)*100);
 
 		if($start_exclusion_index <= $total_excluded){
-			$end_exclusion_index = $start_exclusion_index + $datapoint_block_size;
+			$end_exclusion_index = $start_exclusion_index + DATAPOINT_BLOCK_SIZE;
 			if($end_exclusion_index > $total_excluded) $end_exclusion_index = $total_excluded;
 			for($start_exclusion_index;$start_exclusion_index<$end_exclusion_index;$start_exclusion_index++){
 				if($complete_exclusion_list[$start_exclusion_index]!=null) $current_exclusion_list[] = $complete_exclusion_list[$start_exclusion_index];
@@ -228,19 +239,9 @@
 	} elseif($_POST["conversion_type"]!=null || $_GET["associate_conversion"]=="true"){
 		$conversion1_id = WPClickmeter::get_option('clickmeter_conversionId1');
 		$conversion2_id = WPClickmeter::get_option('clickmeter_conversionId2');
-		$args = array(
-		'posts_per_page' => -1,
-		'post_type' => array('post', 'page'),
-		'post_status' => array('publish', 'private', 'future'),
-		'orderby' => 'title',
-		'order' => 'ASC'
-		);
-		$posts_array = get_posts( $args );
 
-		$postID_list = array();
-		foreach ($posts_array as $post) {
-			$postID_list[] = $post->ID;
-		}
+		$postID_list = WPClickmeter::retrieve_ids_posts();
+
 		$total_postID_list = sizeof($postID_list);
 		$start_index = 0;
 		if(isset($_GET["post_offset"])) $start_index = $_GET["post_offset"];	
@@ -316,19 +317,8 @@
 		}
 	} elseif($_POST["conversion_delete"]!=NULL || $_GET["conversion_delete"]=="true"){
 
-		$args = array(
-		'posts_per_page' => -1,
-		'post_type' => array('post', 'page'),
-		'post_status' => array('publish', 'private', 'future'),
-		'orderby' => 'title',
-		'order' => 'ASC'
-		);
-		$posts_array = get_posts( $args );
+        $postID_list = WPClickmeter::retrieve_ids_posts();
 
-		$postID_list = array();
-		foreach ($posts_array as $post) {
-			$postID_list[] = $post->ID;
-		}
 		$total_postID_list = sizeof($postID_list);
 		$start_index = 0;
 		if(isset($_GET["post_offset"])) $start_index = $_GET["post_offset"];	

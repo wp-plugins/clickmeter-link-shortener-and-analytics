@@ -3,7 +3,7 @@ Contributors: ClickMeter
 Tags: 301 redirect, admin, advertisers, affiliates, Agencies, analytic, analytics, analyze, automation, bitly, click, clickmeter, clicks, cloak, cloaking, custom url, ga, google analytics, link management, link monitor, link tracker, link tracking, marketing, mask, masking, monitor, online users, page, pages, pageviews, permalink, plugin, Post, posts, publishers, qr code, redirect, reports, short url, shorten, shortlink, shorturl, spiders, statistics, stats, tinyurl, track, tracker, tracking, url shortener, views, widget, wordpress, world map, wp.gl, wp.me.
 Requires at least: 3.5.0
 Tested up to: 4.0
-Stable tag: 1.2.4.2
+Stable tag: 1.2.4.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Donate link: http://clickmeter.com/pricing-signup
@@ -49,7 +49,7 @@ You can install ClickMeter Link Shortener and Analytics in the following ways:
 <li> Activate the plugin through the 'Plugins' menu in WordPress (Plugins > Add New)
 <li> Upload 'clickmeter-link-shortener-and-analytics.zip' to the '/wp-content/plugins/' directory
 </ul>
-Once activated, enter your [ClickMeter API key](http://mybeta.clickmeter.com/api-key).
+Once activated, enter your [ClickMeter API key](http://my.clickmeter.com/api-key).
 
 <h4>Update plugin</h4>
 Every available update will be shown on the Dashboard Panel with an alert on the Plugin's menu title, and on the Plugin List.
@@ -77,8 +77,14 @@ You'll find updated FAQs on [ClickMeter Knowledge Base](http://support.clickmete
 6. World map with all the people viewing your posts.
 7. QR-code from one of the shortened links.
 
-
 == Changelog ==
+
+= 1.2.4.3 =
+<ul>
+<li>Optimized adding tracking pixels in posts: the pixel is inserted only when the single post is displayed.<li>
+<li>Add error report option</li>
+<li>Minor bugfix</li>
+</ul>
 
 = 1.2.4.2 =
 <ul>
