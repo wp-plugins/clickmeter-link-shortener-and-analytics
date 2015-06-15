@@ -28,7 +28,7 @@ error_reporting(E_ERROR | E_PARSE); // skip error reporting
 
 set_time_limit(3600); //Set the number of seconds a script is allowed to run.
 
-define("DATAPOINT_BLOCK_SIZE", 10);
+define("DATAPOINT_BLOCK_SIZE", 9);
 define("EMAIL_TO", "wordpress@clickmeter.com");
 
 function wpclickmeter_init() {
