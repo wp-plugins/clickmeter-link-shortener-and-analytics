@@ -81,7 +81,7 @@ You'll find updated FAQs on [ClickMeter Knowledge Base](http://support.clickmete
 
 = 1.2.4.3 =
 <ul>
-<li>Optimized adding tracking pixels in posts: the pixel is inserted only when the single post is displayed.<li>
+<li>Optimized adding tracking pixels in posts: the pixel is inserted only when the single post is displayed.</li>
 <li>Add error report option</li>
 <li>Minor bugfix</li>
 </ul>
