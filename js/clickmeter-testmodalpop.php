@@ -70,7 +70,7 @@ input.link_button {
 	
 	document.write('<center>');
 	document.write('<br><a style="font-size:14px" id="clickmeter_popup_tl" target="_blank" href="'+args.arg2+'">'+args.arg2+'</a><br><br>');
-	document.write('<a title="edit tracking pixel on ClickMeter" target="blank" href="http://mybeta.clickmeter.com/go?val='+args.arg4+'&returnUrl=%2Flinks%2Fedit%2F'+args.arg3+'">Edit</a> | <a title="view info about this tracking link on ClickMeter" target="_blank" href="http://mybeta.clickmeter.com/go?val='+args.arg4+'&returnUrl=%2FLinks%3FlinkId%3D'+args.arg3+'">Stats</a> | <input title="copy to clipboard" type="button" class="link_button" value="Copy" onclick="copyToClipboard()"/>');
+	document.write('<a title="edit tracking pixel on ClickMeter" target="blank" href="http://my.clickmeter.com/go?val='+args.arg4+'&returnUrl=%2Flinks%2Fedit%2F'+args.arg3+'">Edit</a> | <a title="view info about this tracking link on ClickMeter" target="_blank" href="http://my.clickmeter.com/go?val='+args.arg4+'&returnUrl=%2FLinks%3FlinkId%3D'+args.arg3+'">Stats</a> | <input title="copy to clipboard" type="button" class="link_button" value="Copy" onclick="copyToClipboard()"/>');
 	document.write('</center>');
 
 </script>

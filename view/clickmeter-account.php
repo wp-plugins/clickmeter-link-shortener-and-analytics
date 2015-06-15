@@ -70,7 +70,7 @@ function dialogClose(){
 					</a>-->
 					<input type="submit" style="padding: 5px 5px;width:150px;" class='clickmeter-button' value="Save API key">
 				</td>
-				<td><a target="_blank" href="http://mybeta.clickmeter.com/api-key">Retrieve API-Key</a></td>
+				<td><a target="_blank" href="http://my.clickmeter.com/api-key">Retrieve API-Key</a></td>
 			</tr>
 		</table>					
 		<br>
@@ -89,7 +89,7 @@ function dialogClose(){
 				<td style="width:7%;padding-left: 5px;">
 					<img src="/wp-content/plugins/clickmeter-link-shortener-and-analytics/img/logo.png" alt="clickmeter logo"></img>
 				</td>
-				<td style="width:92%"><h1>ClickMeter Link Shortener and Analytics‏</h1><h2>Welcome <a target='blank' href='http://mybeta.clickmeter.com/go?val=<?php echo $boGoVal; ?>&returnUrl=%2Fmy-data'><?php echo $username?></a></h2>
+				<td style="width:92%"><h1>ClickMeter Link Shortener and Analytics‏</h1><h2>Welcome <a target='blank' href='http://my.clickmeter.com/go?val=<?php echo $boGoVal; ?>&returnUrl=%2Fmy-data'><?php echo $username?></a></h2>
 				</td>
 				<td style="width:10%;padding-right: 10px;">
 					<a target="_blank" href="http://clickmeter.com/"><img src="/wp-content/plugins/clickmeter-link-shortener-and-analytics/img/logo-powerdby.gif" alt="clickmeter logo"></img></a>
@@ -141,7 +141,7 @@ function dialogClose(){
 		</form>
 
 		<br>
-		<a class="clickmeter_link" target="blank" href="http://mybeta.clickmeter.com/go?val=<?php echo $boGoVal; ?>&returnUrl=%2Fmy-plan"><span style="padding: 5px 5px;width:20%;" class="clickmeter-button">Upgrade your account</span></a>
+		<a class="clickmeter_link" target="blank" href="http://my.clickmeter.com/go?val=<?php echo $boGoVal; ?>&returnUrl=%2Fmy-plan"><span style="padding: 5px 5px;width:20%;" class="clickmeter-button">Upgrade your account</span></a>
 
 	<input type="hidden" id="cm_available_datapoints" value="<?php echo $available_datapoints; ?>" />
 	<input type="hidden" id="cm_already_created_pixel" value="<?php echo $already_created_pixel; ?>" />
@@ -150,7 +150,7 @@ function dialogClose(){
 	<br><hr>
 	<div id="available_dp_dialog" style="display:none" title="Warning!">
 		<p>You don't have enough datapoints available to complete this operation. </p><br>
-		<center><a class="clickmeter_link" target="blank" href="http://mybeta.clickmeter.com/go?val=<?php echo $boGoVal; ?>&returnUrl=%2Fmy-plan"><span style="padding: 5px 5px;width:20%;" class="clickmeter-button">Upgrade your account</span></a></center>
+		<center><a class="clickmeter_link" target="blank" href="http://my.clickmeter.com/go?val=<?php echo $boGoVal; ?>&returnUrl=%2Fmy-plan"><span style="padding: 5px 5px;width:20%;" class="clickmeter-button">Upgrade your account</span></a></center>
 	</div>
 	<h2>Track views on your posts and pages: <a style="display:none;cursor:pointer;" class="compress_section">[collapse-]</a><a style="cursor:pointer;" class="expand_section">[expand+]</a></h2>
 	<div id="clickmeter_track_views" style="display:none;">
@@ -180,16 +180,18 @@ function dialogClose(){
 			</div>
 			<br>
 			<div class="multiselect" id="multiselect_posts">
-				<?php 	
-				foreach ($posts_array as $post) {
-					if (in_array($post->ID, $inclusion_list)){
-						echo '<label class="multiselect-on"><input type="checkbox" name="included_list[]" checked value="'.$post->ID.'"/>'.$post->post_title.'</label>';	
-					} elseif (in_array($post->ID, $exclusion_list)){
-						echo '<label><input type="checkbox" name="excluded_list[]" value="'.$post->ID.'"/>'.$post->post_title.'</label>';	
-					} else{
-						echo '<label><input type="checkbox" name="excluded_list[]" value="'.$post->ID.'"/>'.$post->post_title.'</label>';	
-					}
-				}
+				<?php
+
+                $posts = WPClickmeter::retrieve_id_title_posts();
+                foreach ($posts as $post) {
+                    if (in_array($post->ID, $inclusion_list)) {
+                        echo '<label class="multiselect-on"><input type="checkbox" name="included_list[]" checked value="' . $post->ID . '"/>' . $post->post_title . '</label>';
+                    } elseif (in_array($post->ID, $exclusion_list)) {
+                        echo '<label><input type="checkbox" name="excluded_list[]" value="' . $post->ID . '"/>' . $post->post_title . '</label>';
+                    } else {
+                        echo '<label><input type="checkbox" name="excluded_list[]" value="' . $post->ID . '"/>' . $post->post_title . '</label>';
+                    }
+                }
 				?>
 			</div>
 		</td>
@@ -202,17 +204,18 @@ function dialogClose(){
 			</div>
 			<br>
 			<div class="multiselect" id="multiselect_pages">
-				<?php 	
-				foreach ($pages_array as $page) {
-					if (in_array($page->ID, $inclusion_list)){
-						echo '<label class="multiselect-on"><input type="checkbox" name="included_list[]" checked value="'.$page->ID.'"/>'.$page->post_title.'</label>';	
-					} elseif (in_array($page->ID, $exclusion_list)){
-						echo '<label><input type="checkbox" name="excluded_list[]" value="'.$page->ID.'"/>'.$page->post_title.'</label>';	
-					} else{
-						echo '<label><input type="checkbox" name="excluded_list[]" value="'.$page->ID.'"/>'.$page->post_title.'</label>';	
-					}
-				}
-				?>
+                <?php
+                $pages = WPClickmeter::retrieve_id_title_pages();
+                foreach ($pages as $page) {
+                    if (in_array($page->ID, $inclusion_list)) {
+                        echo '<label class="multiselect-on"><input type="checkbox" name="included_list[]" checked value="' . $page->ID . '"/>' . $page->post_title . '</label>';
+                    } elseif (in_array($page->ID, $exclusion_list)) {
+                        echo '<label><input type="checkbox" name="excluded_list[]" value="' . $page->ID . '"/>' . $page->post_title . '</label>';
+                    } else {
+                        echo '<label><input type="checkbox" name="excluded_list[]" value="' . $page->ID . '"/>' . $page->post_title . '</label>';
+                    }
+                }
+                ?>
 			</div>
 		</td>
 </tr>
@@ -288,7 +291,7 @@ function dialogClose(){
 					}
 				?>
 			</span></strong></td>
-			<td><a style="padding-right:20px" target="_blank" href="http://mybeta.clickmeter.com/go?val=<?php echo $boGoVal; ?>&returnUrl=%2FConversions%2FConversionConfirm%3FconversionId%3D<?php echo $conversion1_id; ?>%26codeView%3Dtrue">View conversion code</a></td>
+			<td><a style="padding-right:20px" target="_blank" href="http://my.clickmeter.com/go?val=<?php echo $boGoVal; ?>&returnUrl=%2FConversions%2FConversionConfirm%3FconversionId%3D<?php echo $conversion1_id; ?>%26codeView%3Dtrue">View conversion code</a></td>
 			<td>
 				<form action="<?php echo esc_url(add_query_arg(array('page' => 'clickmeter-link-shortener-and-analytics/view/clickmeter-loading_tracking_pixels_ops.php'), admin_url('admin.php'))); ?>" method="post" id="first_conv_form" >
 					<input type="hidden" value="1" name="conversion_delete">
@@ -355,7 +358,7 @@ function dialogClose(){
 					}
 					?>
 			</span></strong></td>
-			<td><a style="padding-right:20px" target="_blank" href="http://mybeta.clickmeter.com/go?val=<?php echo $boGoVal; ?>&returnUrl=%2FConversions%2FConversionConfirm%3FconversionId%3D<?php echo $conversion2_id; ?>%26codeView%3Dtrue">View conversion code</a></td>
+			<td><a style="padding-right:20px" target="_blank" href="http://my.clickmeter.com/go?val=<?php echo $boGoVal; ?>&returnUrl=%2FConversions%2FConversionConfirm%3FconversionId%3D<?php echo $conversion2_id; ?>%26codeView%3Dtrue">View conversion code</a></td>
 			<td>
 				<form action="<?php echo esc_url(add_query_arg(array('page' => 'clickmeter-link-shortener-and-analytics/view/clickmeter-loading_tracking_pixels_ops.php'), admin_url('admin.php'))); ?>" method="post" id="second_conv_form" >
 					<input type="hidden" value="2" name="conversion_delete">
@@ -537,6 +540,26 @@ function dialogClose(){
 	<?php endif; ?>
 </form>	
 </div>
+        <br><hr>
+        <h2>Authorize bugs monitor: <a style="display:none;cursor:pointer;" class="compress_section">[collapse-]</a><a style="cursor:pointer;" class="expand_section">[expand+]</a></h2>
+        <div id="manage_error_report" style="display:none;">
+            <form method="post" action="#manage_error_report">
+                <span style="padding-right: 10px"><strong>Send ClickMeter info about application bugs (it helps to optimize your user experience)</strong></span>
+                <?php if ($error_report_flag==1) : ?>
+                    <span style="padding-right: 10px"><input type="radio" name="error_report_flag" checked="true" value="true">Yes</span>
+                    <input type="radio" name="error_report_flag" value="false">No (default)
+                <?php else : ?>
+                    <span style="padding-right: 10px"><input class type="radio" name="error_report_flag" value="true">Yes</span>
+                    <input type="radio" name="error_report_flag" checked="true" value="false">No (default)
+                <?php endif; ?>
+                <br><br>
+                <?php if($workInProgress!="true") : ?>
+                    <input type="submit" style="padding: 5px 5px;width:120px;" class='clickmeter-button' value="Save changes">
+                <?php else : ?>
+                    <div style="padding: 10px 0px 10px 0px"><span style="color:green;"><div class="spinner_wp"></div>A background operation is currently in execution. Wait some minutes, then click on ClickMeter menu to reload.</span></div>
+                <?php endif; ?>
+            </form>
+        </div>
 
 <?php endif; ?>
 <br>

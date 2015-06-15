@@ -14,6 +14,9 @@ jQuery(document).ready(function(){
 	if(document_url.search("#manage_404_errors")!=-1){
 		jQuery("#manage_404_errors").show();
 	}
+    if(document_url.search("#manage_error_report")!=-1){
+        jQuery("#manage_error_report").show();
+    }
 	if(document_url.search("#clickmeter_track_conversions")!=-1){
 		jQuery("#clickmeter_track_conversions").show();
 	}
@@ -400,6 +403,30 @@ function callAjaxTP_delete(endPostIndex){
 	});
 }
 
+function callAjaxPixels_delete(endPostIndex){
+
+    var post_data = {
+        action: 'TP_delete_pixels'
+    };
+
+    var timeout_val = 3600*1000;
+    jQuery.ajax({
+        type:"post",
+        url: ajaxurl,
+        timeout: timeout_val,
+        data: post_data,
+        success:function(data) {
+            //alert("Execution terminated with success! ");
+            window.location.replace("?page=clickmeter-link-shortener-and-analytics/view/clickmeter-loading_tracking_pixels_ops.php&delete_pixels_in_post_contents=true&post_offset="+endPostIndex);
+        },
+        error: function( jqXHR, textStatus, errorThrown ){
+            //alert('OPS! Something went wrong' + textStatus + ": " + errorThrown);
+            var timestamp = getTimestamp();
+            window.location.replace("?page=clickmeter-link-shortener-and-analytics/view/clickmeter-loading_tracking_pixels_ops.php&error_flag=true&timestamp="+timestamp+"&error_message="+textStatus + ": " + errorThrown);
+        }
+    });
+}
+
 //CREATE TRACKING LINK
 function callAjax_create_trackinglink(){
 	jQuery("#get_tracking_link").hide();
@@ -517,8 +544,8 @@ function callAjax_create_custom_trackinglink(redirection_flag){
 			var obj = jQuery.parseJSON(response);
 			jQuery("#created_tracking_link_code").text(obj.alternative_url);
 			jQuery("#created_tracking_link_code").attr("href", obj.alternative_url);
-			jQuery("#created_tracking_link_edit").attr("href", "http://mybeta.clickmeter.com/go?val="+bogoval+"&returnUrl=%2Flinks%2Fedit%2F"+ obj.created_link_id);
-			jQuery("#created_tracking_link_stats").attr("href", "http://mybeta.clickmeter.com/go?val="+bogoval+"&returnUrl=%2FLinks%3FlinkId%3D"+obj.created_link_id);
+			jQuery("#created_tracking_link_edit").attr("href", "http://my.clickmeter.com/go?val="+bogoval+"&returnUrl=%2Flinks%2Fedit%2F"+ obj.created_link_id);
+			jQuery("#created_tracking_link_stats").attr("href", "http://my.clickmeter.com/go?val="+bogoval+"&returnUrl=%2FLinks%3FlinkId%3D"+obj.created_link_id);
 			jQuery("#created_tracking_link_QR").attr("href", obj.trackingCode+".qr");
 			jQuery("#cm_copy_tl").val(obj.alternative_url);
 

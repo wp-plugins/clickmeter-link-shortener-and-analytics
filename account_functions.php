@@ -7,24 +7,6 @@ add_thickbox(); //enable opening modal popup
 //API KEY VALIDATION
 $api_key = "";
 
-$args = array(
-'posts_per_page' => -1,
-'post_type' => 'post',
-'post_status' => array('publish', 'private', 'future'),
-'orderby' => 'title',
-'order' => 'ASC'
-);
-$posts_array = get_posts( $args );
-
-$args = array(
-'posts_per_page' => -1,
-'post_type' => 'page',
-'post_status' => array('publish', 'private', 'future'),
-'orderby' => 'title',
-'order' => 'ASC'
-);
-$pages_array = get_posts( $args );
-
 function test_input($data) {
 	$data = trim($data);
 	$data = stripslashes($data);
@@ -133,23 +115,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && array_key_exists("API_key",$_POST)) 
 					WPClickmeter::store_option( 'clickmeter_inclusion_list', array());
 					WPClickmeter::store_option( 'clickmeter_exclusion_list', array());
 					WPClickmeter::store_option("track_404_flag", 0);
+                    WPClickmeter::store_option( 'clickmeter_error_report_flag', 0);
 					WPClickmeter::store_option("link_cloak_flag", 0);
 					WPClickmeter::store_option("clickmeter_wp_redirection_flag", 0);
 					WPClickmeter::store_option("clickmeter_default_redirection_type", "307");
 					echo '<meta http-equiv="refresh" content="0">';
 
-			}elseif($_POST["startup_create_TP"]=="true"){
-				$inclusion_list = array();
-				foreach ($posts_array as $post) {
-					$inclusion_list[] = $post->ID;
-				}
-				foreach ($pages_array as $page) {
-					$inclusion_list[] = $page->ID;
-				}				
+			}elseif($_POST["startup_create_TP"]=="true") {
+
+                $inclusion_posts_list = WPClickmeter::retrieve_ids_posts();
+                $inclusion_pages_list = WPClickmeter::retrieve_ids_pages();
+                $inclusion_list = array_merge($inclusion_posts_list, $inclusion_pages_list);
+
 				WPClickmeter::store_option( 'clickmeter_inclusion_list', $inclusion_list);
 				WPClickmeter::store_option( 'clickmeter_pixel_flag', 1 );
 				WPClickmeter::store_option('clickmeter_pixel_new_articles', 1 );
 				WPClickmeter::store_option("track_404_flag", 0);
+                WPClickmeter::store_option( 'clickmeter_error_report_flag', 0);
 				WPClickmeter::store_option("link_cloak_flag", 0);
 				WPClickmeter::store_option("clickmeter_wp_redirection_flag", 0);
 				WPClickmeter::store_option("clickmeter_default_redirection_type", "307");
@@ -206,6 +188,7 @@ if($api_key!=NULL){
 
 	$json_output = WPClickmeter::api_request('http://apiv2.clickmeter.com/account/plan', 'GET', NULL, $api_key);
 	$plan_type = $json_output[name];
+    WPClickmeter::store_option( 'clickmeter_plan_type', $plan_type);
 	$maximumDatapoints = $json_output[maximumDatapoints];
 	$used_datapoints = $json_output[usedDatapoints];
 	$monthlyEvents = $json_output[monthlyEvents];
@@ -395,10 +378,20 @@ if($api_key!=NULL){
 	$track_404_flag = WPClickmeter::get_option("clickmeter_track_404_flag");
 	$url_404 = WPClickmeter::get_option("clickmeter_track_404_url");
 
-	global $wp;
+    if($_POST['error_report_flag']=="true"){
+        WPClickmeter::store_option("clickmeter_error_report_flag", 1);
+    }
+    elseif ($_POST['error_report_flag']=="false"){
+        WPClickmeter::store_option("clickmeter_error_report_flag", 0);
+    }
 
-	$workInProgress = WPClickmeter::get_option('clickmeter_workinprogress_flag');
+    $error_report_flag = WPClickmeter::get_option("clickmeter_error_report_flag");
+
+    global $wp;
+
+    $workInProgress = WPClickmeter::get_option('clickmeter_workinprogress_flag');
 
 //phpinfo();
+
 }
 ?>
