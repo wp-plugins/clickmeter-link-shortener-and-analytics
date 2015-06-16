@@ -4,7 +4,7 @@ Plugin Name: ClickMeter Link Shortener and Analytics
 Description: Customizable Link Shortener combined with Powerful Real-Time Analytics. Create short tracking links and track everything about your visitors.
 Plugin URI: http://support.clickmeter.com/forums/21156669-WordPress-plugin
 Author: ClickMeter
-Version: 1.2.4.3
+Version: 1.2.4.4
 */
 /*  Copyright 2014  ClickMeter 
 
@@ -77,10 +77,14 @@ class WPClickmeter {
                 $version = "1.2.4.2";
             }
             if ($version == "1.2.4.2") {
-                WPClickmeter::add_pixel_status();
-                WPClickmeter::store_option("clickmeter_delete_pixels_flag", 1);
                 update_option('clickmeter_plugin_version', "1.2.4.3");
                 $version = "1.2.4.3";
+            }
+            if ($version == "1.2.4.3") {
+                WPClickmeter::add_pixel_status();
+                WPClickmeter::store_option("clickmeter_delete_pixels_flag", 1);
+                update_option('clickmeter_plugin_version', "1.2.4.4");
+                $version = "1.2.4.4";
             }
 
             add_action('admin_enqueue_scripts', array(__CLASS__, 'javascriptAndCss_init'));
@@ -131,7 +135,21 @@ class WPClickmeter {
 
     function add_pixel_status(){
         global $wpdb;
-        $wpdb->query( "ALTER TABLE wp_clickmeter_tracking_pixels ADD status text" );
+        $pixel_table_name = $wpdb->prefix . 'clickmeter_tracking_pixels';
+        $pixel_table = "CREATE TABLE $pixel_table_name (
+		post_id mediumint(9) NOT NULL,
+		pixel_id mediumint(9) NOT NULL,
+		pixel_name text NOT NULL,
+		tracking_code text NOT NULL,
+		status varchar(255) NOT NULL DEFAULT 'paused',
+		campaign_id mediumint(9) NOT NULL,
+		tag text NOT NULL,
+		time datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
+		UNIQUE KEY pixel_id (pixel_id)
+	);";
+
+        require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+        dbDelta( $pixel_table );
     }
 
     function view_pixel($content) {
@@ -2330,6 +2348,20 @@ function TP_delete_pixels() {
                         $remove[] = $div;
                         WPClickmeter::update_status_pixel($post->ID, 'active');
                     }
+                    else{
+                        $pixel = WPClickmeter::get_pixel($post->ID);
+                        $inclusion_list = WPClickmeter::get_option("clickmeter_inclusion_list");
+                        if ($inclusion_list != null) {
+                            if (($pixel != null) && ($pixel['campaign_id'] != null) && ($pixel['campaign_id'] != 0) && (in_array($post->ID, $inclusion_list))) {
+                                WPClickmeter::update_status_pixel($post->ID, 'active');
+                            }
+                        }
+                        else {
+                            if (($pixel != null) && ($pixel['campaign_id'] != null) && ($pixel['campaign_id'] != 0)) {
+                                WPClickmeter::update_status_pixel($post->ID, 'active');
+                            }
+                        }
+                    }
                 }
                 foreach ($remove as $item) {
                     $item->parentNode->removeChild($item);
@@ -2578,7 +2610,7 @@ function createDB(){
 		pixel_id mediumint(9) NOT NULL,
 		pixel_name text NOT NULL,
 		tracking_code text NOT NULL,
-		status text NOT NULL,
+		status varchar(255) NOT NULL DEFAULT 'paused',
 		campaign_id mediumint(9) NOT NULL,
 		tag text NOT NULL,
 		time datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,

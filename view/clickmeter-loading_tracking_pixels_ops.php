@@ -408,7 +408,7 @@
 	</center>
 	<?php elseif($flag == "completed") : ?>
 		<center>
-			<h2 style="color:green;">Operation complete!</h2>
+			<h2 style="color:green;">Operation completed!</h2>
 			<h3>Click on the button below to get back on plugin's main page.</h3><br><br>
 			<a class="clickmeter_link" href="?page=clickmeter-link-shortener-and-analytics/view/clickmeter-account.php"><span style="font-size: 15px;padding: 15px;width:180px;" class="clickmeter-button">Continue</span></a>
 		</center>
@@ -424,7 +424,7 @@
 	<?php else : ?>
 	<center>
 		<div class="spinner_cm"></div>
-		<h2>An operation is currently in execution.</h2>
+		<h2>An operation is currently in execution. Please wait.</h2>
 		<p>Depending on the number of posts/pages affected by this operation, it may takes several minutes (hours) to complete. <a style="padding:5px" href="?page=clickmeter-link-shortener-and-analytics/view/clickmeter-loading_tracking_pixels_ops.php">Stop and continue later.</a></p>
 		<br>
 		<?php 
