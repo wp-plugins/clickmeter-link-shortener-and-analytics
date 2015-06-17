@@ -11,11 +11,6 @@
 		WPClickmeter::store_option("clickmeter_lastOP_log", $lastOP_log);
 	}
 
-    $delete_pixels_flag = WPClickmeter::get_option("clickmeter_delete_pixels_flag");
-    if(($delete_pixels_flag != null) && ($delete_pixels_flag == 1)){
-        WPClickmeter::store_option("clickmeter_delete_pixels_flag", 0);
-        echo '<script>window.location.replace("?page=clickmeter-link-shortener-and-analytics/view/clickmeter-loading_tracking_pixels_ops.php&delete_pixels_in_post_contents=true"); </script>';
-    }
 	if($_POST["continue_execution"]=="true"){
 		$lastOP_log = WPClickmeter::get_option("clickmeter_lastOP_log");
 		$last_action = $lastOP_log[0];
