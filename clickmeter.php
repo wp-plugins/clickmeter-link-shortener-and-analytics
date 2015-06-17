@@ -574,7 +574,8 @@ class WPClickmeter {
 
     static function javascriptAndCss_init() {
         try {
-            wp_enqueue_script('clickmeter_js', plugins_url('/js/clickmeter.js', __FILE__), array('jquery'));
+            $version = get_option('clickmeter_plugin_version');
+            wp_enqueue_script('clickmeter_js', plugins_url('/js/clickmeter.js', __FILE__), array('jquery'), $version);
             wp_enqueue_script('jquery-ui-core');
             wp_enqueue_script('jquery-ui-dialog');
             // A style available in WP
