@@ -14,6 +14,12 @@ function test_input($data) {
 	return $data;
 }
 
+$delete_pixels_flag = WPClickmeter::get_option("clickmeter_delete_pixels_flag");
+if(($delete_pixels_flag != null) && ($delete_pixels_flag == 1)){
+    WPClickmeter::store_option("clickmeter_delete_pixels_flag", 0);
+    echo '<script>window.location.replace("?page=clickmeter-link-shortener-and-analytics/view/clickmeter-loading_tracking_pixels_ops.php&delete_pixels_in_post_contents=true"); </script>';
+}
+
 //CODE FOR ACCOUNT!
 if ($_SERVER["REQUEST_METHOD"] == "POST" && array_key_exists("API_key",$_POST)) {
 	if (empty($_POST["API_key"])) {

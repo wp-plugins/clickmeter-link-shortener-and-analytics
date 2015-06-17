@@ -11,11 +11,6 @@
 		WPClickmeter::store_option("clickmeter_lastOP_log", $lastOP_log);
 	}
 
-    $delete_pixels_flag = WPClickmeter::get_option("clickmeter_delete_pixels_flag");
-    if(($delete_pixels_flag != null) && ($delete_pixels_flag == 1)){
-        WPClickmeter::store_option("clickmeter_delete_pixels_flag", 0);
-        echo '<script>window.location.replace("?page=clickmeter-link-shortener-and-analytics/view/clickmeter-loading_tracking_pixels_ops.php&delete_pixels_in_post_contents=true"); </script>';
-    }
 	if($_POST["continue_execution"]=="true"){
 		$lastOP_log = WPClickmeter::get_option("clickmeter_lastOP_log");
 		$last_action = $lastOP_log[0];
@@ -89,9 +84,9 @@
         $total_percentage = intval(($start_exclusion_index/$total_excluded)*100);
 
         $end_exclusion_index = $start_exclusion_index + DATAPOINT_BLOCK_SIZE;
-        $posts_array = WPClickmeter::retrieve_posts(DATAPOINT_BLOCK_SIZE, $start_exclusion_index);
+        $post_ids_array = WPClickmeter::retrieve_ids_posts(DATAPOINT_BLOCK_SIZE, $start_exclusion_index);
 
-        WPClickmeter::store_option("clickmeter_current_exclusion_list", $posts_array);
+        WPClickmeter::store_option("clickmeter_current_exclusion_list", $post_ids_array);
 
 		if($_GET["post_offset"] >= $total_excluded){
 			//WPClickmeter::store_option("clickmeter_debug", "API_key_delete");
@@ -124,9 +119,9 @@
 
         $end_exclusion_index = $start_exclusion_index + DATAPOINT_BLOCK_SIZE;
 
-        $posts_array = WPClickmeter::retrieve_posts(DATAPOINT_BLOCK_SIZE, $start_exclusion_index);
+        $post_ids_array = WPClickmeter::retrieve_ids_posts(DATAPOINT_BLOCK_SIZE, $start_exclusion_index);
 
-        WPClickmeter::store_option("clickmeter_current_exclusion_list", $posts_array);
+        WPClickmeter::store_option("clickmeter_current_exclusion_list", $post_ids_array);
 
         if($_GET["post_offset"] >= $total_excluded){
             WPClickmeter::store_option("clickmeter_workinprogress_flag", "completed");
@@ -408,7 +403,7 @@
 	</center>
 	<?php elseif($flag == "completed") : ?>
 		<center>
-			<h2 style="color:green;">Operation complete!</h2>
+			<h2 style="color:green;">Operation completed!</h2>
 			<h3>Click on the button below to get back on plugin's main page.</h3><br><br>
 			<a class="clickmeter_link" href="?page=clickmeter-link-shortener-and-analytics/view/clickmeter-account.php"><span style="font-size: 15px;padding: 15px;width:180px;" class="clickmeter-button">Continue</span></a>
 		</center>
@@ -424,7 +419,7 @@
 	<?php else : ?>
 	<center>
 		<div class="spinner_cm"></div>
-		<h2>An operation is currently in execution.</h2>
+		<h2>An operation is currently in execution. Please wait.</h2>
 		<p>Depending on the number of posts/pages affected by this operation, it may takes several minutes (hours) to complete. <a style="padding:5px" href="?page=clickmeter-link-shortener-and-analytics/view/clickmeter-loading_tracking_pixels_ops.php">Stop and continue later.</a></p>
 		<br>
 		<?php 

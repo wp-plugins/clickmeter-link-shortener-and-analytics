@@ -4,7 +4,7 @@ Plugin Name: ClickMeter Link Shortener and Analytics
 Description: Customizable Link Shortener combined with Powerful Real-Time Analytics. Create short tracking links and track everything about your visitors.
 Plugin URI: http://support.clickmeter.com/forums/21156669-WordPress-plugin
 Author: ClickMeter
-Version: 1.2.4.3
+Version: 1.2.4.6
 */
 /*  Copyright 2014  ClickMeter 
 
@@ -77,10 +77,22 @@ class WPClickmeter {
                 $version = "1.2.4.2";
             }
             if ($version == "1.2.4.2") {
-                WPClickmeter::add_pixel_status();
-                WPClickmeter::store_option("clickmeter_delete_pixels_flag", 1);
                 update_option('clickmeter_plugin_version', "1.2.4.3");
                 $version = "1.2.4.3";
+            }
+            if ($version == "1.2.4.3") {
+                WPClickmeter::add_pixel_status();
+                update_option('clickmeter_plugin_version', "1.2.4.4");
+                $version = "1.2.4.4";
+            }
+            if ($version == "1.2.4.4") {
+                update_option('clickmeter_plugin_version', "1.2.4.5");
+                $version = "1.2.4.5";
+            }
+            if ($version == "1.2.4.5") {
+                WPClickmeter::store_option("clickmeter_delete_pixels_flag", 1);
+                update_option('clickmeter_plugin_version', "1.2.4.6");
+                $version = "1.2.4.6";
             }
 
             add_action('admin_enqueue_scripts', array(__CLASS__, 'javascriptAndCss_init'));
@@ -131,7 +143,21 @@ class WPClickmeter {
 
     function add_pixel_status(){
         global $wpdb;
-        $wpdb->query( "ALTER TABLE wp_clickmeter_tracking_pixels ADD status text" );
+        $pixel_table_name = $wpdb->prefix . 'clickmeter_tracking_pixels';
+        $pixel_table = "CREATE TABLE $pixel_table_name (
+		post_id mediumint(9) NOT NULL,
+		pixel_id mediumint(9) NOT NULL,
+		pixel_name text NOT NULL,
+		tracking_code text NOT NULL,
+		status varchar(255) NOT NULL DEFAULT 'paused',
+		campaign_id mediumint(9) NOT NULL,
+		tag text NOT NULL,
+		time datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
+		UNIQUE KEY pixel_id (pixel_id)
+	);";
+
+        require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+        dbDelta( $pixel_table );
     }
 
     function view_pixel($content) {
@@ -170,19 +196,26 @@ class WPClickmeter {
             'offset' => $offset,
             'post_type' => 'post',
             'post_status' => array('publish', 'private', 'future'),
-            'orderby' => 'title',
+            'orderby' => 'ID',
             'order' => 'ASC'
         );
         $posts_array = get_posts( $args );
         return $posts_array;
     }
 
-    static function retrieve_ids_posts(){
+    static function retrieve_posts_by_id($ids){
+        $args = array('posts_per_page' => -1, 'post__in' => $ids);
+        $posts_array = get_posts( $args );
+        return $posts_array;
+    }
+
+    static function retrieve_ids_posts($posts_per_page = -1, $offset = null){
         $args = array(
-            'posts_per_page' => -1,
+            'posts_per_page' => $posts_per_page,
+            'offset' => $offset,
             'post_type' => 'post',
             'post_status' => array('publish', 'private', 'future'),
-            'orderby' => 'title',
+            'orderby' => 'ID',
             'order' => 'ASC',
             'fields' => 'ids'
         );
@@ -195,7 +228,7 @@ class WPClickmeter {
             'posts_per_page' => -1,
             'post_type' => 'post',
             'post_status' => array('publish', 'private', 'future'),
-            'orderby' => 'title',
+            'orderby' => 'ID',
             'order' => 'ASC',
             'fields' => array('ID', 'post_title')
         );
@@ -209,7 +242,7 @@ class WPClickmeter {
             'offset' => $offset,
             'post_type' => 'page',
             'post_status' => array('publish', 'private', 'future'),
-            'orderby' => 'title',
+            'orderby' => 'ID',
             'order' => 'ASC'
         );
         $pages_array = get_posts( $args );
@@ -221,7 +254,7 @@ class WPClickmeter {
             'posts_per_page' => -1,
             'post_type' => 'page',
             'post_status' => array('publish', 'private', 'future'),
-            'orderby' => 'title',
+            'orderby' => 'ID',
             'order' => 'ASC',
             'fields' => 'ids'
         );
@@ -234,7 +267,7 @@ class WPClickmeter {
             'posts_per_page' => -1,
             'post_type' => 'page',
             'post_status' => array('publish', 'private', 'future'),
-            'orderby' => 'title',
+            'orderby' => 'ID',
             'order' => 'ASC',
             'fields' => array('ID', 'post_title')
         );
@@ -552,7 +585,8 @@ class WPClickmeter {
 
     static function javascriptAndCss_init() {
         try {
-            wp_enqueue_script('clickmeter_js', plugins_url('/js/clickmeter.js', __FILE__), array('jquery'));
+            $version = get_option('clickmeter_plugin_version');
+            wp_enqueue_script('clickmeter_js', plugins_url('/js/clickmeter.js', __FILE__), array('jquery'), $version);
             wp_enqueue_script('jquery-ui-core');
             wp_enqueue_script('jquery-ui-dialog');
             // A style available in WP
@@ -639,13 +673,7 @@ class WPClickmeter {
             $group_id_404_reports = WPClickmeter::get_option('clickmeter_404_reports_campaign_id');
 
             $workinprogress_flag = WPClickmeter::get_option("clickmeter_workinprogress_flag");
-            $delete_pixels_flag = WPClickmeter::get_option("clickmeter_delete_pixels_flag");
             if ($workinprogress_flag == "inprogress" || $workinprogress_flag == "error") {
-                add_menu_page('ClickMeter | Settings', 'ClickMeter', $role, 'clickmeter-link-shortener-and-analytics/view/clickmeter-loading_tracking_pixels_ops.php', '', 'dashicons-chart-bar');
-                add_submenu_page('clickmeter-link-shortener-and-analytics/view/clickmeter-loading_tracking_pixels_ops.php', 'ClickMeter | Settings', 'Settings', $role, 'clickmeter-link-shortener-and-analytics/view/clickmeter-loading_tracking_pixels_ops.php');
-                $submenu['clickmeter-link-shortener-and-analytics/view/clickmeter-loading_tracking_pixels_ops.php'][] = array('<div class="openInNewWindow">Support</div>', $role, 'http://support.clickmeter.com/forums/21156669-WordPress-plugin');
-            }
-            elseif(($delete_pixels_flag != null) && ($delete_pixels_flag == 1)){
                 add_menu_page('ClickMeter | Settings', 'ClickMeter', $role, 'clickmeter-link-shortener-and-analytics/view/clickmeter-loading_tracking_pixels_ops.php', '', 'dashicons-chart-bar');
                 add_submenu_page('clickmeter-link-shortener-and-analytics/view/clickmeter-loading_tracking_pixels_ops.php', 'ClickMeter | Settings', 'Settings', $role, 'clickmeter-link-shortener-and-analytics/view/clickmeter-loading_tracking_pixels_ops.php');
                 $submenu['clickmeter-link-shortener-and-analytics/view/clickmeter-loading_tracking_pixels_ops.php'][] = array('<div class="openInNewWindow">Support</div>', $role, 'http://support.clickmeter.com/forums/21156669-WordPress-plugin');
@@ -2255,7 +2283,8 @@ add_action( 'wp_ajax_TP_init_creation', 'TP_init_creation' );
 function TP_delete_apikey() {
     try {
         $api_key = WPClickmeter::get_option('clickmeter_api_key');
-        $posts_array = WPClickmeter::get_option("clickmeter_current_exclusion_list");
+        $post_ids_array = WPClickmeter::get_option("clickmeter_current_exclusion_list");
+        $posts_array = WPClickmeter::retrieve_posts_by_id($post_ids_array);
         $body = array();
 
         //delete all tracking pixel from pages
@@ -2306,7 +2335,8 @@ add_action( 'wp_ajax_TP_delete_apikey', 'TP_delete_apikey' );
 function TP_delete_pixels() {
     try {
         WPClickmeter::get_option('clickmeter_api_key');
-        $posts_array = WPClickmeter::get_option("clickmeter_current_exclusion_list");
+        $post_ids_array = WPClickmeter::get_option("clickmeter_current_exclusion_list");
+        $posts_array = WPClickmeter::retrieve_posts_by_id($post_ids_array);
 
         //delete all tracking pixel from pages
         foreach ($posts_array as $post) {
@@ -2319,30 +2349,40 @@ function TP_delete_pixels() {
             }
 
             $doc = new DOMDocument();
+            $update = false;
             if (!empty($post->post_content)) {
                 $remove = array();
                 $doc->loadHTML(mb_convert_encoding($post->post_content, 'HTML-ENTITIES', 'UTF-8'));
                 $doc->encoding = 'UTF-8';
                 $divTags = $doc->getElementsByTagName('div');
-                //echo $pixel_name . "<br>";
                 foreach ($divTags as $div) {
                     if (preg_match("/clkmtr_tracking_pixel/", $div->attributes->getNamedItem('id')->nodeValue)) {
                         $remove[] = $div;
-                        WPClickmeter::update_status_pixel($post->ID, 'active');
+                        $update = true;
                     }
                 }
                 foreach ($remove as $item) {
                     $item->parentNode->removeChild($item);
                 }
-                $new_content = preg_replace(array("/^\<\!DOCTYPE.*?<html><body>/si", "!</body></html>$!si"), "", $doc->saveHTML());
-                $modified_post = array(
-                    'ID' => $post->ID,
-                    'post_content' => $new_content
-                );
-                wp_update_post($modified_post);
-                //echo "pixel rimosso true, dentro ".$post->post_title."<br>";
+                if ($update) {
+                    $new_content = preg_replace(array("/^\<\!DOCTYPE.*?<html><body>/si", "!</body></html>$!si"), "", $doc->saveHTML());
+                    $modified_post = array(
+                        'ID' => $post->ID,
+                        'post_content' => $new_content
+                    );
+                    wp_update_post($modified_post);
+                    WPClickmeter::update_status_pixel($post->ID, 'active');
+                }
             }
-
+            if (!$update){
+                $pixel = WPClickmeter::get_pixel($post->ID);
+                $inclusion_list = WPClickmeter::get_option("clickmeter_inclusion_list");
+                if ($inclusion_list != null) {
+                    if (($pixel != null) && (in_array($post->ID, $inclusion_list))) {
+                        WPClickmeter::update_status_pixel($post->ID, 'active');
+                    }
+                }
+            }
         }
 
         die(); // this is required to return a proper result
@@ -2578,7 +2618,7 @@ function createDB(){
 		pixel_id mediumint(9) NOT NULL,
 		pixel_name text NOT NULL,
 		tracking_code text NOT NULL,
-		status text NOT NULL,
+		status varchar(255) NOT NULL DEFAULT 'paused',
 		campaign_id mediumint(9) NOT NULL,
 		tag text NOT NULL,
 		time datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
