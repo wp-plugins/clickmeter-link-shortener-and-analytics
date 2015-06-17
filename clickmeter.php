@@ -4,7 +4,7 @@ Plugin Name: ClickMeter Link Shortener and Analytics
 Description: Customizable Link Shortener combined with Powerful Real-Time Analytics. Create short tracking links and track everything about your visitors.
 Plugin URI: http://support.clickmeter.com/forums/21156669-WordPress-plugin
 Author: ClickMeter
-Version: 1.2.4.5
+Version: 1.2.4.6
 */
 /*  Copyright 2014  ClickMeter 
 
@@ -86,9 +86,13 @@ class WPClickmeter {
                 $version = "1.2.4.4";
             }
             if ($version == "1.2.4.4") {
-                WPClickmeter::store_option("clickmeter_delete_pixels_flag", 1);
                 update_option('clickmeter_plugin_version', "1.2.4.5");
                 $version = "1.2.4.5";
+            }
+            if ($version == "1.2.4.5") {
+                WPClickmeter::store_option("clickmeter_delete_pixels_flag", 1);
+                update_option('clickmeter_plugin_version', "1.2.4.6");
+                $version = "1.2.4.6";
             }
 
             add_action('admin_enqueue_scripts', array(__CLASS__, 'javascriptAndCss_init'));
@@ -192,19 +196,26 @@ class WPClickmeter {
             'offset' => $offset,
             'post_type' => 'post',
             'post_status' => array('publish', 'private', 'future'),
-            'orderby' => 'title',
+            'orderby' => 'ID',
             'order' => 'ASC'
         );
         $posts_array = get_posts( $args );
         return $posts_array;
     }
 
-    static function retrieve_ids_posts(){
+    static function retrieve_posts_by_id($ids){
+        $args = array('posts_per_page' => -1, 'post__in' => $ids);
+        $posts_array = get_posts( $args );
+        return $posts_array;
+    }
+
+    static function retrieve_ids_posts($posts_per_page = -1, $offset = null){
         $args = array(
-            'posts_per_page' => -1,
+            'posts_per_page' => $posts_per_page,
+            'offset' => $offset,
             'post_type' => 'post',
             'post_status' => array('publish', 'private', 'future'),
-            'orderby' => 'title',
+            'orderby' => 'ID',
             'order' => 'ASC',
             'fields' => 'ids'
         );
@@ -217,7 +228,7 @@ class WPClickmeter {
             'posts_per_page' => -1,
             'post_type' => 'post',
             'post_status' => array('publish', 'private', 'future'),
-            'orderby' => 'title',
+            'orderby' => 'ID',
             'order' => 'ASC',
             'fields' => array('ID', 'post_title')
         );
@@ -231,7 +242,7 @@ class WPClickmeter {
             'offset' => $offset,
             'post_type' => 'page',
             'post_status' => array('publish', 'private', 'future'),
-            'orderby' => 'title',
+            'orderby' => 'ID',
             'order' => 'ASC'
         );
         $pages_array = get_posts( $args );
@@ -243,7 +254,7 @@ class WPClickmeter {
             'posts_per_page' => -1,
             'post_type' => 'page',
             'post_status' => array('publish', 'private', 'future'),
-            'orderby' => 'title',
+            'orderby' => 'ID',
             'order' => 'ASC',
             'fields' => 'ids'
         );
@@ -256,7 +267,7 @@ class WPClickmeter {
             'posts_per_page' => -1,
             'post_type' => 'page',
             'post_status' => array('publish', 'private', 'future'),
-            'orderby' => 'title',
+            'orderby' => 'ID',
             'order' => 'ASC',
             'fields' => array('ID', 'post_title')
         );
@@ -2272,7 +2283,8 @@ add_action( 'wp_ajax_TP_init_creation', 'TP_init_creation' );
 function TP_delete_apikey() {
     try {
         $api_key = WPClickmeter::get_option('clickmeter_api_key');
-        $posts_array = WPClickmeter::get_option("clickmeter_current_exclusion_list");
+        $post_ids_array = WPClickmeter::get_option("clickmeter_current_exclusion_list");
+        $posts_array = WPClickmeter::retrieve_posts_by_id($post_ids_array);
         $body = array();
 
         //delete all tracking pixel from pages
@@ -2323,7 +2335,8 @@ add_action( 'wp_ajax_TP_delete_apikey', 'TP_delete_apikey' );
 function TP_delete_pixels() {
     try {
         WPClickmeter::get_option('clickmeter_api_key');
-        $posts_array = WPClickmeter::get_option("clickmeter_current_exclusion_list");
+        $post_ids_array = WPClickmeter::get_option("clickmeter_current_exclusion_list");
+        $posts_array = WPClickmeter::retrieve_posts_by_id($post_ids_array);
 
         //delete all tracking pixel from pages
         foreach ($posts_array as $post) {

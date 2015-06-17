@@ -84,9 +84,9 @@
         $total_percentage = intval(($start_exclusion_index/$total_excluded)*100);
 
         $end_exclusion_index = $start_exclusion_index + DATAPOINT_BLOCK_SIZE;
-        $posts_array = WPClickmeter::retrieve_posts(DATAPOINT_BLOCK_SIZE, $start_exclusion_index);
+        $post_ids_array = WPClickmeter::retrieve_ids_posts(DATAPOINT_BLOCK_SIZE, $start_exclusion_index);
 
-        WPClickmeter::store_option("clickmeter_current_exclusion_list", $posts_array);
+        WPClickmeter::store_option("clickmeter_current_exclusion_list", $post_ids_array);
 
 		if($_GET["post_offset"] >= $total_excluded){
 			//WPClickmeter::store_option("clickmeter_debug", "API_key_delete");
@@ -119,9 +119,9 @@
 
         $end_exclusion_index = $start_exclusion_index + DATAPOINT_BLOCK_SIZE;
 
-        $posts_array = WPClickmeter::retrieve_posts(DATAPOINT_BLOCK_SIZE, $start_exclusion_index);
+        $post_ids_array = WPClickmeter::retrieve_ids_posts(DATAPOINT_BLOCK_SIZE, $start_exclusion_index);
 
-        WPClickmeter::store_option("clickmeter_current_exclusion_list", $posts_array);
+        WPClickmeter::store_option("clickmeter_current_exclusion_list", $post_ids_array);
 
         if($_GET["post_offset"] >= $total_excluded){
             WPClickmeter::store_option("clickmeter_workinprogress_flag", "completed");
