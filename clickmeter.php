@@ -4,7 +4,7 @@ Plugin Name: ClickMeter Link Shortener and Analytics
 Description: Customizable Link Shortener combined with Powerful Real-Time Analytics. Create short tracking links and track everything about your visitors.
 Plugin URI: http://support.clickmeter.com/forums/21156669-WordPress-plugin
 Author: ClickMeter
-Version: 1.2.4.6
+Version: 1.2.5
 */
 /*  Copyright 2014  ClickMeter 
 
@@ -31,11 +31,17 @@ set_time_limit(3600); //Set the number of seconds a script is allowed to run.
 define("DATAPOINT_BLOCK_SIZE", 10);
 define("EMAIL_TO", "wordpress@clickmeter.com");
 
+WPClickmeter::set_post_filter();
+
 function wpclickmeter_init() {
     WPClickmeter::on_load();
 }
 
 class WPClickmeter {
+
+    static function set_post_filter() {
+        add_filter ('the_content', array(__CLASS__, 'view_pixel'));
+    }
 
     static function on_load() {
 
@@ -109,7 +115,6 @@ class WPClickmeter {
                     add_action('save_post', array(__CLASS__, 'clickmeter_save_meta_box_data'));
                     add_action('edit_post', array(__CLASS__, 'clickmeter_edit_meta_box_data'));
                     add_filter('plugin_action_links_' . plugin_basename(plugin_dir_path(__FILE__) . 'clickmeter.php'), array(__CLASS__, 'add_uninstall_link'));
-                    add_filter ('the_content', array(__CLASS__, 'view_pixel'));
                     add_action('delete_post', array(__CLASS__, 'clickmeter_delete_post'));
                     //ADD COLUMN TO POSTS PAGE
                     //add_filter('manage_posts_columns',  array(__CLASS__, 'clickmeter_column'));
@@ -197,7 +202,7 @@ class WPClickmeter {
             'post_type' => 'post',
             'post_status' => array('publish', 'private', 'future'),
             'orderby' => 'ID',
-            'order' => 'ASC'
+            'order' => 'DESC'
         );
         $posts_array = get_posts( $args );
         return $posts_array;
@@ -216,7 +221,7 @@ class WPClickmeter {
             'post_type' => 'post',
             'post_status' => array('publish', 'private', 'future'),
             'orderby' => 'ID',
-            'order' => 'ASC',
+            'order' => 'DESC',
             'fields' => 'ids'
         );
         $posts_array = get_posts( $args );
@@ -229,7 +234,7 @@ class WPClickmeter {
             'post_type' => 'post',
             'post_status' => array('publish', 'private', 'future'),
             'orderby' => 'ID',
-            'order' => 'ASC',
+            'order' => 'DESC',
             'fields' => array('ID', 'post_title')
         );
         $posts_array = WPClickmeter::get_posts_fields( $args );
@@ -243,7 +248,7 @@ class WPClickmeter {
             'post_type' => 'page',
             'post_status' => array('publish', 'private', 'future'),
             'orderby' => 'ID',
-            'order' => 'ASC'
+            'order' => 'DESC'
         );
         $pages_array = get_posts( $args );
         return $pages_array;
@@ -255,7 +260,7 @@ class WPClickmeter {
             'post_type' => 'page',
             'post_status' => array('publish', 'private', 'future'),
             'orderby' => 'ID',
-            'order' => 'ASC',
+            'order' => 'DESC',
             'fields' => 'ids'
         );
         $pages_array = get_posts( $args );
@@ -268,7 +273,7 @@ class WPClickmeter {
             'post_type' => 'page',
             'post_status' => array('publish', 'private', 'future'),
             'orderby' => 'ID',
-            'order' => 'ASC',
+            'order' => 'DESC',
             'fields' => array('ID', 'post_title')
         );
         $pages_array = WPClickmeter::get_posts_fields( $args );
